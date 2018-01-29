@@ -2,69 +2,79 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Unit : MonoBehaviour {
+public class Unit : MonoBehaviour
+{
+    #region Private Fields
 
-    [SerializeField] private Player owner;
-    [SerializeField] private Sector sector;
-    [SerializeField] private int level;
-    [SerializeField] private Color color;
-    [SerializeField] private bool selected = false;
+    [SerializeField]
+    Player owner;
+    [SerializeField]
+    Sector sector;
+    [SerializeField]
+    int level;
+    [SerializeField]
+    Color color;
+    [SerializeField]
+    bool selected = false;
 
-	[SerializeField] private Material level1Material;
-	[SerializeField] private Material level2Material;
-	[SerializeField] private Material level3Material;
-	[SerializeField] private Material level4Material;
-	[SerializeField] private Material level5Material;
+    [SerializeField]
+    Material level1Material;
+    [SerializeField]
+    Material level2Material;
+    [SerializeField]
+    Material level3Material;
+    [SerializeField]
+    Material level4Material;
+    [SerializeField]
+    Material level5Material;
 
+    #endregion
 
-    public Player GetOwner() {
-        return owner;
+    #region Public Properties
+
+    public Player Owner
+    {
+        get { return owner; }
+        set { owner = value; }
     }
 
-    public void SetOwner(Player owner) {
-        this.owner = owner;
+    public Sector Sector
+    {
+        get { return sector; }
+        set { sector = value; }
     }
 
-    public Sector GetSector() {
-        return sector;
+    public int Level
+    {
+        get { return level; }
+        set { level = value; }
     }
 
-    public void SetSector(Sector sector) {
-        this.sector = sector;
+    public Color Color
+    {
+        get { return color; }
+        set { color = value; }
     }
 
-    public int GetLevel() {
-        return level;
+    public bool IsSelected
+    {
+        get { return selected; }
+        set { selected = value; }
     }
 
-    public void SetLevel(int level) {
-        this.level = level;
-    }
+    #endregion
 
-    public Color GetColor() {
-        return color;
-    }
+    #region Initialization
 
-    public void SetColor(Color color) {
-        this.color = color;
-    }
-
-    public bool IsSelected() {
-        return selected;
-    }
-
-    public void SetSelected(bool selected) {
-        this.selected = selected;
-    }
-
-
-
-    public void Initialize(Player player, Sector sector) {
-
-        // initialize the unit to be owned by the specified 
-        // player and in the specified sector
-
-
+    /// <summary>
+    /// Initialize the unit to be owned by the specified
+    /// player and in the specified sector.
+    /// </summary>
+    /// <returns>The initialize.</returns>
+    /// <param name="player">Current player.</param>
+    /// <param name="sector">Current sector.</param>
+    public void Initialize(Player player, Sector sector)
+    {
         // set the owner, level, and color of the unit
         owner = player;
         level = 1;
@@ -75,26 +85,30 @@ public class Unit : MonoBehaviour {
 
         // place the unit in the sector
         MoveTo(sector);
-
     }
 
-    public void MoveTo(Sector targetSector) {
+    #endregion
 
-        // move the unit into the target sector, capturing it
-        // and levelling up if necessary
+    #region Helper Methods
 
-
+    /// <summary>
+    /// Move the unit into the target sector, capturing it,
+    /// and levelling up if necessary.
+    /// </summary>
+    /// <param name="targetSector">The target sector.</param>
+    public void MoveTo(Sector targetSector)
+    {
         // clear the unit's current sector
-        if (this.sector != null)
+        if (sector != null)
         {
-            this.sector.ClearUnit();
-        }   
+            sector.ClearUnit();
+        }
 
         // set the unit's sector to the target sector
         // and the target sector's unit to the unit
-        this.sector = targetSector;
-        targetSector.SetUnit(this);
-		Transform targetTransform = targetSector.transform.Find ("Units").transform;
+        sector = targetSector;
+        targetSector.Unit = this;
+        Transform targetTransform = targetSector.transform.Find("Units").transform;
 
         // set the unit's transform to be a child of
         // the target sector's transform
@@ -103,10 +117,9 @@ public class Unit : MonoBehaviour {
         // align the transform to the sector
         transform.position = targetTransform.position;
 
-
         // if the target sector belonged to a different 
         // player than the unit, capture it and level up
-        if (targetSector.GetOwner() != this.owner)
+        if (targetSector.Owner != owner)
         {
             // level up
             LevelUp();
@@ -114,101 +127,102 @@ public class Unit : MonoBehaviour {
             // capture the target sector for the owner of this unit
             owner.Capture(targetSector);
         }
-
     }
 
-    public void SwapPlacesWith(Unit otherUnit) {
-
-        // switch the sectors of this unit and another unit
-
-
+    /// <summary>
+    /// Switch the sectors of this unit and another unit.
+    /// </summary>
+    /// <param name="otherUnit">The unit to swap placecs with.</param>
+    public void SwapPlacesWith(Unit otherUnit)
+    {
         // swap the sectors' references to the units
-        this.sector.SetUnit(otherUnit);
-        otherUnit.sector.SetUnit(this);
-
+        sector.Unit = otherUnit;
+        otherUnit.sector.Unit = this;
 
         // get the index of this unit's sector in the map's list of sectors
         int tempSectorIndex = -1;
-        for (int i = 0; i < this.owner.GetGame().gameMap.GetComponent<Map>().sectors.Length; i++)
+        for (int i = 0; i < owner.Game.gameMap.GetComponent<Map>().sectors.Length; i++)
         {
-            if (this.sector == this.owner.GetGame().gameMap.GetComponent<Map>().sectors[i])
+            if (sector == owner.Game.gameMap.GetComponent<Map>().sectors[i])
                 tempSectorIndex = i;
         }
 
         // swap the units' references to their sectors
-        this.sector = otherUnit.sector;
-        otherUnit.sector = this.owner.GetGame().gameMap.GetComponent<Map>().sectors[tempSectorIndex] ;
-
+        sector = otherUnit.sector;
+        otherUnit.sector = owner.Game.gameMap.GetComponent<Map>().sectors[tempSectorIndex];
 
         // realign transforms for each unit
-		this.transform.SetParent(this.sector.transform.Find("Units").transform);
-		this.transform.position = this.sector.transform.Find("Units").position;
+        transform.SetParent(sector.transform.Find("Units").transform);
+        transform.position = sector.transform.Find("Units").position;
 
-		otherUnit.transform.SetParent(otherUnit.sector.transform.Find("Units").transform);
-		otherUnit.transform.position = otherUnit.sector.transform.Find("Units").position;
-        
+        otherUnit.transform.SetParent(otherUnit.sector.transform.Find("Units").transform);
+        otherUnit.transform.position = otherUnit.sector.transform.Find("Units").position;
     }
 
-	public void LevelUp() {
+    /// <summary>
+    /// Level up the unit, capping at Level 5.
+    /// </summary>
+    public void LevelUp()
+    {
+        if (level < 5)
+        {
+            // increase level
+            level++;
 
-        // level up the unit, capping at Level 5
+            // change texture to reflect new level
+            switch (level)
+            {
+                case 2:
+                    gameObject.GetComponent<MeshRenderer>().material = level2Material;
+                    break;
+                case 3:
+                    gameObject.GetComponent<MeshRenderer>().material = level3Material;
+                    break;
+                case 4:
+                    gameObject.GetComponent<MeshRenderer>().material = level4Material;
+                    break;
+                case 5:
+                    gameObject.GetComponent<MeshRenderer>().material = level5Material;
+                    break;
+                default:
+                    gameObject.GetComponent<MeshRenderer>().material = level1Material;
+                    break;
+            }
 
-		if (level < 5) {
+            // set material color to match owner color
+            GetComponent<Renderer>().material.color = color;
+        }
 
-			// increase level
-			level++;
+    }
 
-			// change texture to reflect new level
-			switch (level) 
-			{
-			case 2:
-				this.gameObject.GetComponent<MeshRenderer> ().material = level2Material;
-				break;
-			case 3:
-				this.gameObject.GetComponent<MeshRenderer> ().material = level3Material;
-				break;
-			case 4:
-				this.gameObject.GetComponent<MeshRenderer> ().material = level4Material;
-				break;
-			case 5:
-				this.gameObject.GetComponent<MeshRenderer> ().material = level5Material;
-				break;
-			default:
-				this.gameObject.GetComponent<MeshRenderer> ().material = level1Material;
-				break;
-			}
-
-			// set material color to match owner color
-			GetComponent<Renderer>().material.color = color;
-
-		}
-		
-	}
-
-    public void Select() {
-
-        // select the unit and highlight the sectors adjacent to it
-
+    /// <summary>
+    /// Select the unit and highlight the sectors adjacent to it.
+    /// </summary>
+    public void Select()
+    {
         selected = true;
         sector.ApplyHighlightAdjacent();
     }
 
-    public void Deselect() {
-
-        // deselect the unit and unhighlight the sectors adjacent to it
-
+    /// <summary>
+    /// Deselect the unit and unhighlight the sectors adjacent to it.
+    /// </summary>
+    public void Deselect()
+    {
         selected = false;
         sector.RevertHighlightAdjacent();
     }
 
-    public void DestroySelf() {
-
-        // safely destroy the unit by removing it from its owner's
-        // list of units before destroying
-
+    /// <summary>
+    /// Safely destroy the unit by removing it from its owner's
+    /// list of units before destroying.
+    /// </summary>
+    public void DestroySelf()
+    {
         sector.ClearUnit();
         owner.units.Remove(this);
-        Destroy(this.gameObject);
+        Destroy(gameObject);
     }
-        
+
+    #endregion
 }

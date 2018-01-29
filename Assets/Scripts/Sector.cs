@@ -2,109 +2,113 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Sector : MonoBehaviour {
+public class Sector : MonoBehaviour
+{
+    #region Private Fields
 
     [SerializeField] private Map map;
     [SerializeField] private Unit unit;
     [SerializeField] private Player owner;
     [SerializeField] private Sector[] adjacentSectors;
-	[SerializeField] private Landmark landmark;
+    [SerializeField] private Landmark landmark;
 
+    #endregion
 
-    public Map GetMap() {
-        return map;
+    #region Public Properties
+
+    public Map Map
+    {
+        get { return map; }
+        set { map = value; }
     }
 
-    public void SetMap(Map map) {
-        this.map = map;
+    public Unit Unit
+    {
+        get { return unit; }
+        set { unit = value; }
     }
 
-    public Unit GetUnit() {
-        return unit;
-    }
+    public Player Owner
+    {
+        get { return owner; }
+        set
+        {
+            owner = value;
 
-    public void SetUnit(Unit unit) {
-        this.unit = unit;
-    }
-
-    public Player GetOwner() {
-        return owner;
-    }
-
-    public void SetOwner (Player owner) {
-
-        // set the owner of the sector to the specified player,
-        // and change the sector's color to match the new owner
-
-
-        // set sector owner to the given player
-        this.owner = owner;
-
-        // set sector color to the color of the given player
-        // or gray if null
-        if (owner == null) {
-            gameObject.GetComponent<Renderer> ().material.color = Color.gray;
-        } else {
-            gameObject.GetComponent<Renderer> ().material.color = owner.GetColor();
+            // set sector color to the color of the given player
+            // or gray if null
+            if (owner == null)
+                gameObject.GetComponent<Renderer>().material.color = Color.gray;
+            else
+                gameObject.GetComponent<Renderer>().material.color = owner.Color;
         }
     }
 
-    public Sector[] GetAdjacentSectors() {
-        return adjacentSectors;
+    public Sector[] AdjacentSectors
+    {
+        get { return adjacentSectors; }
     }
 
-	public Landmark GetLandmark() {
-        return landmark;
+    public Landmark Landmark
+    {
+        get { return landmark; }
+        set { landmark = value; }
     }
 
-	public void SetLandmark(Landmark landmark) {
-        this.landmark = landmark;
-    }
-        
-	
+    #endregion
 
-	public void Initialize() {
+    #region Initialization
+
+    public void Initialize()
+    {
 
         // initialize the sector by setting its owner and unit to null
         // and determining if it contains a landmark or not
 
 
-		// reset owner
-		SetOwner(null);
+        // reset owner
+        Owner = null;
 
-		// clear unit
-		unit = null;
+        // clear unit
+        unit = null;
 
-		// get landmark (if any)
-		landmark = gameObject.GetComponentInChildren<Landmark>();
+        // get landmark (if any)
+        landmark = gameObject.GetComponentInChildren<Landmark>();
 
-	}
+    }
 
-    public void ApplyHighlight(float amount) {
+    #endregion
+
+    #region Helper Methods
+
+    public void ApplyHighlight(float amount)
+    {
 
         // highlight a sector by increasing its RGB values by a specified amount
 
-        Renderer renderer = GetComponent<Renderer>();
-        Color currentColor = renderer.material.color;
+        Renderer currentRenderer = GetComponent<Renderer>();
+        Color currentColor = currentRenderer.material.color;
         Color offset = new Vector4(amount, amount, amount, 1);
         Color newColor = currentColor + offset;
 
-        renderer.material.color = newColor;
+        currentRenderer.material.color = newColor;
     }
 
-    public void RevertHighlight(float amount) {
+    public void RevertHighlight(float amount)
+    {
 
         // unhighlight a sector by decreasing its RGB values by a specified amount
 
-        Renderer renderer = GetComponent<Renderer>();
-        Color currentColor = renderer.material.color;
+        Renderer currentRenderer = GetComponent<Renderer>();
+        Color currentColor = currentRenderer.material.color;
         Color offset = new Vector4(amount, amount, amount, 1);
         Color newColor = currentColor - offset;
 
-        renderer.material.color = newColor;
+        currentRenderer.material.color = newColor;
     }
 
-    public void ApplyHighlightAdjacent() {
+    public void ApplyHighlightAdjacent()
+    {
 
         // highlight each sector adjacent to this one
 
@@ -114,33 +118,37 @@ public class Sector : MonoBehaviour {
         }
     }
 
-    public void RevertHighlightAdjacent() {
+    public void RevertHighlightAdjacent()
+    {
 
         // unhighlight each sector adjacent to this one
-        
+
         foreach (Sector adjacentSector in adjacentSectors)
         {
             adjacentSector.RevertHighlight(0.2f);
         }
     }
 
-    public void ClearUnit() {
+    public void ClearUnit()
+    {
 
         // clear this sector of any unit
 
         unit = null;
     }
 
-    void OnMouseUpAsButton () {
+    void OnMouseUpAsButton()
+    {
 
         // when this sector is clicked, determine the context
         // and act accordingly
 
-		OnMouseUpAsButtonAccessible();
+        OnMouseUpAsButtonAccessible();
 
     }
 
-    public void OnMouseUpAsButtonAccessible() {
+    public void OnMouseUpAsButtonAccessible()
+    {
 
         // a method of OnMouseUpAsButton that is 
         // accessible to other objects for testing
@@ -148,14 +156,14 @@ public class Sector : MonoBehaviour {
 
         // if this sector contains a unit and belongs to the
         // current active player, and if no unit is selected
-        if (unit != null && owner.IsActive() && map.game.NoUnitSelected())
+        if (unit != null && owner.IsActive && map.game.NoUnitSelected())
         {
             // select this sector's unit
             unit.Select();
         }
 
         // if this sector's unit is already selected
-        else if (unit != null && unit.IsSelected())
+        else if (unit != null && unit.IsSelected)
         {
             // deselect this sector's unit           
             unit.Deselect();
@@ -176,17 +184,17 @@ public class Sector : MonoBehaviour {
                 MoveIntoUnoccupiedSector(selectedUnit);
 
             // if the sector is occupied by a friendly unit
-            else if (unit.GetOwner() == selectedUnit.GetOwner())
+            else if (unit.Owner == selectedUnit.Owner)
                 MoveIntoFriendlyUnit(selectedUnit);
 
             // if the sector is occupied by a hostile unit
-            else if (unit.GetOwner() != selectedUnit.GetOwner())
-                MoveIntoHostileUnit(selectedUnit, this.unit);
+            else if (unit.Owner != selectedUnit.Owner)
+                MoveIntoHostileUnit(selectedUnit, unit);
         }
     }
 
-    public void MoveIntoUnoccupiedSector(Unit unit) {
-        
+    public void MoveIntoUnoccupiedSector(Unit unit)
+    {
         // move the selected unit into this sector
         unit.MoveTo(this);
 
@@ -194,20 +202,22 @@ public class Sector : MonoBehaviour {
         map.game.NextTurnState();
     }
 
-    public void MoveIntoFriendlyUnit(Unit otherUnit) {
-
+    public void MoveIntoFriendlyUnit(Unit otherUnit)
+    {
         // swap the two units
-        this.unit.SwapPlacesWith(otherUnit);
+        unit.SwapPlacesWith(otherUnit);
 
         // advance turn state
         map.game.NextTurnState();
     }
 
-    public void MoveIntoHostileUnit(Unit attackingUnit, Unit defendingUnit) {
-
-        // start and resolve a conflict
-
-
+    /// <summary>
+    /// Start and resolve a conflict.
+    /// </summary>
+    /// <param name="attackingUnit">Attacking unit.</param>
+    /// <param name="defendingUnit">Defending unit.</param>
+    public void MoveIntoHostileUnit(Unit attackingUnit, Unit defendingUnit)
+    {
         // if the attacking unit wins
         if (Conflict(attackingUnit, defendingUnit))
         {
@@ -228,19 +238,20 @@ public class Sector : MonoBehaviour {
         // end the turn
         map.game.EndTurn();
     }
-        
-    public Unit AdjacentSelectedUnit() {
 
-        // return the selected unit if it is adjacent to this sector
-        // return null otherwise
-
-
+    /// <summary>
+    /// Return the selected unit if it is adjacent to this sector,
+    /// return null otherwise.
+    /// </summary>
+    /// <returns>The adjacent selected unit.</returns>
+    public Unit AdjacentSelectedUnit()
+    {
         // scan through each adjacent sector
         foreach (Sector adjacentSector in adjacentSectors)
         {
             // if the adjacent sector contains the selected unit,
             // return the selected unit
-            if (adjacentSector.unit != null && adjacentSector.unit.IsSelected())
+            if (adjacentSector.unit != null && adjacentSector.unit.IsSelected)
                 return adjacentSector.unit;
         }
 
@@ -248,12 +259,15 @@ public class Sector : MonoBehaviour {
         return null;
     }
 
-    private bool Conflict(Unit attackingUnit, Unit defendingUnit) {
-
-        // return 'true' if attacking unit wins;
-        // return 'false' if defending unit wins
-
-
+    /// <summary>
+    /// Return 'true' if attacking unit wins,
+    /// return 'false' if defending unit wins.
+    /// </summary>
+    /// <returns>The conflict.</returns>
+    /// <param name="attackingUnit">Attacking unit.</param>
+    /// <param name="defendingUnit">Defending unit.</param>
+    bool Conflict(Unit attackingUnit, Unit defendingUnit)
+    {
         /*
          * Conflict resolution is done by comparing a random roll 
          * from each unit involved. The roll is weighted based on
@@ -272,10 +286,11 @@ public class Sector : MonoBehaviour {
          */
 
         // calculate the rolls of each unit
-        int attackingUnitRoll = Random.Range(1, (5 + attackingUnit.GetLevel())) + attackingUnit.GetOwner().GetBeer();
-        int defendingUnitRoll = Random.Range(1, (5 + defendingUnit.GetLevel())) + defendingUnit.GetOwner().GetKnowledge();
+        int attackingUnitRoll = Random.Range(1, (5 + attackingUnit.Level)) + attackingUnit.Owner.Beer;
+        int defendingUnitRoll = Random.Range(1, (5 + defendingUnit.Level)) + defendingUnit.Owner.Knowledge;
 
         return (attackingUnitRoll > defendingUnitRoll);
     }
-        
+
+    #endregion
 }

@@ -2,13 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Initializer : MonoBehaviour {
+public class Initializer : MonoBehaviour
+{
+    #region Unity Bindings
 
     public Game game;
 
-	// Use this for initialization
-	void Start () {
+    #endregion
+
+    #region MonoBehaviour
+
+    // Use this for initialization
+    void Start()
+    {
         game.Initialize();
-	}
-	
+    }
+
+    #endregion
 }

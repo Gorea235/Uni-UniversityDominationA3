@@ -2,127 +2,195 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Game : MonoBehaviour {
+public class Game : MonoBehaviour
+{
+    #region Unity Bindings
 
     public Player[] players;
-	public GameObject gameMap;
+    public GameObject gameMap;
     public Player currentPlayer;
 
-    public enum TurnState { Move1, Move2, EndOfTurn, NULL };
-    [SerializeField] private TurnState turnState;
-    [SerializeField] private bool gameFinished = false;
-    [SerializeField] private bool testMode = false;
+    #endregion
 
+    #region Private Fields
 
-    public TurnState GetTurnState() {
-        return turnState;
+    [SerializeField]
+    TurnState turnState;
+    [SerializeField]
+    bool gameFinished = false;
+    [SerializeField]
+    bool testMode = false;
+
+    #endregion
+
+    #region Public Properties
+
+    public TurnState TurnState
+    {
+        get { return turnState; }
+        set { turnState = value; }
     }
 
-    public void SetTurnState(TurnState turnState) {
-        this.turnState = turnState;
+    public bool IsFinished { get { return gameFinished; } }
+
+    public bool TestModeEnabled
+    {
+        get { return testMode; }
+        set { testMode = value; }
     }
 
-    public bool IsFinished() {
-        return gameFinished;
+    #endregion
+
+    #region Initialization
+
+    /// <summary>
+    /// Initialize the game.
+    /// </summary>
+    public void Initialize()
+    {
+        // create a specified number of human players
+        // *** currently hard-wired to 2 for testing ***
+        CreatePlayers(2);
+
+        // initialize the map and allocate players to landmarks
+        InitializeMap();
+
+        // initialize the turn state
+        turnState = TurnState.Move1;
+
+        // set Player 1 as the current player
+        currentPlayer = players[0];
+        currentPlayer.Gui.Activate();
+        players[0].IsActive = true;
+
+        // update GUIs
+        UpdateGUI();
     }
 
-    public void EnableTestMode() {
-        testMode = true;
-    }
-
-    public void DisableTestMode() {
-        testMode = false;
-    }
-
-
-
-    public void CreatePlayers(int numberOfPlayers){
-
-        // ensure that the specified number of players
-        // is at least 2 and does not exceed 4
-        if (numberOfPlayers < 2)
-            numberOfPlayers = 2;
-
-        if (numberOfPlayers > 4) 
-            numberOfPlayers = 4;
-
-        // mark the specified number of players as human
-        for (int i = 0; i < numberOfPlayers; i++)
-        {
-            players[i].SetHuman(true);
-        }
-
-        // give all players a reference to this game
-		// and initialize their GUIs
-		for (int i = 0; i < 4; i++)
-		{
-			players[i].SetGame(this);
-			players[i].GetGui().Initialize(players[i], i + 1);
-		}
-
-    }
-
-	public void InitializeMap() {
-
-        // initialize all sectors, allocate players to landmarks,
-        // and spawn units
-
-
-		// get an array of all sectors
+    /// <summary>
+    /// Initialize all sectors, allocate players to landmarks,
+    /// and spawn units.
+    /// </summary>
+    public void InitializeMap()
+    {
+        // get an array of all sectors
         Sector[] sectors = gameMap.GetComponentsInChildren<Sector>();
 
-		// initialize each sector
+        // initialize each sector
         foreach (Sector sector in sectors)
-		{
+        {
             sector.Initialize();
-		}
-            
-		// get an array of all sectors containing landmarks
+        }
+
+        // get an array of all sectors containing landmarks
         Sector[] landmarkedSectors = GetLandmarkedSectors(sectors);
-            
+
         // ensure there are at least as many landmarks as players
         if (landmarkedSectors.Length < players.Length)
         {
             throw new System.Exception("Must have at least as many landmarks as players; only " + landmarkedSectors.Length.ToString() + " landmarks found for " + players.Length.ToString() + " players.");
         }
 
+        // randomly allocate sectors to players
+        foreach (Player player in players)
+        {
+            bool playerAllocated = false;
+            while (!playerAllocated)
+            {
 
-		// randomly allocate sectors to players
-        foreach (Player player in players) 
-		{
-			bool playerAllocated = false;
-            while (!playerAllocated) {
-                
-				// choose a landmarked sector at random
-                int randomIndex = Random.Range (0, landmarkedSectors.Length);
-				
+                // choose a landmarked sector at random
+                int randomIndex = Random.Range(0, landmarkedSectors.Length);
+
                 // if the sector is not yet allocated, allocate the player
-                if (((Sector) landmarkedSectors[randomIndex]).GetOwner() == null)
-				{
+                if (((Sector)landmarkedSectors[randomIndex]).Owner == null)
+                {
                     player.Capture(landmarkedSectors[randomIndex]);
-					playerAllocated = true;
-				}
+                    playerAllocated = true;
+                }
 
                 // retry until player is allocated
-			}
-		}
+            }
+        }
 
-		// spawn units for each player
+        // spawn units for each player
         foreach (Player player in players)
         {
             player.SpawnUnits();
         }
+    }
 
-	}
+    /// <summary>
+    /// Initialises the players using the specified number of human players.
+    /// </summary>
+    /// <param name="numberOfPlayers">Number of human players.</param>
+    public void CreatePlayers(int numberOfPlayers)
+    {
+        // ensure that the specified number of players
+        // is at least 2 and does not exceed 4
+        numberOfPlayers = Mathf.Clamp(numberOfPlayers, 2, 4);
 
-    private Sector[] GetLandmarkedSectors(Sector[] sectors) {
+        // mark the specified number of players as human
+        for (int i = 0; i < numberOfPlayers; i++)
+        {
+            players[i].IsHuman = true;
+        }
 
-        // return a list of all sectors that contain landmarks from the given array
+        // give all players a reference to this game
+        // and initialize their GUIs
+        for (int i = 0; i < 4; i++)
+        {
+            players[i].Game = this;
+            players[i].Gui.Initialize(players[i], i + 1);
+        }
+    }
 
+    #endregion
+
+    #region MonoBehaviour
+
+    void Update()
+    {
+        // at the end of each turn, check for a winner and end the game if
+        // necessary; otherwise, start the next player's turn
+
+        // if the current turn has ended and test mode is not enabled
+        if (turnState == TurnState.EndOfTurn && !testMode)
+        {
+
+            // if there is no winner yet
+            if (GetWinner() == null)
+            {
+                // start the next player's turn
+                NextPlayer();
+                NextTurnState();
+
+                // skip eliminated players
+                while (currentPlayer.IsEliminated)
+                    NextPlayer();
+
+                // spawn units for the next player
+                currentPlayer.SpawnUnits();
+            }
+            else if (!gameFinished)
+                EndGame();
+        }
+    }
+
+    #endregion
+
+    #region Helper Methods
+
+    /// <summary>
+    /// Return a list of all sectors that contain landmarks from the given array.
+    /// </summary>
+    /// <returns>The landmarked sectors.</returns>
+    /// <param name="sectors">Sectors.</param>
+    Sector[] GetLandmarkedSectors(Sector[] sectors)
+    {
         List<Sector> landmarkedSectors = new List<Sector>();
         foreach (Sector sector in sectors)
         {
-            if (sector.GetLandmark() != null)
+            if (sector.Landmark != null)
             {
                 landmarkedSectors.Add(sector);
             }
@@ -131,11 +199,12 @@ public class Game : MonoBehaviour {
         return landmarkedSectors.ToArray();
     }
 
-    public bool NoUnitSelected() {
-        
-        // return true if no unit is selected, false otherwise
-
-
+    /// <summary>
+    /// Return true if no unit is selected, false otherwise.
+    /// </summary>
+    /// <returns>Return true if no unit is selected, false otherwise.</returns>
+    public bool NoUnitSelected()
+    {
         // scan through each player
         foreach (Player player in players)
         {
@@ -143,7 +212,7 @@ public class Game : MonoBehaviour {
             foreach (Unit unit in player.units)
             {
                 // if a selected unit is found, return false
-                if (unit.IsSelected() == true)
+                if (unit.IsSelected == true)
                     return false;
             }
         }
@@ -152,14 +221,14 @@ public class Game : MonoBehaviour {
         return true;
     }
 
-    public void NextPlayer() {
-
-        // set the current player to the next player in the order
-
-
+    /// <summary>
+    /// Set the current player to the next player in the order.
+    /// </summary>
+    public void NextPlayer()
+    {
         // deactivate the current player
-        currentPlayer.SetActive(false);
-		currentPlayer.GetGui().Deactivate();
+        currentPlayer.IsActive = false;
+        currentPlayer.Gui.Deactivate();
 
         // find the index of the current player
         for (int i = 0; i < players.Length; i++)
@@ -173,27 +242,28 @@ public class Game : MonoBehaviour {
                 if (nextPlayerIndex == players.Length)
                 {
                     currentPlayer = players[0];
-                    players[0].SetActive(true);
-					players[0].GetGui().Activate();
+                    players[0].IsActive = true;
+                    players[0].Gui.Activate();
                 }
 
                 // otherwise, set the next player as the current player
                 else
                 {
                     currentPlayer = players[nextPlayerIndex];
-                    players[nextPlayerIndex].SetActive(true);
-					players[nextPlayerIndex].GetGui().Activate();
+                    players[nextPlayerIndex].IsActive = true;
+                    players[nextPlayerIndex].Gui.Activate();
                     break;
                 }
             }
         }
     }
-       
-    public void NextTurnState() {
 
-        // change the turn state to the next in the order,
-        // or to initial turn state if turn is completed
-
+    /// <summary>
+    /// Change the turn state to the next in the order,
+    /// or to initial turn state if turn is completed.
+    /// </summary>
+    public void NextTurnState()
+    {
         switch (turnState)
         {
             case TurnState.Move1:
@@ -212,27 +282,30 @@ public class Game : MonoBehaviour {
                 break;
         }
 
-		UpdateGUI();
+        UpdateGUI();
     }
 
-    public void EndTurn() {
-
-        // end the current turn
-
+    /// <summary>
+    /// End the current turn.
+    /// </summary>
+    public void EndTurn()
+    {
         turnState = TurnState.EndOfTurn;
     }
 
-    public Player GetWinner() {
-
-        // return the winning player, or null if no winner yet
-
+    /// <summary>
+    /// Return the winning player, or null if no winner yet.
+    /// </summary>
+    /// <returns>Return the winning player, or null if no winner yet.</returns>
+    public Player GetWinner()
+    {
         Player winner = null;
 
         // scan through each player
         foreach (Player player in players)
         {
             // if the player hasn't been eliminated
-            if (!player.IsEliminated())
+            if (!player.IsEliminated)
             {
                 // if this is the first player found that hasn't been eliminated,
                 // assume the player is the winner
@@ -250,82 +323,34 @@ public class Game : MonoBehaviour {
         return winner;
     }
 
-    public void EndGame() {
+    /// <summary>
+    /// Ends the game.
+    /// </summary>
+    public void EndGame()
+    {
         gameFinished = true;
-        currentPlayer.SetActive(false);
+        currentPlayer.IsActive = false;
         currentPlayer = null;
         turnState = TurnState.NULL;
         Debug.Log("GAME FINISHED");
     }
 
-	public void UpdateGUI() {
-
-		// update all players' GUIs
-		for (int i = 0; i < 4; i++) {
-			players [i].GetGui ().UpdateDisplay ();
-		}
-	}
-        
-    public void Initialize () {
-        
-        // initialize the game
-
-
-        // create a specified number of human players
-        // *** currently hard-wired to 2 for testing ***
-        CreatePlayers(2);
-
-        // initialize the map and allocate players to landmarks
-        InitializeMap();
-
-        // initialize the turn state
-        turnState = TurnState.Move1;
-
-        // set Player 1 as the current player
-        currentPlayer = players[0];
-		currentPlayer.GetGui().Activate();
-        players[0].SetActive(true);
-
-		// update GUIs
-		UpdateGUI();
-
-	}
-
-        
-    void Update () {
-
-        // at the end of each turn, check for a winner and end the game if
-        // necessary; otherwise, start the next player's turn
-
-		
-        // if the current turn has ended and test mode is not enabled
-        if (turnState == TurnState.EndOfTurn && !testMode)
+    /// <summary>
+    /// Update all players' GUIs.
+    /// </summary>
+    public void UpdateGUI()
+    {
+        for (int i = 0; i < 4; i++)
         {
-            
-            // if there is no winner yet
-            if (GetWinner() == null)
-            {
-                // start the next player's turn
-                NextPlayer();
-                NextTurnState();
-
-                // skip eliminated players
-                while (currentPlayer.IsEliminated())
-                    NextPlayer();
-
-                // spawn units for the next player
-                currentPlayer.SpawnUnits();
-            }
-            else
-                if (!gameFinished)
-                    EndGame();
+            players[i].Gui.UpdateDisplay();
         }
-	}
+    }
 
-    public void UpdateAccessible () {
-
-        // copy of Update that can be called by other objects (for testing)
-
+    /// <summary>
+    /// Copy of Update that can be called by other objects (for testing).
+    /// </summary>
+    public void UpdateAccessible()
+    {
         if (turnState == TurnState.EndOfTurn)
         {
             // if there is no winner yet
@@ -336,16 +361,16 @@ public class Game : MonoBehaviour {
                 NextTurnState();
 
                 // skip eliminated players
-                while (currentPlayer.IsEliminated())
+                while (currentPlayer.IsEliminated)
                     NextPlayer();
 
                 // spawn units for the next player
                 currentPlayer.SpawnUnits();
             }
-            else
-                if (!gameFinished)
-                    EndGame();
+            else if (!gameFinished)
+                EndGame();
         }
     }
 
+    #endregion
 }

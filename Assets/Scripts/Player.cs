@@ -2,90 +2,141 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour
+{
+    #region Unity Bindings
 
-	public List <Sector> ownedSectors;
-    public List <Unit> units;
+    public List<Sector> ownedSectors;
+    public List<Unit> units;
 
-    [SerializeField] private Game game;
-    [SerializeField] private GameObject unitPrefab;
-	[SerializeField] private PlayerUI gui;
-    [SerializeField] private int beer = 0;
-    [SerializeField] private int knowledge = 0;
-    [SerializeField] private Color color;
-    [SerializeField] private bool human;
-    [SerializeField] private bool active = false;
+    #endregion
 
+    #region Private Fields
 
-    public Game GetGame() {
-        return game;
+    [SerializeField]
+    Game game;
+    [SerializeField]
+    GameObject unitPrefab;
+    [SerializeField]
+    PlayerUI gui;
+    [SerializeField]
+    int beer = 0;
+    [SerializeField]
+    int knowledge = 0;
+    [SerializeField]
+    Color color;
+    [SerializeField]
+    bool human;
+    [SerializeField]
+    bool active = false;
+
+    #endregion
+
+    #region Public Properties
+
+    public Game Game
+    {
+        get { return game; }
+        set { game = value; }
     }
 
-    public void SetGame(Game game) {
-        this.game = game;
+    public GameObject UnitPrefab
+    {
+        get { return unitPrefab; }
     }
 
-    public GameObject GetUnitPrefab() {
-        return unitPrefab;
+    public PlayerUI Gui
+    {
+        get { return gui; }
+        set { gui = value; }
     }
 
-	public PlayerUI GetGui() {
-		return gui;
-	}
-
-	public void SetGui(PlayerUI gui) {
-		this.gui = gui;
-	}
-
-    public int GetBeer() {
-        return beer;
+    public int Beer
+    {
+        get { return beer; }
+        set { beer = value; }
     }
 
-    public void SetBeer(int beer) {
-        this.beer = beer;
+    /// <summary>
+    /// In here with my Lamborghini.
+    /// </summary>
+    /// <value>Up here in the hollywood hills.</value>
+    /// <remarks>Just installed these 7 new bookshelves.</remarks>
+    public int Knowledge
+    {
+        get { return knowledge; }
+        set { knowledge = value; }
     }
 
-    public int GetKnowledge() {
-        return knowledge;
+    public Color Color
+    {
+        get { return color; }
+        set { color = value; }
     }
 
-    public void SetKnowledge(int knowledge) {
-        this.knowledge = knowledge;
+    public bool IsHuman
+    {
+        get { return human; }
+        set { human = value; }
     }
 
-    public Color GetColor() {
-        return color;
+    public bool IsActive
+    {
+        get { return active; }
+        set { active = value; }
     }
 
-    public void SetColor(Color color) {
-        this.color = color;
+    /// <summary>
+    /// Returns true if the player is eliminated, false otherwise.
+    /// A player is considered eliminated if it has no units left
+    /// and does not own a landmark.
+    /// </summary>
+    /// <returns><c>true</c>, if eliminated was ised, <c>false</c> otherwise.</returns>
+    public bool IsEliminated
+    {
+        get
+        {
+            if (units.Count == 0 && !OwnsLandmark)
+                return true;
+            return false;
+        }
     }
 
-    public bool IsHuman() {
-        return human;
+    /// <summary>
+    /// Returns true if the player owns at least one landmark,
+    /// false otherwise.
+    /// </summary>
+    /// <returns><c>true</c>, if landmark was ownsed, <c>false</c> otherwise.</returns>
+    bool OwnsLandmark
+    {
+        get
+        {
+            // scan through each owned sector
+            foreach (Sector sector in ownedSectors)
+            {
+                // if a landmarked sector is found, return true
+                if (sector.Landmark != null)
+                    return true;
+            }
+
+            // otherwise, return false
+            return false;
+        }
     }
 
-    public void SetHuman(bool human) {
-        this.human = human;
-    }
+    #endregion
 
-    public bool IsActive() {
-        return active;
-    }
+    #region Helper Methods
 
-    public void SetActive(bool active) {
-        this.active = active;
-    }
-
-
-
-    public void Capture(Sector sector) {
-
-        // capture the given sector
-
-
+    /// <summary>
+    /// Capture the given sector.
+    /// </summary>
+    /// <returns>The capture.</returns>
+    /// <param name="sector">Sector.</param>
+    public void Capture(Sector sector)
+    {
         // store a copy of the sector's previous owner
-        Player previousOwner = sector.GetOwner();
+        Player previousOwner = sector.Owner;
 
         // add the sector to the list of owned sectors
         ownedSectors.Add(sector);
@@ -96,40 +147,41 @@ public class Player : MonoBehaviour {
             previousOwner.ownedSectors.Remove(sector);
 
         // set the sector's owner to this player
-        sector.SetOwner(this);
+        sector.Owner = this;
 
         // if the sector contains a landmark
-        if (sector.GetLandmark() != null)
+        if (sector.Landmark != null)
         {
-            Landmark landmark = sector.GetLandmark();
+            Landmark landmark = sector.Landmark;
 
             // remove the landmark's resource bonus from the previous
             // owner and add it to this player
-            if (landmark.GetResourceType() == Landmark.ResourceType.Beer)
+            switch (landmark.ResourceType)
             {
-                this.beer += landmark.GetAmount();
-                if (previousOwner != null)
-                    previousOwner.beer -= landmark.GetAmount();
-            }
-            else if (landmark.GetResourceType() == Landmark.ResourceType.Knowledge)
-            {
-                this.knowledge += landmark.GetAmount();
-                if (previousOwner != null)
-                    previousOwner.knowledge -= landmark.GetAmount();
+                case ResourceType.Beer:
+                    beer += landmark.Amount;
+                    if (previousOwner != null)
+                        previousOwner.beer -= landmark.Amount;
+                    break;
+                case ResourceType.Knowledge:
+                    knowledge += landmark.Amount;
+                    if (previousOwner != null)
+                        previousOwner.knowledge -= landmark.Amount;
+                    break;
             }
         }
     }
 
-    public void SpawnUnits() {
-
-        // spawn a unit at each unoccupied landmark
-
-
+    /// <summary>
+    /// Spawn a unit at each unoccupied landmark.
+    /// </summary>
+    public void SpawnUnits()
+    {
         // scan through each owned sector
-		foreach (Sector sector in ownedSectors) 
-		{
+        foreach (Sector sector in ownedSectors)
+        {
             // if the sector contains a landmark and is unoccupied
-            if (sector.GetLandmark() != null && sector.GetUnit() == null)
+            if (sector.Landmark != null && sector.Unit == null)
             {
                 // instantiate a new unit at the sector
                 Unit newUnit = Instantiate(unitPrefab).GetComponent<Unit>();
@@ -140,39 +192,10 @@ public class Player : MonoBehaviour {
                 // add the new unit to the player's list of units and 
                 // the sector's unit parameters
                 units.Add(newUnit);
-                sector.SetUnit(newUnit);
+                sector.Unit = newUnit;
             }
-		}
-	}
-
-    public bool IsEliminated() {
-
-        // returns true if the player is eliminated, false otherwise;
-        // a player is considered eliminated if it has no units left
-        // and does not own a landmark
-
-        if (units.Count == 0 && !OwnsLandmark())
-            return true;
-        else
-            return false;
-    }
-
-    private bool OwnsLandmark() {
-
-        // returns true if the player owns at least one landmark,
-        // false otherwise
-
-        
-        // scan through each owned sector
-        foreach (Sector sector in ownedSectors)
-        {
-            // if a landmarked sector is found, return true
-            if (sector.GetLandmark() != null)
-                return true;
         }
-
-        // otherwise, return false
-        return false;
     }
 
+    #endregion
 }
