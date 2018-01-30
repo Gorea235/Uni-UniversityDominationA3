@@ -67,6 +67,39 @@ public class Game : MonoBehaviour
         UpdateGUI();
     }
 
+    ///<summary>
+    ///Initialize the game from a saved data set
+    /// </summary>
+    public void Initialize(Game savedGame)
+    {
+        //recreate the number of players
+        CreatePlayers(savedGame.players.Length);
+
+        //initialize the map in its previous state
+        //
+        // TBD
+        //
+
+        //initialize the turn state to the previous
+        turnState = savedGame.turnState;
+
+        //set last player as current player
+        currentPlayer = savedGame.currentPlayer;
+        currentPlayer.Gui.Activate();
+        for (int i = 0; i < players.Length; i++) //find the index in current game context that corresponds to the one in the savedGame and set it to be the active player
+        {
+            if (players[i].Equals(savedGame.currentPlayer))
+            {
+                players[i].IsActive = true;
+                break;
+            }
+        }
+
+        //update GUIs
+        UpdateGUI();
+
+    }
+
     /// <summary>
     /// Initialize all sectors, allocate players to landmarks,
     /// and spawn units.
