@@ -42,6 +42,8 @@ public class MainMenu : MonoBehaviour {
         errorPanel.SetActive(false);
     }
 
+	//  Returns a list of ints representing the types chosen from each dropdown
+	//  currently - 0 = Human, 1 = AI, 2 = None
 	public List<int> GetPlayerTypes()
 	{
 		List<int> types;
@@ -54,6 +56,8 @@ public class MainMenu : MonoBehaviour {
 		return types;
 	}
 
+	//  Returns a list of ints representing the colours chosen from each dropdown
+	//  colours don't have options yet, TODO
 	public List<int> GetPlayerColours()
 	{
 		List<int> colours;
