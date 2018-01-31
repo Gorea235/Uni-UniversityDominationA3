@@ -2,17 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerBulletController : MonoBehaviour {
+public class PlayerBulletController : MonoBehaviour
+{
+    #region Unity Bindings
 
     public GameObject player;
+
+    #endregion
+
+    #region Private Fields
 
     float speed = 15;
     Rigidbody2D bulletBody;
 
-   
+    #endregion
 
-	// Use this for initialization
-	void Start () {
+    #region MonoBehaviour
+
+    // Use this for initialization
+    void Start()
+    {
         if (!player.GetComponent<PlayerController>().ForbidBullet)
         {
             bulletBody = GetComponent<Rigidbody2D>();
@@ -20,9 +29,13 @@ public class PlayerBulletController : MonoBehaviour {
             //GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>
             player.GetComponent<PlayerController>().ForbidBullet = true;
         }
-	}
+    }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    #endregion
+
+    #region Helper Methods
+
+    void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Boundary")
         {
@@ -31,4 +44,5 @@ public class PlayerBulletController : MonoBehaviour {
         }
     }
 
+    #endregion
 }
