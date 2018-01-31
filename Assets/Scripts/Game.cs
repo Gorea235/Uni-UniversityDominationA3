@@ -394,7 +394,7 @@ public class Game : MonoBehaviour
                 NextTurnState();
 
                 // skip eliminated players
-                while (currentPlayer.IsEliminated)
+                while (currentPlayer.IsEliminated || !currentPlayer.IsHuman)
                     NextPlayer();
 
                 // spawn units for the next player
