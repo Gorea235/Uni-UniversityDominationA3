@@ -20,9 +20,13 @@ public class MainMenu : MonoBehaviour {
     public void StartNewGame()
     {
 		List<int> types;
+		List<int> colours;
 		types = GetPlayerTypes();
+		colours = GetPlayerColours();
 		Debug.Log ("Type values: " +  types[0].ToString() +","+ types[1].ToString()+","
-			+ types[2].ToString()+","+ types[3].ToString());	
+			+ types[2].ToString()+","+ types[3].ToString());
+		Debug.Log ("Colour values: " +  colours[0].ToString() +","+ colours[1].ToString()+","
+			+ colours[2].ToString()+","+ colours[3].ToString());
       //  StartCoroutine(ShowPopUpMessage(2));
     }
 
@@ -53,7 +57,11 @@ public class MainMenu : MonoBehaviour {
 	public List<int> GetPlayerColours()
 	{
 		List<int> colours;
-		colours = new List<int> ();
+		Dropdown One = playerOneColour.GetComponent<Dropdown>();
+		Dropdown Two = playerTwoColour.GetComponent<Dropdown>();
+		Dropdown Three = playerThreeColour.GetComponent<Dropdown>();
+		Dropdown Four = playerFourColour.GetComponent<Dropdown> ();
+		colours = new List<int> (new int[] {One.value, Two.value, Three.value, Four.value});
 		return colours;
 	}
 }
