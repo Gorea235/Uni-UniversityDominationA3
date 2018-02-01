@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerBulletController : MonoBehaviour
+public class Bullet : MiniGameManager
 {
     #region Unity Bindings
-
-    public GameObject player;
 
     #endregion
 
@@ -22,12 +20,11 @@ public class PlayerBulletController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        if (!player.GetComponent<PlayerController>().ForbidBullet)
+        if (!MiniPlayer.ForbidBullet)
         {
             bulletBody = GetComponent<Rigidbody2D>();
             bulletBody.velocity = Vector2.up * speed;
-            //GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>
-            player.GetComponent<PlayerController>().ForbidBullet = true;
+            MiniPlayer.ForbidBullet = true;
         }
     }
 
@@ -40,7 +37,7 @@ public class PlayerBulletController : MonoBehaviour
         if (collision.tag == "Boundary")
         {
             Destroy(gameObject);
-            player.GetComponent<PlayerController>().ForbidBullet = false;
+            MiniPlayer.ForbidBullet = false;
         }
     }
 
