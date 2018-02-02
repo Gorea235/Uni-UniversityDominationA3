@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Boundary
   - Bullet
+  - Enemy
+  - EnemyBinder
+  - BottomBoundary
   layers:
   - Default
   - TransparentFX
@@ -17,7 +20,7 @@ TagManager:
   - 
   - PlayerBullet
   - Player
-  - 
+  - Enemy
   - 
   - 
   - 

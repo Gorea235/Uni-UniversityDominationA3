@@ -13,18 +13,12 @@ public class MiniGamePlayer : MonoBehaviour
     #region Private Fields
 
     float speed = 5;
-    bool isOnlyBullet; ////Original space invaders allows only for one player bullet at a time in the game
+    Transform shotDisplayed = null; ////Original space invaders allows only for one player bullet at a time in the game
 
     #endregion
 
     #region Public Properties
-
-    public bool ForbidBullet
-    {
-        get { return isOnlyBullet; }
-        set { isOnlyBullet = value; }
-    }
-
+    public static int KillCount { get; set; }
     #endregion
 
     #region MonoBehaviour
@@ -33,7 +27,6 @@ public class MiniGamePlayer : MonoBehaviour
     {
         //use GetAxis instead if you prefer smooth movement opposed to classic arcade feel
         float moveInX = Input.GetAxisRaw("Horizontal"); //Axis set in Edit > Project settings > Input
-
         GetComponent<Rigidbody2D>().velocity = new Vector2(moveInX, 0) * speed;
     }
 
@@ -50,10 +43,11 @@ public class MiniGamePlayer : MonoBehaviour
 
     void FireBullet()
     {
-        if (Input.GetButtonDown("Jump") && !ForbidBullet) // "Jump" button corresponds to "space" by default
+        if (Input.GetButtonDown("Jump") && shotDisplayed == null) // "Jump" button corresponds to "space" by default
         {
-            Instantiate(bullet, transform.position, Quaternion.identity);
+            shotDisplayed = Instantiate(bullet.transform, transform.position, Quaternion.identity);
             Debug.Log("Bullet fired");
+            Debug.Log(KillCount);
         }
     }
 

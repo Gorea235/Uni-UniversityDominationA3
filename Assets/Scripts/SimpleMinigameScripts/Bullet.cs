@@ -10,7 +10,7 @@ public class Bullet : MiniGameManager
 
     #region Private Fields
 
-    float speed = 15;
+    float speed = 8;
     Rigidbody2D bulletBody;
 
     #endregion
@@ -20,12 +20,8 @@ public class Bullet : MiniGameManager
     // Use this for initialization
     void Start()
     {
-        if (!MiniPlayer.ForbidBullet)
-        {
-            bulletBody = GetComponent<Rigidbody2D>();
-            bulletBody.velocity = Vector2.up * speed;
-            MiniPlayer.ForbidBullet = true;
-        }
+        bulletBody = GetComponent<Rigidbody2D>();
+        bulletBody.velocity = Vector2.up * speed;
     }
 
     #endregion
@@ -34,10 +30,23 @@ public class Bullet : MiniGameManager
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Boundary")
+        switch (collision.tag)
         {
-            Destroy(gameObject);
-            MiniPlayer.ForbidBullet = false;
+            case "Boundary":
+                Destroy(gameObject);
+                break;
+
+            case "Enemy":
+                Destroy(gameObject);
+                Destroy(collision.gameObject);
+                MiniGamePlayer.KillCount++;
+                break;
+
+            case "BonusEnemy":
+                Destroy(gameObject);
+                Destroy(collision.gameObject);
+                MiniGamePlayer.KillCount += 10;
+                break;
         }
     }
 
