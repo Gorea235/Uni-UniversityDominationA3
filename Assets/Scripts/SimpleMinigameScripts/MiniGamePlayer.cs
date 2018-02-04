@@ -34,7 +34,6 @@ public class MiniGamePlayer : MonoBehaviour
     void Update()
     {
         FireBullet();
-
     }
 
     #endregion

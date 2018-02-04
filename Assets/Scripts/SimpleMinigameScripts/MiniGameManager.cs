@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MiniGameManager : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class MiniGameManager : MonoBehaviour
     #region Unity bindings
 
     public GameObject player;
+    public Text timeLeft;
 
     #endregion
 
@@ -32,13 +34,15 @@ public class MiniGameManager : MonoBehaviour
     {
 
         //decrement timer;
-        timer -= Time.deltaTime;
+        timeLeft.text = timer.ToString("##");
+        timer = 60f - Time.time;
 
-        if (timer <= 0)
+        if (Time.time >= 60f)
         {
             //handle game exit
-            BonusBeer = (int)System.Math.Floor((double)(MiniGamePlayer.KillCount / 10)/2);
-            BonusKnowledge = (int)System.Math.Floor((double)(MiniGamePlayer.KillCount / 10)/2);
+            BonusBeer = (int)System.Math.Floor((double)(MiniGamePlayer.KillCount / 10) / 2);
+            BonusKnowledge = (int)System.Math.Floor((double)(MiniGamePlayer.KillCount / 10) / 2);
+            Debug.Log("GameOver");
         }
 
 
