@@ -17,7 +17,8 @@ public class MiniGameEnemy : MonoBehaviour
 
     static float speed = 0.5f;
     Vector2 constantVelocity = new Vector2(1, 0) * speed;
-    static int direction = 1;
+    static bool direction = true; //T move left; F move right
+    static bool allowMoveDown = false;
     Rigidbody2D rigidBody;
     float minFireRate = 5f;
     float maxFireRate = 55f;
@@ -29,13 +30,15 @@ public class MiniGameEnemy : MonoBehaviour
     void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
-        rigidBody.velocity = constantVelocity;
+        //rigidBody.velocity = constantVelocity;
         transform.root.GetComponentsInChildren<Renderer>().CopyTo(enemies, 0);
         randomiseFireRate();
     }
 
     private void FixedUpdate()
     {
+        Move();
+        MoveSwarmDown();
         Shoot();
     }
     #endregion
@@ -46,35 +49,56 @@ public class MiniGameEnemy : MonoBehaviour
     {
         switch (collision.gameObject.tag)
         {
-
             case "Boundary":
-                direction = direction * -1;
-                foreach (Renderer enemy in enemies.Where(enemy => enemy != null)) //as we are keeping a reference to a static list, we have to omitt the already destroyed enemies from our search
-                {
-                    enemy.gameObject.GetComponent<MiniGameEnemy>().ChangeDirection();
-                    enemy.gameObject.GetComponent<MiniGameEnemy>().MoveDown();
-                }
+                allowMoveDown = true;
+                ChangeDirection();
                 break;
             case "BottomBoundary":
                 //
                 //HANDLE FAILED GAME HERE
-                //
                 Debug.Log("GAME OVER");
+                //
                 break;
         }
     }
 
+    void Move()
+    {
+        if (direction)
+        {
+            rigidBody.velocity = constantVelocity;
+        }
+        else
+        {
+            rigidBody.velocity = constantVelocity * -1;
+        }
+        
+    }
+
+    void MoveSwarmDown()
+    {
+        if (allowMoveDown)
+        {
+            foreach (Renderer enemy in enemies.Where(enemy => enemy != null)) //as we are keeping a reference to a static list, we have to omitt the already destroyed enemies from our search
+            {
+                enemy.gameObject.GetComponent<MiniGameEnemy>().MoveDown();
+            }
+            allowMoveDown = false;
+        }
+        
+    }
+
     void ChangeDirection()
     {
-        rigidBody.velocity = constantVelocity * direction;
+        direction = !direction;
     }
 
     void MoveDown()
     {
-        rigidBody.velocity = constantVelocity * direction;
         Vector2 newPosition = transform.position;
         newPosition.y += -0.05f;
         transform.position = newPosition;
+        rigidBody.velocity = constantVelocity;
     }
 
     void Shoot()
