@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class MiniGameManager : MonoBehaviour
 {
-
     #region Unity bindings
 
     public GameObject player;
@@ -27,12 +26,10 @@ public class MiniGameManager : MonoBehaviour
 
     #endregion
 
-
     #region MonoBehaviour
 
     void Update()
     {
-
         //decrement timer;
         timeLeft.text = timer.ToString("##");
         timer = 60f - Time.time;
@@ -44,8 +41,6 @@ public class MiniGameManager : MonoBehaviour
             BonusKnowledge = (int)System.Math.Floor((double)(MiniGamePlayer.KillCount / 10) / 2);
             Debug.Log("GameOver");
         }
-
-
     }
 
     #endregion
