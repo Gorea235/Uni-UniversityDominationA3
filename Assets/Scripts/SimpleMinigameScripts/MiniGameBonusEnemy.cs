@@ -9,7 +9,6 @@ public class MiniGameBonusEnemy : MonoBehaviour
     #region Private Fields
 
     float speed = 2f;
-    int timesCollided= 0; //as it will collide with two walls, we keep track of when precisely to destroy it
     Rigidbody2D rigidBody;
 
     #endregion
@@ -27,16 +26,8 @@ public class MiniGameBonusEnemy : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D collision)
     {
-        switch (collision.tag)
-        {
-            case "Boundary":
-                timesCollided++;
-                if (timesCollided == 2)
-                {
-                    Destroy(gameObject);
-                }
-                break;
-        }
+        if (collision.tag == "RightBoundary")
+            Destroy(gameObject);
     }
 
     #endregion
