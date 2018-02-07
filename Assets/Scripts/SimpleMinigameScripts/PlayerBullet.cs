@@ -17,7 +17,6 @@ public class PlayerBullet : MonoBehaviour
 
     #region MonoBehaviour
 
-    // Use this for initialization
     void Start()
     {
         bulletBody = GetComponent<Rigidbody2D>();

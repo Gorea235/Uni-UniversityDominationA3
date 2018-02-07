@@ -13,12 +13,14 @@ public class MiniGamePlayer : MonoBehaviour
     #region Private Fields
 
     float speed = 5;
-    Transform shotDisplayed = null; ////Original space invaders allows only for one player bullet at a time in the game
+    Transform shotDisplayed; // Original space invaders allows only for one player bullet at a time in the game
 
     #endregion
 
     #region Public Properties
+
     public static int KillCount { get; set; }
+
     #endregion
 
     #region MonoBehaviour
@@ -29,7 +31,6 @@ public class MiniGamePlayer : MonoBehaviour
         float moveInX = Input.GetAxisRaw("Horizontal"); //Axis set in Edit > Project settings > Input
         GetComponent<Rigidbody2D>().velocity = new Vector2(moveInX, 0) * speed;
     }
-
 
     void Update()
     {

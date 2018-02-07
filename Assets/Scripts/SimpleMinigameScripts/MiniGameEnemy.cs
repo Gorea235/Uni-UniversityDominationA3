@@ -9,16 +9,21 @@ public class MiniGameEnemy : MonoBehaviour
     #region Unity Bindings
 
     public GameObject enemyBullet;
-    public static Renderer[] enemies = new Renderer[55];
 
     #endregion
 
     #region Private Fields
 
+    // constant
+    const float moveDownAmount = 0.05f;
+
+    // shared
     static float speed = 0.5f;
+    static Renderer[] enemies;
+    static EnemyDirection currentDirection = EnemyDirection.Left;
+
+    // internal
     Vector2 constantVelocity = new Vector2(1, 0) * speed;
-    static bool direction = true; //T move left; F move right
-    static bool allowMoveDown = false;
     Rigidbody2D rigidBody;
     float minFireRate = 5f;
     float maxFireRate = 55f;
@@ -27,93 +32,79 @@ public class MiniGameEnemy : MonoBehaviour
     #endregion
 
     #region MonoBehaviour
+
+    void Awake()
+    {
+        if (enemies == null)
+            enemies = transform.root.GetComponentsInChildren<Renderer>();
+        rigidBody = GetComponent<Rigidbody2D>();
+    }
+
     void Start()
     {
-        rigidBody = GetComponent<Rigidbody2D>();
-        //rigidBody.velocity = constantVelocity;
-        transform.root.GetComponentsInChildren<Renderer>().CopyTo(enemies, 0);
-        randomiseFireRate();
+        RandomiseFireRate();
+        DoDirectionSwitch(EnemyDirection.Right);
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
-        Move();
-        MoveSwarmDown();
         Shoot();
     }
-    #endregion
-
-    #region Helper Methods
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        Debug.Log(collision.gameObject.tag);
         switch (collision.gameObject.tag)
         {
-            case "Boundary":
-                allowMoveDown = true;
-                ChangeDirection();
+            case "LeftBoundary": // hit the left wall
+                SwitchAllDirections(EnemyDirection.Right);
+                break;
+            case "RightBoundary":
+                SwitchAllDirections(EnemyDirection.Left);
                 break;
             case "BottomBoundary":
                 //
                 //HANDLE FAILED GAME HERE
-                Debug.Log("GAME OVER");
                 //
+                Debug.Log("GAME OVER");
                 break;
         }
     }
 
-    void Move()
+    #endregion
+
+    #region Helper Methods
+
+    void SwitchAllDirections(EnemyDirection direction)
     {
-        if (direction)
-        {
-            rigidBody.velocity = constantVelocity;
-        }
-        else
-        {
-            rigidBody.velocity = constantVelocity * -1;
-        }
-        
+        if (direction != currentDirection)
+            foreach (var en in enemies.Where(e => e != null))
+                en.gameObject.GetComponent<MiniGameEnemy>().DoDirectionSwitch(direction);
     }
 
-    void MoveSwarmDown()
+    void DoDirectionSwitch(EnemyDirection direction)
     {
-        if (allowMoveDown)
-        {
-            foreach (Renderer enemy in enemies.Where(enemy => enemy != null)) //as we are keeping a reference to a static list, we have to omitt the already destroyed enemies from our search
-            {
-                enemy.gameObject.GetComponent<MiniGameEnemy>().MoveDown();
-            }
-            allowMoveDown = false;
-        }
-        
-    }
+        rigidBody.velocity = constantVelocity * (int)direction;
+        Vector2 pos = transform.position;
+        pos.y -= moveDownAmount;
+        transform.position = pos;
+        currentDirection = direction;
 
-    void ChangeDirection()
-    {
-        direction = !direction;
-    }
-
-    void MoveDown()
-    {
-        Vector2 newPosition = transform.position;
-        newPosition.y += -0.05f;
-        transform.position = newPosition;
-        rigidBody.velocity = constantVelocity;
     }
 
     void Shoot()
     {
         if (Time.time > baseFireWait)
         {
-            randomiseFireRate();
+            RandomiseFireRate();
             Instantiate(enemyBullet.transform, transform.position, Quaternion.identity);
-
         }
     }
 
-    void randomiseFireRate()
+    void RandomiseFireRate()
     {
         baseFireWait = baseFireWait + Random.Range(minFireRate, maxFireRate);
     }
+
     #endregion
 }
