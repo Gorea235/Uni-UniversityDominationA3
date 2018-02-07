@@ -9,7 +9,8 @@ TagManager:
   - Enemy
   - EnemyBinder
   - BottomBoundary
-  - BonusEnemy
+  - LeftBoundary
+  - RightBoundary
   layers:
   - Default
   - TransparentFX
