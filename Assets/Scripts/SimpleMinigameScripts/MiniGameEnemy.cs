@@ -9,15 +9,21 @@ public class MiniGameEnemy : MonoBehaviour
     #region Unity Bindings
 
     public GameObject enemyBullet;
-    public static Renderer[] enemies = new Renderer[55];
 
     #endregion
 
     #region Private Fields
 
+    // constant
+    const float moveDownAmount = 0.05f;
+
+    // shared
     static float speed = 0.5f;
+    static Renderer[] enemies;
+    static EnemyDirection currentDirection = EnemyDirection.Left;
+
+    // internal
     Vector2 constantVelocity = new Vector2(1, 0) * speed;
-    static int direction = 1;
     Rigidbody2D rigidBody;
     float minFireRate = 5f;
     float maxFireRate = 55f;
@@ -26,34 +32,35 @@ public class MiniGameEnemy : MonoBehaviour
     #endregion
 
     #region MonoBehaviour
-    void Start()
+
+    void Awake()
     {
+        if (enemies == null)
+            enemies = transform.root.GetComponentsInChildren<Renderer>();
         rigidBody = GetComponent<Rigidbody2D>();
-        rigidBody.velocity = constantVelocity;
-        transform.root.GetComponentsInChildren<Renderer>().CopyTo(enemies, 0);
-        randomiseFireRate();
     }
 
-    private void FixedUpdate()
+    void Start()
+    {
+        RandomiseFireRate();
+        DoDirectionSwitch(EnemyDirection.Right);
+    }
+
+    void FixedUpdate()
     {
         Shoot();
     }
-    #endregion
-
-    #region Helper Methods
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        Debug.Log(collision.gameObject.tag);
         switch (collision.gameObject.tag)
         {
-
-            case "Boundary":
-                direction = direction * -1;
-                foreach (Renderer enemy in enemies.Where(enemy => enemy != null)) //as we are keeping a reference to a static list, we have to omitt the already destroyed enemies from our search
-                {
-                    enemy.gameObject.GetComponent<MiniGameEnemy>().ChangeDirection();
-                    enemy.gameObject.GetComponent<MiniGameEnemy>().MoveDown();
-                }
+            case "LeftBoundary": // hit the left wall
+                SwitchAllDirections(EnemyDirection.Right);
+                break;
+            case "RightBoundary":
+                SwitchAllDirections(EnemyDirection.Left);
                 break;
             case "BottomBoundary":
                 //
@@ -64,32 +71,39 @@ public class MiniGameEnemy : MonoBehaviour
         }
     }
 
-    void ChangeDirection()
+    #endregion
+
+    #region Helper Methods
+
+    void SwitchAllDirections(EnemyDirection direction)
     {
-        rigidBody.velocity = constantVelocity * direction;
+        if (direction != currentDirection)
+            foreach (var en in enemies.Where(e => e != null))
+                en.gameObject.GetComponent<MiniGameEnemy>().DoDirectionSwitch(direction);
     }
 
-    void MoveDown()
+    void DoDirectionSwitch(EnemyDirection direction)
     {
-        rigidBody.velocity = constantVelocity * direction;
-        Vector2 newPosition = transform.position;
-        newPosition.y += -0.05f;
-        transform.position = newPosition;
+        rigidBody.velocity = constantVelocity * (int)direction;
+        Vector2 pos = transform.position;
+        pos.y -= moveDownAmount;
+        transform.position = pos;
+        currentDirection = direction;
     }
 
     void Shoot()
     {
         if (Time.time > baseFireWait)
         {
-            randomiseFireRate();
+            RandomiseFireRate();
             Instantiate(enemyBullet.transform, transform.position, Quaternion.identity);
-
         }
     }
 
-    void randomiseFireRate()
+    void RandomiseFireRate()
     {
         baseFireWait = baseFireWait + Random.Range(minFireRate, maxFireRate);
     }
+
     #endregion
 }
