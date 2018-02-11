@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MiniGameManager : MonoBehaviour
@@ -9,12 +10,13 @@ public class MiniGameManager : MonoBehaviour
 
     public GameObject player;
     public Text timeLeft;
+    public Text bonusesAquired;
 
     #endregion
 
     #region Private fields
 
-    float timer = 60.0f;
+    float timer;
 
     #endregion
 
@@ -27,21 +29,42 @@ public class MiniGameManager : MonoBehaviour
     #endregion
 
     #region MonoBehaviour
+    private void Awake()
+    {
+        timer = 60.0f;
+        BonusKnowledge = 0;
+        BonusBeer = 0;
+        DontDestroyOnLoad(this);
+    }
 
     void Update()
     {
-        //decrement timer;
-        timeLeft.text = timer.ToString("##");
-        timer = 60f - Time.time;
-
-        if (Time.time >= 60f)
+        
+        if (SceneManager.GetActiveScene().name == "SimpleMinigame")
         {
-            //handle game exit
-            BonusBeer = (int)System.Math.Floor((double)(MiniGamePlayer.KillCount / 10) / 2);
-            BonusKnowledge = (int)System.Math.Floor((double)(MiniGamePlayer.KillCount / 10) / 2);
-            Debug.Log("GameOver");
-        }
-    }
+            bonusesAquired.text = ((int)System.Math.Floor((double)(MiniGamePlayer.KillCount / 20))).ToString();
+            //decrement timer;
+            timeLeft.text = timer.ToString("##");
+            timer = 60f - Time.time;
 
+            if (Time.time >= 60f || player == null)
+            {
+                EndMiniGame();
+            }
+        }
+
+    }
+    #endregion
+
+    #region Helper Methods
+
+    void EndMiniGame()
+    {
+        //handle game exit
+        BonusBeer = (int)System.Math.Floor((double)(MiniGamePlayer.KillCount / 20));
+        BonusKnowledge = (int)System.Math.Floor((double)(MiniGamePlayer.KillCount / 20));
+        SceneManager.LoadScene("TestScene", LoadSceneMode.Single);
+        Debug.Log("GameOver");
+    }
     #endregion
 }
