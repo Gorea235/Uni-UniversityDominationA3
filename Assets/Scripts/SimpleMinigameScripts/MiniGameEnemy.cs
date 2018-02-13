@@ -59,14 +59,11 @@ public class MiniGameEnemy : MonoBehaviour
             case "LeftBoundary": // hit the left wall
                 SwitchAllDirections(EnemyDirection.Right);
                 break;
-            case "RightBoundary":
+            case "RightBoundary": // hit the right wall
                 SwitchAllDirections(EnemyDirection.Left);
                 break;
-            case "BottomBoundary":
-                //
-                //HANDLE FAILED GAME HERE
-                //
-                Debug.Log("GAME OVER");
+            case "BottomBoundary": // hit the bottom (& thus failed)
+                GameObject.Find("MiniGameManager").GetComponent<MiniGameManager>().EndMiniGame(false);
                 break;
         }
     }
@@ -97,7 +94,7 @@ public class MiniGameEnemy : MonoBehaviour
         if (Time.time > baseFireWait)
         {
             RandomiseFireRate();
-            Instantiate(enemyBullet.transform, transform.position, Quaternion.identity);
+            //Instantiate(enemyBullet.transform, transform.position, Quaternion.identity);
         }
     }
 

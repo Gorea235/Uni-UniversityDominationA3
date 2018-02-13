@@ -17,24 +17,22 @@ public class MiniGameManager : MonoBehaviour
     #region Private fields
 
     float timer;
+    DataStore _dataStorage;
 
     #endregion
 
     #region Properties
 
-    public static int BonusKnowledge { get; set; }
-    public static int BonusBeer { get; set; }
     public MiniGamePlayer MiniPlayer { get { return player.GetComponent<MiniGamePlayer>(); } }
 
     #endregion
 
     #region MonoBehaviour
-    private void Awake()
+
+    void Awake()
     {
         timer = 60.0f;
-        BonusKnowledge = 0;
-        BonusBeer = 0;
-        DontDestroyOnLoad(this);
+        _dataStorage = GameObject.Find("DataStore").GetComponent<DataStore>();
     }
 
     void Update()
@@ -49,20 +47,21 @@ public class MiniGameManager : MonoBehaviour
 
             if (Time.time >= 60f || player == null)
             {
-                EndMiniGame();
+                EndMiniGame(false);
             }
         }
 
     }
+
     #endregion
 
     #region Helper Methods
 
-    void EndMiniGame()
+    public void EndMiniGame(bool succeeded)
     {
         //handle game exit
-        BonusBeer = (int)System.Math.Floor((double)(MiniGamePlayer.KillCount / 20));
-        BonusKnowledge = (int)System.Math.Floor((double)(MiniGamePlayer.KillCount / 20));
+        _dataStorage.AddScore(MiniGamePlayer.KillCount);
+        _dataStorage.SetSucceeded(succeeded);
         SceneManager.LoadScene("TestScene", LoadSceneMode.Single);
         Debug.Log("GameOver");
     }
