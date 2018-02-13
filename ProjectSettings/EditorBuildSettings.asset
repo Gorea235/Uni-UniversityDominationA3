@@ -5,12 +5,21 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/MainMenuScene.unity
     guid: 3c08b2a81e211374b933758811bd98ae
-  - enabled: 1
-    path: Assets/TestScene.unity
+  - enabled: 0
+    path: Assets/MainGame.unity
     guid: 1eaef310be533ab4880b9ec8fec7c10e
-  - enabled: 1
+  - enabled: 0
     path: Assets/SimpleMinigame.unity
     guid: e5dbf80cf37f1dc40bf42360572677e1
+  - enabled: 1
+    path: Assets/Scenes/MainMenuScene.unity
+    guid: 4382f6389c69b431daf9726149fe943a
+  - enabled: 1
+    path: Assets/Scenes/MainGame.unity
+    guid: f15936e2ac5164b3cbf550bf39a7038c
+  - enabled: 1
+    path: Assets/SpaceInvaders/Scenes/SimpleMinigame.unity
+    guid: 825fa66587338484d9dd336fe4081334

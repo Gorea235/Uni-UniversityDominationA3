@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -67,7 +65,7 @@ public class MiniGameManager : MonoBehaviour
             if (succeeded)
                 dataStorage.AddScore(winBonusScore); // winning gives bonus score
             dataStorage.SetSucceeded(succeeded);
-            SceneManager.LoadScene("TestScene", LoadSceneMode.Single);
+            SceneManager.LoadScene("MainGame", LoadSceneMode.Single);
             Debug.Log("GameOver");
             gameEnded = true;
         }
