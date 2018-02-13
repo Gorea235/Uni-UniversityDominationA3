@@ -9,21 +9,21 @@ public class MiniGameManager : MonoBehaviour
     #region Unity bindings
 
     public GameObject player;
-    public Text timeLeft;
-    public Text bonusesAquired;
+    public Text timeLeftText;
+    public Text scoreText;
 
     #endregion
 
     #region Private fields
 
+    const float maxGameLength = 70f;
+    const float killScore = 1f;
+    const float bonusKillScore = 10f;
+    const float winBonusScore = 50f;
+
     float timer;
-    DataStore _dataStorage;
-
-    #endregion
-
-    #region Properties
-
-    public MiniGamePlayer MiniPlayer { get { return player.GetComponent<MiniGamePlayer>(); } }
+    DataStore dataStorage;
+    bool gameEnded;
 
     #endregion
 
@@ -31,18 +31,17 @@ public class MiniGameManager : MonoBehaviour
 
     void Awake()
     {
-        timer = 60.0f;
-        _dataStorage = GameObject.Find("DataStore").GetComponent<DataStore>();
+        timer = maxGameLength;
+        dataStorage = GameObject.Find("DataStore").GetComponent<DataStore>();
     }
 
     void Update()
     {
-        
         if (SceneManager.GetActiveScene().name == "SimpleMinigame")
         {
-            bonusesAquired.text = ((int)System.Math.Floor((double)(MiniGamePlayer.KillCount / 20))).ToString();
+            scoreText.text = dataStorage.CurrentScore.ToString("N0");
             //decrement timer;
-            timeLeft.text = timer.ToString("##");
+            timeLeftText.text = timer.ToString("##");
             timer = 60f - Time.time;
 
             if (Time.time >= 60f || player == null)
@@ -50,20 +49,28 @@ public class MiniGameManager : MonoBehaviour
                 EndMiniGame(false);
             }
         }
-
     }
 
     #endregion
 
     #region Helper Methods
 
+    public void AddKill() => dataStorage.AddScore(killScore);
+
+    public void AddBonusKill() => dataStorage.AddScore(bonusKillScore);
+
     public void EndMiniGame(bool succeeded)
     {
-        //handle game exit
-        _dataStorage.AddScore(MiniGamePlayer.KillCount);
-        _dataStorage.SetSucceeded(succeeded);
-        SceneManager.LoadScene("TestScene", LoadSceneMode.Single);
-        Debug.Log("GameOver");
+        if (!gameEnded)
+        {
+            //handle game exit
+            if (succeeded)
+                dataStorage.AddScore(winBonusScore); // winning gives bonus score
+            dataStorage.SetSucceeded(succeeded);
+            SceneManager.LoadScene("TestScene", LoadSceneMode.Single);
+            Debug.Log("GameOver");
+            gameEnded = true;
+        }
     }
     #endregion
 }

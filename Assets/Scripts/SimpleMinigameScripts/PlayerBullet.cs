@@ -10,6 +10,7 @@ public class PlayerBullet : MonoBehaviour
 
     #region Private Fields
 
+    MiniGameManager gameManager;
     float speed = 8;
     Rigidbody2D bulletBody;
 
@@ -17,8 +18,9 @@ public class PlayerBullet : MonoBehaviour
 
     #region MonoBehaviour
 
-    void Start()
+    void Awake()
     {
+        gameManager = GameObject.Find("MiniGameManager").GetComponent<MiniGameManager>();
         bulletBody = GetComponent<Rigidbody2D>();
         bulletBody.velocity = Vector2.up * speed;
     }
@@ -34,17 +36,15 @@ public class PlayerBullet : MonoBehaviour
             case "Boundary":
                 Destroy(gameObject);
                 break;
-
             case "Enemy":
                 Destroy(gameObject);
                 Destroy(collision.gameObject);
-                MiniGamePlayer.KillCount++;
+                gameManager.AddKill();
                 break;
-
             case "BonusEnemy":
                 Destroy(gameObject);
                 Destroy(collision.gameObject);
-                MiniGamePlayer.KillCount += 10;
+                gameManager.AddBonusKill();
                 break;
         }
     }

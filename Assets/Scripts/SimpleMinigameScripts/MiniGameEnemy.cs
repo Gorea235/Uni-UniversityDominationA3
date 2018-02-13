@@ -20,14 +20,16 @@ public class MiniGameEnemy : MonoBehaviour
     // shared
     static float speed = 0.5f;
     static Renderer[] enemies;
+    static int totalEnemiesLeft;
     static EnemyDirection currentDirection = EnemyDirection.Left;
 
     // internal
     Vector2 constantVelocity = new Vector2(1, 0) * speed;
     Rigidbody2D rigidBody;
-    float minFireRate = 5f;
-    float maxFireRate = 55f;
+    float minFireRate = 10f;
+    float maxFireRate = 60f;
     float baseFireWait = 2f;
+    MiniGameManager gameManager;
 
     #endregion
 
@@ -36,8 +38,13 @@ public class MiniGameEnemy : MonoBehaviour
     void Awake()
     {
         if (enemies == null)
+        {
             enemies = transform.root.GetComponentsInChildren<Renderer>();
+            totalEnemiesLeft = enemies.Length;
+        }
+
         rigidBody = GetComponent<Rigidbody2D>();
+        gameManager = GameObject.Find("MiniGameManager").GetComponent<MiniGameManager>();
     }
 
     void Start()
@@ -63,9 +70,16 @@ public class MiniGameEnemy : MonoBehaviour
                 SwitchAllDirections(EnemyDirection.Left);
                 break;
             case "BottomBoundary": // hit the bottom (& thus failed)
-                GameObject.Find("MiniGameManager").GetComponent<MiniGameManager>().EndMiniGame(false);
+                gameManager.EndMiniGame(false);
                 break;
         }
+    }
+
+    void OnDestroy()
+    {
+        totalEnemiesLeft--;
+        if (totalEnemiesLeft <= 0)
+            gameManager.EndMiniGame(true);
     }
 
     #endregion

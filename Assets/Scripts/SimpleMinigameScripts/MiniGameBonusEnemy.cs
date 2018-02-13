@@ -14,15 +14,12 @@ public class MiniGameBonusEnemy : MonoBehaviour
     #endregion
 
     #region MonoBehaviour
+
     void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
         rigidBody.velocity = new Vector2(1, 0) * speed;
     }
-
-    #endregion
-
-    #region Helper Methods
 
     void OnTriggerExit2D(Collider2D collision)
     {

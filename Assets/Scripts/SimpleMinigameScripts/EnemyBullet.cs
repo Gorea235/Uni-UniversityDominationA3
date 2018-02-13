@@ -24,10 +24,6 @@ public class EnemyBullet : MonoBehaviour
         bulletBody.velocity = Vector2.down * speed;
     }
 
-    #endregion
-
-    #region Helper Methods
-
     void OnTriggerEnter2D(Collider2D collision)
     {
         switch (collision.tag)
@@ -39,9 +35,7 @@ public class EnemyBullet : MonoBehaviour
             case "Player":
                 Destroy(gameObject);
                 Destroy(collision.gameObject);
-                //
-                //TRIGGER ENDGAME
-                //
+                GameObject.Find("MiniGameManager").GetComponent<MiniGameManager>().EndMiniGame(false);
                 break;
 
         }

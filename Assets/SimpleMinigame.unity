@@ -423,8 +423,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1840065268}
-  timeLeft: {fileID: 1454699608}
-  bonusesAquired: {fileID: 355259679}
+  timeLeftText: {fileID: 1454699608}
+  scoreText: {fileID: 355259679}
 --- !u!4 &45106815
 Transform:
   m_ObjectHideFlags: 0
@@ -1462,7 +1462,7 @@ GameObject:
   - component: {fileID: 174488837}
   - component: {fileID: 174488836}
   m_Layer: 5
-  m_Name: Text
+  m_Name: TimeLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2291,7 +2291,7 @@ GameObject:
   - component: {fileID: 355259680}
   - component: {fileID: 355259679}
   m_Layer: 5
-  m_Name: bonusesAcquired
+  m_Name: ScoreText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8066,7 +8066,7 @@ GameObject:
   - component: {fileID: 1454699609}
   - component: {fileID: 1454699608}
   m_Layer: 5
-  m_Name: timeLeft
+  m_Name: TimeLeftText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9849,7 +9849,7 @@ GameObject:
   - component: {fileID: 1895200223}
   - component: {fileID: 1895200222}
   m_Layer: 5
-  m_Name: Bonuses
+  m_Name: Score
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9906,7 +9906,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Bonuses
+  m_Text: Score
 --- !u!222 &1895200223
 CanvasRenderer:
   m_ObjectHideFlags: 0

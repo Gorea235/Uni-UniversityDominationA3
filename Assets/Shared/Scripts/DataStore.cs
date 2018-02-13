@@ -23,6 +23,18 @@ public class DataStore : MonoBehaviour
 
     #endregion
 
+    #region Public Properties
+
+    public float CurrentScore
+    {
+        get
+        {
+            return _store.Score;
+        }
+    }
+
+    #endregion
+
     #region MonoBehaviour
 
     void Awake()

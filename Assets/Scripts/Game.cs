@@ -65,6 +65,13 @@ public class Game : MonoBehaviour
 
         // update GUIs
         UpdateGUI();
+
+        GameObject dataStore = GameObject.Find("DataStore");
+        if (dataStore != null)
+        {
+            var result = dataStore.GetComponent<DataStore>().Finalize();
+            Debug.Log(string.Format("minigame score: {0}, success: {1}", result.Score, result.Succeeded));
+        }
     }
 
     ///<summary>

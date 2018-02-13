@@ -17,12 +17,6 @@ public class MiniGamePlayer : MonoBehaviour
 
     #endregion
 
-    #region Public Properties
-
-    public static int KillCount { get; set; }
-
-    #endregion
-
     #region MonoBehaviour
 
     void FixedUpdate()
@@ -47,7 +41,6 @@ public class MiniGamePlayer : MonoBehaviour
         {
             shotDisplayed = Instantiate(bullet.transform, transform.position, Quaternion.identity);
             Debug.Log("Bullet fired");
-            Debug.Log(KillCount);
         }
     }
 
