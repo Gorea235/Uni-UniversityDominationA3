@@ -9,7 +9,7 @@ public class Initializer : MonoBehaviour
     #region Unity Bindings
 
     public Game game;
-    public Game savedGame = new Game();
+    public Game savedGame;
 
     #endregion
 
