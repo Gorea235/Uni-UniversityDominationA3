@@ -1,24 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour
 {
+    #region Unity Bindings
+
+    public Player player;
+    public Text header;
+    public Text headerHighlight;
+    public Text percentOwned;
+    public Text beer;
+    public Text knowledge;
+
+    #endregion
+
     #region Private Fields
 
-    [SerializeField]
-    Player player;
-    [SerializeField]
-    UnityEngine.UI.Text header;
-    [SerializeField]
-    UnityEngine.UI.Text headerHighlight;
-    [SerializeField]
-    UnityEngine.UI.Text percentOwned;
-    [SerializeField]
-    UnityEngine.UI.Text beer;
-    [SerializeField]
-    UnityEngine.UI.Text knowledge;
-    [SerializeField]
     int numberOfSectors;
     readonly Color defaultHeaderColor = new Color(0.2f, 0.2f, 0.2f, 1.0f);
 
@@ -30,11 +29,11 @@ public class PlayerUI : MonoBehaviour
     {
         this.player = player;
 
-        header = transform.Find("Header").GetComponent<UnityEngine.UI.Text>();
-        headerHighlight = transform.Find("HeaderHighlight").GetComponent<UnityEngine.UI.Text>();
-        percentOwned = transform.Find("PercentOwned_Value").GetComponent<UnityEngine.UI.Text>();
-        beer = transform.Find("Beer_Value").GetComponent<UnityEngine.UI.Text>();
-        knowledge = transform.Find("Knowledge_Value").GetComponent<UnityEngine.UI.Text>();
+        header = transform.Find("Header").GetComponent<Text>();
+        headerHighlight = transform.Find("HeaderHighlight").GetComponent<Text>();
+        percentOwned = transform.Find("PercentOwned_Value").GetComponent<Text>();
+        beer = transform.Find("Beer_Value").GetComponent<Text>();
+        knowledge = transform.Find("Knowledge_Value").GetComponent<Text>();
         numberOfSectors = player.Game.gameMap.GetComponent<Map>().sectors.Length;
 
         header.text = "Player " + player_id.ToString();

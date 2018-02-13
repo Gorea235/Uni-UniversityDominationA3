@@ -6,10 +6,27 @@ public class Landmark : MonoBehaviour
 {
     #region Private Fields
 
-    [SerializeField]
     ResourceType resourceType;
-    [SerializeField]
     int amount = 2;
+
+    #endregion
+
+    #region Serialization
+
+    public SerializableLandmark SaveToMemento()
+    {
+        return new SerializableLandmark
+        {
+            resourceType = resourceType,
+            amount = amount
+        };
+    }
+
+    public void RestoreFromMemento(SerializableLandmark memento)
+    {
+        resourceType = memento.resourceType;
+        amount = memento.amount;
+    }
 
     #endregion
 

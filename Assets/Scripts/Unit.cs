@@ -4,29 +4,23 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
+    #region Unity Bindings
+
+    public Material level1Material;
+    public Material level2Material;
+    public Material level3Material;
+    public Material level4Material;
+    public Material level5Material;
+
+    #endregion
+
     #region Private Fields
 
-    [SerializeField]
     Player owner;
-    [SerializeField]
     Sector sector;
-    [SerializeField]
     int level;
-    [SerializeField]
     Color color;
-    [SerializeField]
     bool selected = false;
-
-    [SerializeField]
-    Material level1Material;
-    [SerializeField]
-    Material level2Material;
-    [SerializeField]
-    Material level3Material;
-    [SerializeField]
-    Material level4Material;
-    [SerializeField]
-    Material level5Material;
 
     #endregion
 
@@ -73,18 +67,41 @@ public class Unit : MonoBehaviour
     /// <returns>The initialize.</returns>
     /// <param name="player">Current player.</param>
     /// <param name="sector">Current sector.</param>
-    public void Initialize(Player player, Sector sector)
+    public void Initialize(Player player, Sector sector, Color? _color = null)
     {
         // set the owner, level, and color of the unit
         owner = player;
         level = 1;
-        color = Color.white;
+        color = _color ?? Color.white;
 
         // set the material color to the player color
         GetComponent<Renderer>().material.color = color;
 
         // place the unit in the sector
         MoveTo(sector);
+    }
+
+    #endregion
+
+    #region Serialization
+
+    public SerializableUnit SaveToMemento()
+    {
+        return new SerializableUnit()
+        {
+            ownerId = owner.Id,
+            level = level,
+            color = color
+        };
+    }
+
+    public void RestoreFromMemento(SerializableUnit memento, Player[] players, Sector containingSector)
+    {
+        Initialize(players[memento.ownerId], containingSector, memento.color);
+        owner.units.Add(this);
+        level = 0;
+        for (int i = 0; i < memento.level; i++)
+            LevelUp();
     }
 
     #endregion

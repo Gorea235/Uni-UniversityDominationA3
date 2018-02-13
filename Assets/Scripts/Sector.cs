@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class Sector : MonoBehaviour
 {
+    #region Unity Bindings
+
+    public Map map;
+    public Sector[] adjacentSectors;
+    public Landmark landmark;
+
+    #endregion
+
     #region Private Fields
 
-    [SerializeField] private Map map;
-    [SerializeField] private Unit unit;
-    [SerializeField] private Player owner;
-    [SerializeField] private Sector[] adjacentSectors;
-    [SerializeField] private Landmark landmark;
+    Unit unit;
+    Player owner;
 
     #endregion
 
@@ -75,6 +80,34 @@ public class Sector : MonoBehaviour
         // get landmark (if any)
         landmark = gameObject.GetComponentInChildren<Landmark>();
 
+    }
+
+    #endregion
+
+    #region Serialization
+
+    public SerializableSector SaveToMemento()
+    {
+        return new SerializableSector
+        {
+            unit = unit?.SaveToMemento(),
+            landmark = landmark?.SaveToMemento(),
+            ownerId = owner?.Id ?? -1
+        };
+    }
+
+    public void RestoreFromMemento(SerializableSector memento, Player[] players)
+    {
+        if (memento.unit != null)
+        {
+            unit = Instantiate(players[memento.ownerId].unitPrefab).GetComponent<Unit>();
+            unit.RestoreFromMemento(memento.unit, players, this);
+        }
+        landmark = gameObject.GetComponentInChildren<Landmark>();
+        if (landmark != null)
+            landmark.RestoreFromMemento(memento.landmark);
+        if (memento.ownerId >= 0)
+            players[memento.ownerId].Capture(this);
     }
 
     #endregion

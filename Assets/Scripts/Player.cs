@@ -6,6 +6,11 @@ public class Player : MonoBehaviour
 {
     #region Unity Bindings
 
+    public Game game;
+    public GameObject unitPrefab;
+    public PlayerUI gui;
+    public Color color;
+
     public List<Sector> ownedSectors;
     public List<Unit> units;
 
@@ -13,26 +18,21 @@ public class Player : MonoBehaviour
 
     #region Private Fields
 
-    [SerializeField]
-    Game game;
-    [SerializeField]
-    GameObject unitPrefab;
-    [SerializeField]
-    PlayerUI gui;
-    [SerializeField]
+    int id;
     int beer = 0;
-    [SerializeField]
     int knowledge = 0;
-    [SerializeField]
-    Color color;
-    [SerializeField]
     bool human;
-    [SerializeField]
     bool active = false;
 
     #endregion
 
     #region Public Properties
+
+    public int Id
+    {
+        get { return id; }
+        set { id = value; }
+    }
 
     public Game Game
     {
@@ -122,6 +122,31 @@ public class Player : MonoBehaviour
             // otherwise, return false
             return false;
         }
+    }
+
+    #endregion
+
+    #region Serialization
+
+    public SerializablePlayer SaveToMemento()
+    {
+        return new SerializablePlayer
+        {
+            id = id,
+            beer = beer,
+            knowledge = knowledge,
+            human = human,
+            active = active
+        };
+    }
+
+    public void RestoreFromMemento(SerializablePlayer memento)
+    {
+        id = memento.id;
+        beer = memento.beer;
+        knowledge = memento.knowledge;
+        human = memento.human;
+        active = memento.active;
     }
 
     #endregion

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour
 {
@@ -14,11 +15,8 @@ public class Game : MonoBehaviour
 
     #region Private Fields
 
-    [SerializeField]
     TurnState turnState;
-    [SerializeField]
     bool gameFinished = false;
-    [SerializeField]
     bool testMode = false;
 
     #endregion
@@ -38,6 +36,8 @@ public class Game : MonoBehaviour
         get { return testMode; }
         set { testMode = value; }
     }
+
+    public static SerializableGame GameToRestore { get; set; }
 
     #endregion
 
@@ -72,39 +72,6 @@ public class Game : MonoBehaviour
             var result = dataStore.GetComponent<DataStore>().Finalize();
             Debug.Log(string.Format("minigame score: {0}, success: {1}", result.Score, result.Succeeded));
         }
-    }
-
-    ///<summary>
-    ///Initialize the game from a saved data set
-    /// </summary>
-    public void Initialize(Game savedGame)
-    {
-        //recreate the number of players
-        CreatePlayers(savedGame.players.Length);
-
-        //initialize the map in its previous state
-        //
-        // TBD
-        //
-
-        //initialize the turn state to the previous
-        turnState = savedGame.turnState;
-
-        //set last player as current player
-        currentPlayer = savedGame.currentPlayer;
-        currentPlayer.Gui.Activate();
-        for (int i = 0; i < players.Length; i++) //find the index in current game context that corresponds to the one in the savedGame and set it to be the active player
-        {
-            if (players[i].Equals(savedGame.currentPlayer))
-            {
-                players[i].IsActive = true;
-                break;
-            }
-        }
-
-        //update GUIs
-        UpdateGUI();
-
     }
 
     /// <summary>
@@ -142,7 +109,7 @@ public class Game : MonoBehaviour
                 int randomIndex = Random.Range(0, landmarkedSectors.Length);
 
                 // if the sector is not yet allocated, allocate the player
-                if (((Sector)landmarkedSectors[randomIndex]).Owner == null)
+                if (landmarkedSectors[randomIndex].Owner == null)
                 {
                     player.Capture(landmarkedSectors[randomIndex]);
                     playerAllocated = true;
@@ -179,9 +146,49 @@ public class Game : MonoBehaviour
         // and initialize their GUIs
         for (int i = 0; i < 4; i++)
         {
+            players[i].Id = i;
             players[i].Game = this;
             players[i].Gui.Initialize(players[i], i + 1);
         }
+    }
+
+    #endregion
+
+    #region Serialization
+
+    public SerializableGame SaveToMemento()
+    {
+        SerializablePlayer[] sPlayers = new SerializablePlayer[players.Length];
+        for (int i = 0; i < players.Length; i++)
+            sPlayers[i] = players[i].SaveToMemento();
+        Sector[] sectors = gameMap.GetComponentsInChildren<Sector>();
+        SerializableSector[] sSectors = new SerializableSector[sectors.Length];
+        for (int i = 0; i < sectors.Length; i++)
+            sSectors[i] = sectors[i].SaveToMemento();
+        return new SerializableGame
+        {
+            turnState = turnState,
+            players = sPlayers,
+            sectors = sSectors,
+            currentPlayerId = currentPlayer.Id
+        };
+    }
+
+    public void RestoreFromMemento(SerializableGame memento)
+    {
+        turnState = memento.turnState;
+        Sector[] sectors = gameMap.GetComponentsInChildren<Sector>();
+        for (int i = 0; i < memento.sectors.Length; i++)
+            sectors[i].RestoreFromMemento(memento.sectors[i], players);
+        for (int i = 0; i < memento.players.Length; i++)
+        {
+            players[i].RestoreFromMemento(memento.players[i]);
+            players[i].Game = this;
+            players[i].Gui.Initialize(players[i], i + 1);
+        }
+        currentPlayer = players[memento.currentPlayerId];
+        currentPlayer.Gui.Activate();
+        UpdateGUI();
     }
 
     #endregion
@@ -213,6 +220,12 @@ public class Game : MonoBehaviour
             }
             else if (!gameFinished)
                 EndGame();
+        }
+
+        if (Input.GetKey(KeyCode.RightBracket))
+        {
+            GameToRestore = SaveToMemento();
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 
