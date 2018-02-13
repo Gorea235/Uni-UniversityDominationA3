@@ -94,7 +94,7 @@ public class MiniGameEnemy : MonoBehaviour
         if (Time.time > baseFireWait)
         {
             RandomiseFireRate();
-            //Instantiate(enemyBullet.transform, transform.position, Quaternion.identity);
+            Instantiate(enemyBullet.transform, transform.position, Quaternion.identity);
         }
     }
 
