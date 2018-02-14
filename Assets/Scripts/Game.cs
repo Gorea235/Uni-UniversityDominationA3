@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -422,65 +421,40 @@ public class Game : MonoBehaviour
         }
     }
     
-    ///<summary>
-    ///Exit the game entirely
-    ///</summary>
+    /// <summary>
+    /// Quits the current game.
+    /// </summary>
     public void QuitGame()
     {
-        Application.Quit();
+        SceneManager.LoadScene("MainMenu");
     }
 
-    ///<summary>
-    ///Save the current game state to a file for later loading
+    /// <summary>
+    /// Save the current game state to a file for later loading
     /// </summary>
-    public void SaveGame(string path)
+    public void SaveGame()
     {
         //Save game state to our static variable
-        GameToRestore = SaveToMemento();
+        SerializableGame memento = SaveToMemento();
         // Open the file where we would serialize.
-        FileStream fs = new FileStream(path, FileMode.Create);
+        FileStream fs = new FileStream(MainMenu.SaveGameDataPath, FileMode.OpenOrCreate);
 
         // Construct a BinaryFormatter and use it to serialize the data to the stream.
         BinaryFormatter formatter = new BinaryFormatter();
         try
         {
-            formatter.Serialize(fs, GameToRestore);
+            formatter.Serialize(fs, memento);
         }
-        catch (SerializationException e)
+        catch (SerializationException ex)
         {
-            Debug.Log("Failed to serialize. Reason: " + e.Message);
-            throw;
+            Debug.Log("Failed to serialize. Reason: " + ex.Message);
+            throw ex;
         }
         finally
         {
             fs.Close();
         }
     }
-    ///<summary>
-    ///Restore the previously saved game state from a file
-    /// </summary>
-    public void LoadGame(string path)
-    {
-        // Open the file containing the data that you want to deserialize.
-        FileStream fs = new FileStream(path, FileMode.Open);
-        try
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
 
-            // Deserialize the SerializableGame memento from the file and 
-            // restore state from that memento.
-            GameToRestore = (SerializableGame)formatter.Deserialize(fs);
-            RestoreFromMemento(GameToRestore);
-        }
-        catch (SerializationException e)
-        {
-            Debug.Log("Failed to deserialize. Reason: " + e.Message);
-            throw;
-        }
-        finally
-        {
-            fs.Close();
-        }
-    }
     #endregion
 }

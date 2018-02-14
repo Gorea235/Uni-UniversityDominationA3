@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -20,20 +22,24 @@ public class MainMenu : MonoBehaviour
 
     #endregion
 
-    #region Public properties
-    //a boolean passed to the Initializer to know if it should start a new game
-    //or deserialize a saved one from our GameData.bin
-    public static bool startNewGame;
+    #region Public Fields
+
+    public const string SaveGameDataPath = "SaveGame.bin";
+
     #endregion
 
-    private void Awake()
+    #region MonoBehaviour
+
+    void Awake()
     {
         DontDestroyOnLoad(gameObject);
-        if (!File.Exists("GameData.bin"))
+        if (!File.Exists(SaveGameDataPath))
             loadGameButton.interactable = false;
         else
             loadGameButton.interactable = true;
     }
+
+    #endregion
 
     #region Helper Methods
 
@@ -44,16 +50,36 @@ public class MainMenu : MonoBehaviour
         Debug.Log("Type values: " + types[0].ToString() + "," + types[1].ToString() + ","
             + types[2].ToString() + "," + types[3].ToString());
         //  StartCoroutine(ShowPopUpMessage(2));
-        startNewGame = true;
-        SceneManager.LoadScene(1);
+        Game.GameToRestore = null;
+        SceneManager.LoadScene("MainGame");
     }
 
+    /// <summary>
+    /// Restore the previously saved game state from a file
+    /// </summary>
     public void LoadGame()
     {
-        startNewGame = false;
-        SceneManager.LoadScene(1);
-    }
+        // Open the file containing the data that you want to deserialize.
+        FileStream fs = new FileStream(SaveGameDataPath, FileMode.Open);
+        try
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
 
+            // Deserialize the SerializableGame memento from the file and 
+            // restore state from that memento.
+            Game.GameToRestore = (SerializableGame)formatter.Deserialize(fs);
+            SceneManager.LoadScene("MainGame");
+        }
+        catch (SerializationException ex)
+        {
+            Debug.Log("Failed to deserialize. Reason: " + ex.Message);
+            throw ex;
+        }
+        finally
+        {
+            fs.Close();
+        }
+    }
 
     IEnumerator ShowPopUpMessage(float delay)
     {

@@ -14,16 +14,13 @@ public class Initializer : MonoBehaviour
 
     #region MonoBehaviour
 
-    // Use this for initialization
     void Start()
     {
-        if (MainMenu.startNewGame && Game.GameToRestore == null)
-        {
+        if (Game.GameToRestore == null)
             game.Initialize();
-        }
         else
         {
-            game.LoadGame("GameData.bin");
+            game.RestoreFromMemento(Game.GameToRestore);
             Game.GameToRestore = null;
         }
     }
