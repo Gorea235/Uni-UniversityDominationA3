@@ -11,13 +11,9 @@ public class MainMenu : MonoBehaviour
 
     //get dropdown objects
     public GameObject playerOneType;
-    public GameObject playerOneColour;
     public GameObject playerTwoType;
-    public GameObject playerTwoColour;
     public GameObject playerThreeType;
-    public GameObject playerThreeColour;
     public GameObject playerFourType;
-    public GameObject playerFourColour;
     public GameObject startButton;
     public GameObject errorPanel;
     public Button loadGameButton;
@@ -25,7 +21,9 @@ public class MainMenu : MonoBehaviour
     #endregion
 
     #region Public properties
-    public static bool startNewGame = true; //by default, starting a new game instead of a saved game
+    //a boolean passed to the Initializer to know if it should start a new game
+    //or deserialize a saved one from our GameData.bin
+    public static bool startNewGame;
     #endregion
 
     private void Awake()
@@ -42,13 +40,9 @@ public class MainMenu : MonoBehaviour
     public void StartNewGame()
     {
         List<int> types;
-        List<int> colours;
         types = GetPlayerTypes();
-        colours = GetPlayerColours();
         Debug.Log("Type values: " + types[0].ToString() + "," + types[1].ToString() + ","
             + types[2].ToString() + "," + types[3].ToString());
-        Debug.Log("Colour values: " + colours[0].ToString() + "," + colours[1].ToString() + ","
-            + colours[2].ToString() + "," + colours[3].ToString());
         //  StartCoroutine(ShowPopUpMessage(2));
         startNewGame = true;
         SceneManager.LoadScene(1);
@@ -60,10 +54,6 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    public void ColourDropdownUpdate()
-    {
-        //  Update dropdowns to disable duplicate colours	
-    }
 
     IEnumerator ShowPopUpMessage(float delay)
     {
@@ -86,16 +76,14 @@ public class MainMenu : MonoBehaviour
         return types;
     }
 
-    //  Returns a list of ints representing the colours chosen from each dropdown
-    //  colours don't have options yet, TODO
-    public List<int> GetPlayerColours()
+    //  Returns a list of colours for the players
+    public List<Color> GetPlayerColours()
     {
-        List<int> colours;
-        Dropdown One = playerOneColour.GetComponent<Dropdown>();
-        Dropdown Two = playerTwoColour.GetComponent<Dropdown>();
-        Dropdown Three = playerThreeColour.GetComponent<Dropdown>();
-        Dropdown Four = playerFourColour.GetComponent<Dropdown>();
-        colours = new List<int>(new int[] { One.value, Two.value, Three.value, Four.value });
+        Color One = new Color(205, 0, 0);
+        Color Two = new Color(177, 0, 240);
+        Color Three = new Color(205, 205, 0);
+        Color Four = new Color(0, 205, 0);
+        List<Color> colours = new List<Color> { One, Two, Three, Four };
         return colours;
     }
 

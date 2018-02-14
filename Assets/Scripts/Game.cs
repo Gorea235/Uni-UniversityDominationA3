@@ -51,8 +51,8 @@ public class Game : MonoBehaviour
     /// </summary>
     public void Initialize()
     {
+
         // create a specified number of human players
-        // *** currently hard-wired to 2 for testing ***
         CreatePlayers(2);
 
         // initialize the map and allocate players to landmarks
@@ -214,8 +214,8 @@ public class Game : MonoBehaviour
                 NextPlayer();
                 NextTurnState();
 
-                // skip eliminated players
-                while (currentPlayer.IsEliminated)
+                // skip eliminated players and non-human players
+                while (currentPlayer.IsEliminated || !currentPlayer.IsHuman)
                     NextPlayer();
 
                 // spawn units for the next player
@@ -223,12 +223,6 @@ public class Game : MonoBehaviour
             }
             else if (!gameFinished)
                 EndGame();
-        }
-
-        if (Input.GetKey(KeyCode.RightBracket))
-        {
-            GameToRestore = SaveToMemento();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 
