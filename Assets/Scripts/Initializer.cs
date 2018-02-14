@@ -17,11 +17,13 @@ public class Initializer : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        if (Game.GameToRestore == null)
+        if (MainMenu.startNewGame && Game.GameToRestore == null)
+        {
             game.Initialize();
+        }
         else
         {
-            game.RestoreFromMemento(Game.GameToRestore);
+            game.LoadGame("GameData.bin");
             Game.GameToRestore = null;
         }
     }

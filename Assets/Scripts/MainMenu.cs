@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -19,8 +20,22 @@ public class MainMenu : MonoBehaviour
     public GameObject playerFourColour;
     public GameObject startButton;
     public GameObject errorPanel;
+    public Button loadGameButton;
 
     #endregion
+
+    #region Public properties
+    public static bool startNewGame = true; //by default, starting a new game instead of a saved game
+    #endregion
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+        if (!File.Exists("GameData.bin"))
+            loadGameButton.interactable = false;
+        else
+            loadGameButton.interactable = true;
+    }
 
     #region Helper Methods
 
@@ -35,11 +50,14 @@ public class MainMenu : MonoBehaviour
         Debug.Log("Colour values: " + colours[0].ToString() + "," + colours[1].ToString() + ","
             + colours[2].ToString() + "," + colours[3].ToString());
         //  StartCoroutine(ShowPopUpMessage(2));
-
+        startNewGame = true;
         SceneManager.LoadScene(1);
     }
+
     public void LoadGame()
     {
+        startNewGame = false;
+        SceneManager.LoadScene(1);
     }
 
     public void ColourDropdownUpdate()

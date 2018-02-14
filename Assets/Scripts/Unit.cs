@@ -91,13 +91,13 @@ public class Unit : MonoBehaviour
         {
             ownerId = owner.Id,
             level = level,
-            color = color
+            color = (SerializableColor)color
         };
     }
 
     public void RestoreFromMemento(SerializableUnit memento, Player[] players, Sector containingSector)
     {
-        Initialize(players[memento.ownerId], containingSector, memento.color);
+        Initialize(players[memento.ownerId], containingSector, (Color)memento.color);
         owner.units.Add(this);
         level = 0;
         for (int i = 0; i < memento.level; i++)

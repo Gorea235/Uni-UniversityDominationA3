@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -439,16 +441,25 @@ public class Game : MonoBehaviour
     /// </summary>
     public void SaveGame(string path)
     {
+        //Save game state to our static variable
         GameToRestore = SaveToMemento();
-        string data = JsonUtility.ToJson(GameToRestore);
-        File.WriteAllText(path, data);
-        if (File.Exists(path))
+        // Open the file where we would serialize.
+        FileStream fs = new FileStream(path, FileMode.Create);
+
+        // Construct a BinaryFormatter and use it to serialize the data to the stream.
+        BinaryFormatter formatter = new BinaryFormatter();
+        try
         {
-            Debug.Log("All is good");
+            formatter.Serialize(fs, GameToRestore);
         }
-        else
+        catch (SerializationException e)
         {
-            Debug.LogError("File was not saved, something is fishy");
+            Debug.Log("Failed to serialize. Reason: " + e.Message);
+            throw;
+        }
+        finally
+        {
+            fs.Close();
         }
     }
     ///<summary>
@@ -456,14 +467,25 @@ public class Game : MonoBehaviour
     /// </summary>
     public void LoadGame(string path)
     {
-        if (!File.Exists(path))
+        // Open the file containing the data that you want to deserialize.
+        FileStream fs = new FileStream(path, FileMode.Open);
+        try
         {
-            Debug.LogError("File does not exist");
+            BinaryFormatter formatter = new BinaryFormatter();
+
+            // Deserialize the SerializableGame memento from the file and 
+            // restore state from that memento.
+            GameToRestore = (SerializableGame)formatter.Deserialize(fs);
+            RestoreFromMemento(GameToRestore);
         }
-        else
+        catch (SerializationException e)
         {
-            string data = File.ReadAllText(path);
-            RestoreFromMemento(JsonUtility.FromJson<SerializableGame>(data));
+            Debug.Log("Failed to deserialize. Reason: " + e.Message);
+            throw;
+        }
+        finally
+        {
+            fs.Close();
         }
     }
     #endregion

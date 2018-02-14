@@ -6,5 +6,5 @@ public class SerializableUnit
 {
     public int ownerId;
     public int level;
-    public Color color;
+    public SerializableColor color;
 }
