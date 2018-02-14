@@ -20,18 +20,14 @@ public class DataStore : MonoBehaviour
     #region Private Fields
 
     DataStorage _store;
+    bool _finalized;
 
     #endregion
 
     #region Public Properties
 
-    public float CurrentScore
-    {
-        get
-        {
-            return _store.Score;
-        }
-    }
+    public float CurrentScore { get { return _store.Score; } }
+    public float ScoreModifier { get; set; }
 
     #endregion
 
@@ -53,7 +49,11 @@ public class DataStore : MonoBehaviour
 
     public DataStorage Finalize()
     {
+        if (_finalized)
+            throw new System.ObjectDisposedException("DataStore", "Object has already been finalized.");
+        _store.Score = _store.Score * ScoreModifier;
         Destroy(gameObject);
+        _finalized = true;
         return _store;
     }
 
