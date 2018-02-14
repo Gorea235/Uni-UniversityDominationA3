@@ -13,7 +13,7 @@ public class PlayerUI : MonoBehaviour
     public Text percentOwned;
     public Text beer;
     public Text knowledge;
-
+    public Image arrowOfCurrentPlayer;
     #endregion
 
     #region Private Fields
@@ -36,9 +36,10 @@ public class PlayerUI : MonoBehaviour
         knowledge = transform.Find("Knowledge_Value").GetComponent<Text>();
         numberOfSectors = player.Game.gameMap.GetComponent<Map>().sectors.Length;
 
-        header.text = "Player " + player_id.ToString();
+        header.text = (player.IsHuman) ? "Player " + player_id.ToString() : "AI";
         headerHighlight.text = header.text;
         headerHighlight.color = player.Color;
+        arrowOfCurrentPlayer.CrossFadeAlpha(0f, 0f, true);
     }
 
 
@@ -55,11 +56,13 @@ public class PlayerUI : MonoBehaviour
 
     public void Activate()
     {
+        arrowOfCurrentPlayer.CrossFadeAlpha(1f, 0.5f, true);
         header.color = player.Color;
     }
 
     public void Deactivate()
     {
+        arrowOfCurrentPlayer.CrossFadeAlpha(0f, 0f, true);
         header.color = defaultHeaderColor;
     }
 

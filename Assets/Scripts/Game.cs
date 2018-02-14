@@ -25,6 +25,8 @@ public class Game : MonoBehaviour
 
     #region Public Properties
 
+    public static int HumanPlayersCount { get; set; }
+
     public TurnState TurnState
     {
         get { return turnState; }
@@ -52,7 +54,7 @@ public class Game : MonoBehaviour
     {
 
         // create a specified number of human players
-        CreatePlayers(2);
+        CreatePlayers(HumanPlayersCount);
 
         // initialize the map and allocate players to landmarks
         InitializeMap();
@@ -426,7 +428,7 @@ public class Game : MonoBehaviour
     /// </summary>
     public void QuitGame()
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     /// <summary>

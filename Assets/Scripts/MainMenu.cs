@@ -45,13 +45,21 @@ public class MainMenu : MonoBehaviour
 
     public void StartNewGame()
     {
-        List<int> types;
-        types = GetPlayerTypes();
+        List<int> types = GetPlayerTypes(); ;
         Debug.Log("Type values: " + types[0].ToString() + "," + types[1].ToString() + ","
             + types[2].ToString() + "," + types[3].ToString());
-        //  StartCoroutine(ShowPopUpMessage(2));
-        Game.GameToRestore = null;
-        SceneManager.LoadScene("MainGame");
+        //if the player has selected less than two human players, display an error
+        if (types.FindAll(players => players == 0).Count >= 2)
+        {
+            Game.GameToRestore = null;
+            Game.HumanPlayersCount = types.FindAll(players => players == 0).Count;
+            SceneManager.LoadScene("MainGame");
+        }
+        else
+        {
+            StartCoroutine(ShowPopUpMessage(2));
+        }
+        
     }
 
     /// <summary>
@@ -89,7 +97,7 @@ public class MainMenu : MonoBehaviour
     }
 
     //  Returns a list of ints representing the types chosen from each dropdown
-    //  currently - 0 = Human, 1 = AI, 2 = None
+    //  currently - 0 = Human, 1 = AI
     public List<int> GetPlayerTypes()
     {
         List<int> types;
