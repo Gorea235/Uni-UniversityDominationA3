@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -424,6 +425,46 @@ public class Game : MonoBehaviour
                 EndGame();
         }
     }
+    
+    ///<summary>
+    ///Exit the game entirely
+    ///</summary>
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 
+    ///<summary>
+    ///Save the current game state to a file for later loading
+    /// </summary>
+    public void SaveGame(string path)
+    {
+        GameToRestore = SaveToMemento();
+        string data = JsonUtility.ToJson(GameToRestore);
+        File.WriteAllText(path, data);
+        if (File.Exists(path))
+        {
+            Debug.Log("All is good");
+        }
+        else
+        {
+            Debug.LogError("File was not saved, something is fishy");
+        }
+    }
+    ///<summary>
+    ///Restore the previously saved game state from a file
+    /// </summary>
+    public void LoadGame(string path)
+    {
+        if (!File.Exists(path))
+        {
+            Debug.LogError("File does not exist");
+        }
+        else
+        {
+            string data = File.ReadAllText(path);
+            RestoreFromMemento(JsonUtility.FromJson<SerializableGame>(data));
+        }
+    }
     #endregion
 }

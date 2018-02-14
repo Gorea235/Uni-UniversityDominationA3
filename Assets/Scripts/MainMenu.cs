@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
@@ -34,6 +35,11 @@ public class MainMenu : MonoBehaviour
         Debug.Log("Colour values: " + colours[0].ToString() + "," + colours[1].ToString() + ","
             + colours[2].ToString() + "," + colours[3].ToString());
         //  StartCoroutine(ShowPopUpMessage(2));
+
+        SceneManager.LoadScene(1);
+    }
+    public void LoadGame()
+    {
     }
 
     public void ColourDropdownUpdate()
