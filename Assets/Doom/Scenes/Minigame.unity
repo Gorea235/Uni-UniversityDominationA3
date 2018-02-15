@@ -3368,7 +3368,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: a7e1efc1f62bb4f09940f74c79bc2e67, type: 3}
   - {fileID: 8300000, guid: 0bcce7d153a4245c7b24b76744613081, type: 3}
   m_maxHealth: 100
-  m_minHealthScoreModifier: 0
+  m_minHealthScoreModifier: 0.6
   m_healthBarMask: {fileID: 2010529608}
   m_HealthPercentText: {fileID: 1051280703}
 --- !u!82 &1459228507
