@@ -325,7 +325,7 @@ MonoBehaviour:
   percentOwned: {fileID: 0}
   beer: {fileID: 0}
   knowledge: {fileID: 0}
-  arrowOfCurrentPlayer: {fileID: 1007967172}
+  arrowOfCurrentPlayer: {fileID: 0}
 --- !u!1 &27172187
 GameObject:
   m_ObjectHideFlags: 0
@@ -5360,7 +5360,7 @@ MonoBehaviour:
   percentOwned: {fileID: 0}
   beer: {fileID: 0}
   knowledge: {fileID: 0}
-  arrowOfCurrentPlayer: {fileID: 237610883}
+  arrowOfCurrentPlayer: {fileID: 0}
 --- !u!1 &737081092
 GameObject:
   m_ObjectHideFlags: 0
@@ -10401,7 +10401,7 @@ MonoBehaviour:
   percentOwned: {fileID: 0}
   beer: {fileID: 0}
   knowledge: {fileID: 0}
-  arrowOfCurrentPlayer: {fileID: 562271212}
+  arrowOfCurrentPlayer: {fileID: 0}
 --- !u!1001 &1508836581
 Prefab:
   m_ObjectHideFlags: 0
@@ -11198,7 +11198,7 @@ MonoBehaviour:
   percentOwned: {fileID: 0}
   beer: {fileID: 0}
   knowledge: {fileID: 0}
-  arrowOfCurrentPlayer: {fileID: 1040046349}
+  arrowOfCurrentPlayer: {fileID: 0}
 --- !u!1 &1597906101
 GameObject:
   m_ObjectHideFlags: 0

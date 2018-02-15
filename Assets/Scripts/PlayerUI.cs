@@ -14,6 +14,7 @@ public class PlayerUI : MonoBehaviour
     public Text beer;
     public Text knowledge;
     public Image arrowOfCurrentPlayer;
+
     #endregion
 
     #region Private Fields
@@ -35,6 +36,7 @@ public class PlayerUI : MonoBehaviour
         beer = transform.Find("Beer_Value").GetComponent<Text>();
         knowledge = transform.Find("Knowledge_Value").GetComponent<Text>();
         numberOfSectors = player.Game.gameMap.GetComponent<Map>().sectors.Length;
+        arrowOfCurrentPlayer = transform.Find("Arrow").GetComponent<Image>();
 
         header.text = (player.IsHuman) ? "Player " + player_id.ToString() : "AI";
         headerHighlight.text = header.text;
