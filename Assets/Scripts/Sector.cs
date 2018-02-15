@@ -139,7 +139,7 @@ public class Sector : MonoBehaviour
     public void TriggerMinigame()
     {
         Debug.Log("Oof! You've just stepped on the PVC! GET READY FOR SOME *industrial* ACTION");
-        Game.GameToRestore = GameObject.Find("GameManager").GetComponent<Game>().SaveToMemento();
+        GameObject.Find("GameManager").GetComponent<Game>().PrepareForMinigame();
         SceneManager.LoadScene("DoomMinigame");
         //Set the flag so Game would know to reallocate the PVC at the end of this player's turn
         Game.PVCEncountered = true;

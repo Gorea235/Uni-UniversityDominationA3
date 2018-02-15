@@ -21,6 +21,7 @@ public class Game : MonoBehaviour
     public Text minigameStatusText;
     public Text minigameScoreText;
     public Text minigameRewardText;
+    public GameObject minigameLoading;
 
     #endregion
 
@@ -584,6 +585,12 @@ public class Game : MonoBehaviour
             pos.y = Mathf.SmoothStep(minY, maxY, percentShown);
             gameSavedPopup.rectTransform.anchoredPosition = pos;
         }
+    }
+
+    public void PrepareForMinigame()
+    {
+        GameToRestore = SaveToMemento();
+        minigameLoading.SetActive(true);
     }
 
     /// <summary>
