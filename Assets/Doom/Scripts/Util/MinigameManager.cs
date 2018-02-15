@@ -101,6 +101,8 @@ public class MinigameManager : MonoBehaviour
                 dataStorage.SetSucceeded(true);
                 // change scene
                 UnityEngine.SceneManagement.SceneManager.LoadScene("MainGame");
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
                 break;
         }
         _triggerCount++;
