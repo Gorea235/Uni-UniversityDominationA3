@@ -32,7 +32,6 @@ public class MainMenu : MonoBehaviour
 
     void Awake()
     {
-        DontDestroyOnLoad(gameObject);
         if (!File.Exists(SaveGameDataPath))
             loadGameButton.interactable = false;
         else
@@ -53,6 +52,8 @@ public class MainMenu : MonoBehaviour
         {
             Game.GameToRestore = null;
             Game.HumanPlayersCount = types;
+            if (File.Exists(SaveGameDataPath))
+                File.Delete(SaveGameDataPath);
             SceneManager.LoadScene("MainGame");
         }
         else
