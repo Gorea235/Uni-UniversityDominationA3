@@ -209,8 +209,8 @@ public class Game : MonoBehaviour
             players = sPlayers,
             sectors = sSectors,
             currentPlayerId = currentPlayer.Id,
-            LastDiscovererOfPVCid = LastDiscovererOfPVC?.Id,
-            PVCEncountered = PVCEncountered
+            lastDiscovererOfPvcId = LastDiscovererOfPVC?.Id,
+            pvcEncountered = PVCEncountered
 
         };
     }
@@ -229,9 +229,9 @@ public class Game : MonoBehaviour
         }
         currentPlayer = players[memento.currentPlayerId];
         currentPlayer.Gui.Activate();
-        if (memento.LastDiscovererOfPVCid.HasValue)
-            LastDiscovererOfPVC = players[memento.LastDiscovererOfPVCid.Value];
-        PVCEncountered = memento.PVCEncountered;
+        if (memento.lastDiscovererOfPvcId.HasValue)
+            LastDiscovererOfPVC = players[memento.lastDiscovererOfPvcId.Value];
+        PVCEncountered = memento.pvcEncountered;
         MinigameFinishedProcess();
         UpdateGUI();
     }
