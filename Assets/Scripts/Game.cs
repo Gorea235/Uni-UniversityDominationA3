@@ -56,6 +56,7 @@ public class Game : MonoBehaviour
     /// </summary>
     public void Initialize()
     {
+        HumanPlayersCount = HumanPlayersCount ?? new List<int> { 0, 0, 0, 0 };
 
         // create a specified number of human players
         CreatePlayers(HumanPlayersCount);
@@ -78,6 +79,7 @@ public class Game : MonoBehaviour
         GameObject dataStore = GameObject.Find("DataStore");
         if (dataStore != null)
         {
+            // if we get here, it means that a minigame just occurred
             var result = dataStore.GetComponent<DataStore>().Finalize();
             Debug.Log(string.Format("minigame score: {0}, success: {1}", result.Score, result.Succeeded));
         }

@@ -31,6 +31,7 @@ public class MiniGameManager : MonoBehaviour
     {
         timer = maxGameLength;
         dataStorage = GameObject.Find("DataStore").GetComponent<DataStore>();
+        dataStorage.ScoreModifier = 1;
     }
 
     void Update()

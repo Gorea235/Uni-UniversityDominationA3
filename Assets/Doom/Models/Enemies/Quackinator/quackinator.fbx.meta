@@ -1,0 +1,290 @@
+fileFormatVersion: 2
+guid: 7480d7f278e273640bca496bf607af6a
+timeCreated: 1518447687
+licenseType: Free
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: Armature
+    100002: biceps.l
+    100004: biceps.r.001
+    100006: Bone
+    100008: Bone.001
+    100010: Bone.001_end
+    100012: Bone.002
+    100014: Bone.003
+    100016: Bone.004
+    100018: Bone.004_end
+    100020: Bone.005
+    100022: Bone.005_end
+    100024: Bone.006
+    100026: Bone.007
+    100028: Bone.008
+    100030: Bone.008_end
+    100032: calf.l
+    100034: calf.r.001
+    100036: duck_body
+    100038: duck_eye
+    100040: foot.l
+    100042: foot.l_end
+    100044: foot.r.001
+    100046: foot.r.001_end
+    100048: forearm.l
+    100050: forearm.r.001
+    100052: hand.l
+    100054: hand.l_end
+    100056: hand.r.001
+    100058: hand.r.001_end
+    100060: Left-Arm
+    100062: Legs
+    100064: //RootNode
+    100066: Right-Arm
+    100068: thigh.l
+    100070: thigh.r.001
+    400000: Armature
+    400002: biceps.l
+    400004: biceps.r.001
+    400006: Bone
+    400008: Bone.001
+    400010: Bone.001_end
+    400012: Bone.002
+    400014: Bone.003
+    400016: Bone.004
+    400018: Bone.004_end
+    400020: Bone.005
+    400022: Bone.005_end
+    400024: Bone.006
+    400026: Bone.007
+    400028: Bone.008
+    400030: Bone.008_end
+    400032: calf.l
+    400034: calf.r.001
+    400036: duck_body
+    400038: duck_eye
+    400040: foot.l
+    400042: foot.l_end
+    400044: foot.r.001
+    400046: foot.r.001_end
+    400048: forearm.l
+    400050: forearm.r.001
+    400052: hand.l
+    400054: hand.l_end
+    400056: hand.r.001
+    400058: hand.r.001_end
+    400060: Left-Arm
+    400062: Legs
+    400064: //RootNode
+    400066: Right-Arm
+    400068: thigh.l
+    400070: thigh.r.001
+    2100000: RightArm
+    2100002: Legs
+    2100004: Material
+    2100006: Material.001
+    4300000: Right-Arm
+    4300002: Left-Arm
+    4300004: Legs
+    4300006: duck_body
+    4300008: duck_eye
+    7400000: QuackinatorIdle
+    7400002: QuackinatorRun
+    7400004: QuackinatorAttack
+    7400006: QuackinatorDeath
+    9500000: //RootNode
+    13700000: duck_body
+    13700002: duck_eye
+    13700004: Left-Arm
+    13700006: Legs
+    13700008: Right-Arm
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: QuackinatorIdle
+      takeName: Armature|Arnature_animations
+      firstFrame: 140
+      lastFrame: 160
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: QuackinatorRun
+      takeName: Armature|Arnature_animations
+      firstFrame: 1
+      lastFrame: 55
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: QuackinatorAttack
+      takeName: Armature|Arnature_animations
+      firstFrame: 60
+      lastFrame: 76
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: QuackinatorDeath
+      takeName: Armature|Arnature_animations
+      firstFrame: 80
+      lastFrame: 105
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
