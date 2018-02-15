@@ -1282,7 +1282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ad27c19813184b22aa65d1f65576845, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_startSequenceLength: 4
+  m_startSequenceLength: 6
   m_startSequenceSphere: {fileID: 562255274}
   m_startSequenceSphereMaxScale: {x: 50, y: 50, z: 50}
   m_startSequenceDisabledControllers:
@@ -2825,7 +2825,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 56e874807a5cb470a833e54d1b265966, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.5
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 1
   Mute: 0
