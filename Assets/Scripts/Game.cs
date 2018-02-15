@@ -400,19 +400,13 @@ public class Game : MonoBehaviour
                 //Monitor if the PVC was encountered this turn
                 //flag is set in Sector.TriggerMinigame()
                 if (PVCEncountered)
-                {
                     SpawnPVC();
-                    GameToRestore = SaveToMemento();
-                }
                 break;
 
             case TurnState.Move2:
                 turnState = TurnState.EndOfTurn;
                 if (PVCEncountered)
-                {
                     SpawnPVC();
-                    GameToRestore = SaveToMemento();
-                }
                 break;
 
             case TurnState.EndOfTurn:
