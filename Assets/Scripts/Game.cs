@@ -25,7 +25,7 @@ public class Game : MonoBehaviour
 
     #region Public Properties
 
-    public static int HumanPlayersCount { get; set; }
+    public static List<int> HumanPlayersCount { get; set; }
 
     public TurnState TurnState
     {
@@ -62,10 +62,11 @@ public class Game : MonoBehaviour
         // initialize the turn state
         turnState = TurnState.Move1;
 
-        // set Player 1 as the current player
+        // set first human player as the current player
         currentPlayer = players[0];
+        currentPlayer = players[HumanPlayersCount.FindIndex(players => players == 0)];
         currentPlayer.Gui.Activate();
-        players[0].IsActive = true;
+        players[HumanPlayersCount.FindIndex(players => players == 0)].IsActive = true;
 
         // update GUIs
         UpdateGUI();
@@ -133,17 +134,20 @@ public class Game : MonoBehaviour
     /// <summary>
     /// Initialises the players using the specified number of human players.
     /// </summary>
-    /// <param name="numberOfPlayers">Number of human players.</param>
-    public void CreatePlayers(int numberOfPlayers)
+    /// <param name="listOfPlayers">List of all players assigned at MainMenu.</param>
+    public void CreatePlayers(List<int> listOfPlayers)
     {
-        // ensure that the specified number of players
-        // is at least 2 and does not exceed 4
-        numberOfPlayers = Mathf.Clamp(numberOfPlayers, 2, 4);
+        //// ensure that the specified number of players
+        //// is at least 2 and does not exceed 4
+        //numberOfPlayers = Mathf.Clamp(numberOfPlayers, 2, 4);
 
         // mark the specified number of players as human
-        for (int i = 0; i < numberOfPlayers; i++)
+        for (int i = 0; i < listOfPlayers.Count; i++)
         {
-            players[i].IsHuman = true;
+            if (listOfPlayers[i] == 0)
+            {
+                players[i].IsHuman = true;
+            }
         }
 
         // give all players a reference to this game

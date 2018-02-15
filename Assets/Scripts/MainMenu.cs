@@ -52,7 +52,7 @@ public class MainMenu : MonoBehaviour
         if (types.FindAll(players => players == 0).Count >= 2)
         {
             Game.GameToRestore = null;
-            Game.HumanPlayersCount = types.FindAll(players => players == 0).Count;
+            Game.HumanPlayersCount = types;
             SceneManager.LoadScene("MainGame");
         }
         else
