@@ -55,6 +55,7 @@ public class Game : MonoBehaviour
     /// </summary>
     public void Initialize()
     {
+        HumanPlayersCount = HumanPlayersCount ?? new List<int> { 0, 0, 0, 0 };
 
         // create a specified number of human players
         CreatePlayers(HumanPlayersCount);
