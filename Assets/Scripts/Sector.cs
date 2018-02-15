@@ -16,6 +16,7 @@ public class Sector : MonoBehaviour
 
     Unit unit;
     Player owner;
+    bool PVC;
 
     #endregion
 
@@ -60,6 +61,12 @@ public class Sector : MonoBehaviour
         set { landmark = value; }
     }
 
+    public bool HasPVC
+    {
+        get { return PVC; }
+        set { PVC = value; }
+    }
+
     #endregion
 
     #region Initialization
@@ -80,6 +87,9 @@ public class Sector : MonoBehaviour
         // get landmark (if any)
         landmark = gameObject.GetComponentInChildren<Landmark>();
 
+        //initialize the PVC spawn to none
+        HasPVC = false;
+
     }
 
     #endregion
@@ -92,7 +102,8 @@ public class Sector : MonoBehaviour
         {
             unit = unit?.SaveToMemento(),
             landmark = landmark?.SaveToMemento(),
-            ownerId = owner?.Id ?? -1
+            ownerId = owner?.Id ?? -1,
+            PVC = PVC
         };
     }
 
@@ -108,11 +119,29 @@ public class Sector : MonoBehaviour
             landmark.RestoreFromMemento(memento.landmark);
         if (memento.ownerId >= 0)
             players[memento.ownerId].Capture(this);
+        if (memento.PVC != false)
+            PVC = memento.PVC;
     }
 
     #endregion
 
     #region Helper Methods
+    public bool AllowPVC()
+    {
+        //instantiate the pvc only if the sector has nothing in it
+        if (landmark == null && unit == null)
+            return true;
+        else
+            return false;
+    }
+
+    public void TriggerMinigame()
+    {
+        Debug.Log("Oof! You've just stepped on the PVC! GET READY FOR SOME *industrial* ACTION");
+        //
+        // Handle minigame start in here
+        //
+    }
 
     public void ApplyHighlight(float amount)
     {
@@ -228,8 +257,16 @@ public class Sector : MonoBehaviour
 
     public void MoveIntoUnoccupiedSector(Unit unit)
     {
+        //flag monitoring if the sector has a PVC spawned and the unit moving is not owning the sector
+        //Note: this is separated in a flag so that we can trigger the minigame after the MoveTo to avoid scene change problems
+        bool foundPVC = (HasPVC && unit.Owner != owner)? true : false;
+
         // move the selected unit into this sector
         unit.MoveTo(this);
+
+        //if stepped on the PVC, trigger minigame
+        if (foundPVC)
+            TriggerMinigame();
 
         // advance turn state
         map.game.NextTurnState();
@@ -271,6 +308,7 @@ public class Sector : MonoBehaviour
         // end the turn
         map.game.EndTurn();
     }
+
 
     /// <summary>
     /// Return the selected unit if it is adjacent to this sector,

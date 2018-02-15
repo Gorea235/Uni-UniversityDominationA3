@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
@@ -97,6 +98,7 @@ public class Game : MonoBehaviour
             sector.Initialize();
         }
 
+
         // get an array of all sectors containing landmarks
         Sector[] landmarkedSectors = GetLandmarkedSectors(sectors);
 
@@ -114,7 +116,7 @@ public class Game : MonoBehaviour
             {
 
                 // choose a landmarked sector at random
-                int randomIndex = Random.Range(0, landmarkedSectors.Length);
+                int randomIndex = UnityEngine.Random.Range(0, landmarkedSectors.Length);
 
                 // if the sector is not yet allocated, allocate the player
                 if (landmarkedSectors[randomIndex].Owner == null)
@@ -132,6 +134,9 @@ public class Game : MonoBehaviour
         {
             player.SpawnUnits();
         }
+
+        //sawn the PVC
+        SpawnPVC();
     }
 
     /// <summary>
@@ -237,6 +242,47 @@ public class Game : MonoBehaviour
     #endregion
 
     #region Helper Methods
+
+    ///<summary>
+    ///Randomly spawn the PVC
+    /// </summary>
+    void SpawnPVC()
+    {
+        Sector[] sectors = gameMap.GetComponentsInChildren<Sector>();
+        int lastPVCLocation = Array.FindIndex(sectors, sector => sector.HasPVC == true);
+
+        //If sector is not yet allocated
+        if (lastPVCLocation == -1)
+        {
+            while (true)
+            {
+                Sector randomSector = sectors[UnityEngine.Random.Range(0, sectors.Length)];
+                if (randomSector.AllowPVC())
+                {
+                    randomSector.HasPVC = true;
+                    Debug.Log("Allocated PVC initially at " + randomSector.ToString());
+                    break;
+                }
+            }
+        }
+        else
+        {
+            while (true)
+            {
+                //Allocate PVC anew to a sector not owned by the last discoverer
+                Player previousOwner = sectors[lastPVCLocation].Owner;
+                Sector randomSector = sectors[UnityEngine.Random.Range(0, sectors.Length)];
+                if (randomSector.AllowPVC() && previousOwner != currentPlayer)
+                {
+                    randomSector.HasPVC = true;
+                    sectors[lastPVCLocation].HasPVC = false;
+                    Debug.Log("Allocated PVC to a new location, which is at " + randomSector.ToString());
+                    break;
+                }
+            }
+        }
+
+    }
 
     /// <summary>
     /// Return a list of all sectors that contain landmarks from the given array.
