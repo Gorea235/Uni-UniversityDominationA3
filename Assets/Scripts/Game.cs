@@ -412,9 +412,6 @@ public class Game : MonoBehaviour
             case TurnState.EndOfTurn:
                 turnState = TurnState.Move1;
                 break;
-
-            default:
-                break;
         }
 
         UpdateGUI();
