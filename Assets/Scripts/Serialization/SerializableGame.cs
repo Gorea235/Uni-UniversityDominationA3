@@ -7,4 +7,6 @@ public class SerializableGame
     public SerializablePlayer[] players;
     public SerializableSector[] sectors;
     public int currentPlayerId;
+    public bool PVCEncountered;
+    public int LastDiscovererOfPVCid;
 }

@@ -141,6 +141,9 @@ public class Sector : MonoBehaviour
         //
         // Handle minigame start in here
         //
+        
+        //Set the flag so Game would know to reallocate the PVC at the end of this player's turn
+        Game.PVCEncountered = true;
     }
 
     public void ApplyHighlight(float amount)
@@ -257,9 +260,10 @@ public class Sector : MonoBehaviour
 
     public void MoveIntoUnoccupiedSector(Unit unit)
     {
-        //flag monitoring if the sector has a PVC spawned and the unit moving is not owning the sector
+        //flag monitoring if the sector has a PVC spawned and the player moving in is neither
+        //owning the sector, nor is he the last person to discover the PVC
         //Note: this is separated in a flag so that we can trigger the minigame after the MoveTo to avoid scene change problems
-        bool foundPVC = (HasPVC && unit.Owner != owner)? true : false;
+        bool foundPVC = (HasPVC && unit.Owner != owner && Game.LastDiscovererOfPVC != unit.Owner)? true : false;
 
         // move the selected unit into this sector
         unit.MoveTo(this);
@@ -291,11 +295,16 @@ public class Sector : MonoBehaviour
         // if the attacking unit wins
         if (Conflict(attackingUnit, defendingUnit))
         {
+
             // destroy defending unit
             defendingUnit.DestroySelf();
 
             // move the attacking unit into this sector
             attackingUnit.MoveTo(this);
+
+            //if the sector just conquered has a PVC, trigger the minigame
+            if (HasPVC)
+                TriggerMinigame();
         }
 
         // if the defending unit wins

@@ -36,6 +36,10 @@ public class Game : MonoBehaviour
         get { return turnState; }
         set { turnState = value; }
     }
+    
+    public static bool PVCEncountered { get; set; }
+    public static Player LastDiscovererOfPVC { get; set; }
+
 
     public bool IsFinished { get { return gameFinished; } }
 
@@ -87,7 +91,7 @@ public class Game : MonoBehaviour
 
     /// <summary>
     /// Initialize all sectors, allocate players to landmarks,
-    /// and spawn units.
+    /// and spawn units and PVC.
     /// </summary>
     public void InitializeMap()
     {
@@ -138,7 +142,15 @@ public class Game : MonoBehaviour
         }
 
         //sawn the PVC
-        SpawnPVC();
+        if (LastDiscovererOfPVC == null)
+        {
+            SpawnPVC();
+            PVCEncountered = false;
+            LastDiscovererOfPVC = null;
+        }
+        
+        
+        
     }
 
     /// <summary>
@@ -188,7 +200,10 @@ public class Game : MonoBehaviour
             turnState = turnState,
             players = sPlayers,
             sectors = sSectors,
-            currentPlayerId = currentPlayer.Id
+            currentPlayerId = currentPlayer.Id,
+            LastDiscovererOfPVCid = LastDiscovererOfPVC.Id,
+            PVCEncountered = PVCEncountered
+
         };
     }
 
@@ -206,6 +221,8 @@ public class Game : MonoBehaviour
         }
         currentPlayer = players[memento.currentPlayerId];
         currentPlayer.Gui.Activate();
+        LastDiscovererOfPVC = players[memento.LastDiscovererOfPVCid];
+        PVCEncountered = memento.PVCEncountered;
         UpdateGUI();
     }
 
@@ -225,6 +242,7 @@ public class Game : MonoBehaviour
             // if there is no winner yet
             if (GetWinner() == null)
             {
+
                 // start the next player's turn
                 NextPlayer();
                 NextTurnState();
@@ -251,36 +269,31 @@ public class Game : MonoBehaviour
     void SpawnPVC()
     {
         Sector[] sectors = gameMap.GetComponentsInChildren<Sector>();
-        int lastPVCLocation = Array.FindIndex(sectors, sector => sector.HasPVC == true);
+        
+        while (true)
+        {
+            int lastPVCLocation = Array.FindIndex(sectors, sector => sector.HasPVC == true);
+            Sector randomSector = sectors[UnityEngine.Random.Range(0, sectors.Length)];
 
-        //If sector is not yet allocated
-        if (lastPVCLocation == -1)
-        {
-            while (true)
+            if (lastPVCLocation == -1 && randomSector.AllowPVC())
             {
-                Sector randomSector = sectors[UnityEngine.Random.Range(0, sectors.Length)];
-                if (randomSector.AllowPVC())
-                {
-                    randomSector.HasPVC = true;
-                    Debug.Log("Allocated PVC initially at " + randomSector.ToString());
-                    break;
-                }
+                randomSector.HasPVC = true;
+                PVCEncountered = false;
+                Debug.Log("Allocated PVC initially at " + randomSector.ToString());
+                break;
             }
-        }
-        else
-        {
-            while (true)
+            else if (LastDiscovererOfPVC != currentPlayer && randomSector.AllowPVC())
             {
-                //Allocate PVC anew to a sector not owned by the last discoverer
-                Player previousOwner = sectors[lastPVCLocation].Owner;
-                Sector randomSector = sectors[UnityEngine.Random.Range(0, sectors.Length)];
-                if (randomSector.AllowPVC() && previousOwner != currentPlayer)
-                {
-                    randomSector.HasPVC = true;
-                    sectors[lastPVCLocation].HasPVC = false;
-                    Debug.Log("Allocated PVC to a new location, which is at " + randomSector.ToString());
-                    break;
-                }
+                randomSector.HasPVC = true;
+                sectors[lastPVCLocation].HasPVC = false;
+                if(LastDiscovererOfPVC != null)
+                Debug.Log("Previous Player that found it is" + LastDiscovererOfPVC.ToString());
+                LastDiscovererOfPVC = currentPlayer;
+                PVCEncountered = false;
+                Debug.Log("Allocated PVC to a new location, which is at " + randomSector.ToString());
+                Debug.Log("Player that found it is" + currentPlayer.ToString());
+                Debug.Log("Last Player that found it is" + LastDiscovererOfPVC.ToString());
+                break;
             }
         }
 
@@ -374,10 +387,16 @@ public class Game : MonoBehaviour
         {
             case TurnState.Move1:
                 turnState = TurnState.Move2;
+                //Monitor if the PVC was encountered this turn
+                //flag is set in Sector.TriggerMinigame()
+                if (PVCEncountered)
+                    SpawnPVC();
                 break;
 
             case TurnState.Move2:
                 turnState = TurnState.EndOfTurn;
+                if (PVCEncountered)
+                    SpawnPVC();
                 break;
 
             case TurnState.EndOfTurn:
