@@ -16,6 +16,8 @@ public class Initializer : MonoBehaviour
 
     void Start()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         if (Game.GameToRestore == null)
             game.Initialize();
         else
