@@ -209,7 +209,7 @@ public class Game : MonoBehaviour
             players = sPlayers,
             sectors = sSectors,
             currentPlayerId = currentPlayer.Id,
-            LastDiscovererOfPVCid = LastDiscovererOfPVC.Id,
+            LastDiscovererOfPVCid = LastDiscovererOfPVC?.Id ?? null,
             PVCEncountered = PVCEncountered
 
         };
@@ -229,7 +229,7 @@ public class Game : MonoBehaviour
         }
         currentPlayer = players[memento.currentPlayerId];
         currentPlayer.Gui.Activate();
-        LastDiscovererOfPVC = players[memento.LastDiscovererOfPVCid];
+        LastDiscovererOfPVC = players[(int)memento.LastDiscovererOfPVCid];
         PVCEncountered = memento.PVCEncountered;
         MinigameFinishedProcess();
         UpdateGUI();
@@ -399,13 +399,19 @@ public class Game : MonoBehaviour
                 //Monitor if the PVC was encountered this turn
                 //flag is set in Sector.TriggerMinigame()
                 if (PVCEncountered)
+                {
                     SpawnPVC();
+                    GameToRestore = SaveToMemento();
+                }
                 break;
 
             case TurnState.Move2:
                 turnState = TurnState.EndOfTurn;
                 if (PVCEncountered)
+                {
                     SpawnPVC();
+                    GameToRestore = SaveToMemento();
+                }
                 break;
 
             case TurnState.EndOfTurn:

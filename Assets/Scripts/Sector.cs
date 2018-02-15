@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Sector : MonoBehaviour
 {
@@ -138,10 +139,7 @@ public class Sector : MonoBehaviour
     public void TriggerMinigame()
     {
         Debug.Log("Oof! You've just stepped on the PVC! GET READY FOR SOME *industrial* ACTION");
-        //
-        // Handle minigame start in here
-        //
-        
+        SceneManager.LoadScene("Minigame");
         //Set the flag so Game would know to reallocate the PVC at the end of this player's turn
         Game.PVCEncountered = true;
     }

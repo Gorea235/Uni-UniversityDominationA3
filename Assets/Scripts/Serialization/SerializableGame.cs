@@ -8,5 +8,5 @@ public class SerializableGame
     public SerializableSector[] sectors;
     public int currentPlayerId;
     public bool PVCEncountered;
-    public int LastDiscovererOfPVCid;
+    public int? LastDiscovererOfPVCid;
 }
