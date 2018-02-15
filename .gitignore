@@ -42,3 +42,6 @@ __pycache__/
 
 # Keep project version
 ProjectVersion.txt
+
+# ignore save game test file
+SaveGame.bin
