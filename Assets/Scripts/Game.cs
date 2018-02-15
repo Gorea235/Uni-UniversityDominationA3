@@ -52,7 +52,7 @@ public class Game : MonoBehaviour
         get { return turnState; }
         set { turnState = value; }
     }
-    
+
     public static bool PVCEncountered { get; set; }
     public static Player LastDiscovererOfPVC { get; set; }
 
@@ -156,9 +156,9 @@ public class Game : MonoBehaviour
             PVCEncountered = false;
             LastDiscovererOfPVC = null;
         }
-        
-        
-        
+
+
+
     }
 
     /// <summary>
@@ -209,7 +209,7 @@ public class Game : MonoBehaviour
             players = sPlayers,
             sectors = sSectors,
             currentPlayerId = currentPlayer.Id,
-            LastDiscovererOfPVCid = LastDiscovererOfPVC?.Id ?? null,
+            LastDiscovererOfPVCid = LastDiscovererOfPVC?.Id,
             PVCEncountered = PVCEncountered
 
         };
@@ -229,7 +229,8 @@ public class Game : MonoBehaviour
         }
         currentPlayer = players[memento.currentPlayerId];
         currentPlayer.Gui.Activate();
-        LastDiscovererOfPVC = players[(int)memento.LastDiscovererOfPVCid];
+        if (memento.LastDiscovererOfPVCid.HasValue)
+            LastDiscovererOfPVC = players[memento.LastDiscovererOfPVCid.Value];
         PVCEncountered = memento.PVCEncountered;
         MinigameFinishedProcess();
         UpdateGUI();
