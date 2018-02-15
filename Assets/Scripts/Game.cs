@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Game : MonoBehaviour
 {
@@ -14,12 +15,27 @@ public class Game : MonoBehaviour
     public Player[] players;
     public GameObject gameMap;
     public Player currentPlayer;
-    public UnityEngine.UI.Image gameSavedPopup;
-    public UnityEngine.UI.Text gameSavedPopupText;
+    public Image gameSavedPopup;
+    public Text gameSavedPopupText;
+    public GameObject minigameResultPopup;
+    public Text minigameStatusText;
+    public Text minigameScoreText;
+    public Text minigameRewardText;
 
     #endregion
 
     #region Private Fields
+
+    /// <summary>
+    /// The value to scale down the minigame score by.
+    /// Currently, the maximum minigame score is 170 (which you get if you win
+    /// with 100% health left), and the modifier is set so that only if you get
+    /// this maximum score, will you be given 6 points.
+    /// </summary>
+    const float minigameScoreScaleDownModifier = 28f + (1f / 3f);
+    const string minigameStatusTextFormat = "You {0} the minigame!";
+    const string minigameScoreTextFormat = "You scored {0} points, which gives you";
+    const string minigameRewardTextFormat = "{0} beer and {1} knowledge";
 
     TurnState turnState;
     bool gameFinished = false;
@@ -75,14 +91,6 @@ public class Game : MonoBehaviour
 
         // update GUIs
         UpdateGUI();
-
-        GameObject dataStore = GameObject.Find("DataStore");
-        if (dataStore != null)
-        {
-            // if we get here, it means that a minigame just occurred
-            var result = dataStore.GetComponent<DataStore>().Finalize();
-            Debug.Log(string.Format("minigame score: {0}, success: {1}", result.Score, result.Succeeded));
-        }
     }
 
     /// <summary>
@@ -107,7 +115,7 @@ public class Game : MonoBehaviour
         // ensure there are at least as many landmarks as players
         if (landmarkedSectors.Length < players.Length)
         {
-            throw new System.Exception("Must have at least as many landmarks as players; only " + landmarkedSectors.Length.ToString() + " landmarks found for " + players.Length.ToString() + " players.");
+            throw new Exception("Must have at least as many landmarks as players; only " + landmarkedSectors.Length.ToString() + " landmarks found for " + players.Length.ToString() + " players.");
         }
 
         // randomly allocate sectors to players
@@ -206,6 +214,7 @@ public class Game : MonoBehaviour
         }
         currentPlayer = players[memento.currentPlayerId];
         currentPlayer.Gui.Activate();
+        MinigameFinishedProcess();
         UpdateGUI();
     }
 
@@ -557,6 +566,37 @@ public class Game : MonoBehaviour
             Vector2 pos = gameSavedPopup.rectTransform.anchoredPosition;
             pos.y = Mathf.SmoothStep(minY, maxY, percentShown);
             gameSavedPopup.rectTransform.anchoredPosition = pos;
+        }
+    }
+
+    /// <summary>
+    /// Checks if a minigame has just finished, and if so, processes the result.
+    /// </summary>
+    void MinigameFinishedProcess()
+    {
+        GameObject dataStore = GameObject.Find("DataStore");
+        if (dataStore != null)
+        {
+            // if we get here, it means that a minigame just occurred
+
+            // finalize data store to get result
+            var result = dataStore.GetComponent<DataStore>().Finalize();
+            Debug.Log($"minigame score: {result.Score}, success: {result.Succeeded}");
+
+            // reward calculation
+            // reward is identical ATM for beer and knowledge, but could be different
+            int reward = Mathf.FloorToInt(result.Score / minigameScoreScaleDownModifier);
+
+            // update result popup
+            minigameStatusText.text = string.Format(minigameStatusTextFormat, result.Succeeded ? "beat" : "failed");
+            minigameScoreText.text = string.Format(minigameScoreTextFormat, result.Score);
+            minigameRewardText.text = string.Format(minigameRewardTextFormat, reward, reward);
+            // show popup
+            minigameResultPopup.SetActive(true);
+
+            // apply rewards
+            currentPlayer.Beer += reward; // add beer
+            currentPlayer.Knowledge += reward; // add knowledge
         }
     }
 
