@@ -120,8 +120,7 @@ public class Sector : MonoBehaviour
             landmark.RestoreFromMemento(memento.landmark);
         if (memento.ownerId >= 0)
             players[memento.ownerId].Capture(this);
-        if (memento.PVC != false)
-            PVC = memento.PVC;
+        PVC = memento.PVC;
     }
 
     #endregion
@@ -139,10 +138,12 @@ public class Sector : MonoBehaviour
     public void TriggerMinigame()
     {
         Debug.Log("Oof! You've just stepped on the PVC! GET READY FOR SOME *industrial* ACTION");
-        GameObject.Find("GameManager").GetComponent<Game>().PrepareForMinigame();
-        SceneManager.LoadScene("DoomMinigame");
         //Set the flag so Game would know to reallocate the PVC at the end of this player's turn
         Game.PVCEncountered = true;
+        GameObject.Find("GameManager").GetComponent<Game>().PrepareForMinigame();
+        SceneManager.LoadScene("DoomMinigame");
+        
+        
     }
 
     public void ApplyHighlight(float amount)
