@@ -424,4 +424,19 @@ public class GameTest
 
         yield return null;
     }
+
+    [UnityTest]
+    public IEnumerator SaveGameToFile_ClearSave()
+    {
+        // init game
+        game.Initialize();
+
+        // run file tests
+        game.SaveGame();
+        Assert.That(System.IO.File.Exists(MainMenu.SaveGameDataPath));
+        MainMenu.ClearSave();
+        Assert.That(System.IO.File.Exists(MainMenu.SaveGameDataPath), Is.False);
+
+        yield return null;
+    }
 }
