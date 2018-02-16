@@ -55,8 +55,8 @@ public class GameTest
 
     #endregion
 
-    [UnityTest]
-    public IEnumerator CreatePlayers_TwoPlayersAreHumanAndTwoNot()
+    [Test]
+    public void CreatePlayers_TwoPlayersAreHumanAndTwoNot()
     {
         // ensure creation of 2 players is accurate
         game.GetComponent<Game>().CreatePlayers(new List<int> { 0, 0, 1, 1 });
@@ -64,12 +64,10 @@ public class GameTest
         Assert.IsTrue(game.GetComponent<Game>().players[1].IsHuman);
         Assert.IsFalse(game.GetComponent<Game>().players[2].IsHuman);
         Assert.IsFalse(game.GetComponent<Game>().players[3].IsHuman);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator CreatePlayers_ThreePlayersAreHumanAndOneNot()
+    [Test]
+    public void CreatePlayers_ThreePlayersAreHumanAndOneNot()
     {
         // ensure creation of 3 players is accurate
         game.GetComponent<Game>().CreatePlayers(new List<int> { 0, 0, 0, 1 });
@@ -77,12 +75,10 @@ public class GameTest
         Assert.IsTrue(game.GetComponent<Game>().players[1].IsHuman);
         Assert.IsTrue(game.GetComponent<Game>().players[2].IsHuman);
         Assert.IsFalse(game.GetComponent<Game>().players[3].IsHuman);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator CreatePlayers_FourPlayersAreHuman()
+    [Test]
+    public void CreatePlayers_FourPlayersAreHuman()
     {
         // ensure creation of 4 players is accurate
         game.GetComponent<Game>().CreatePlayers(new List<int> { 0, 0, 0, 0 });
@@ -90,12 +86,10 @@ public class GameTest
         Assert.IsTrue(game.GetComponent<Game>().players[1].IsHuman);
         Assert.IsTrue(game.GetComponent<Game>().players[2].IsHuman);
         Assert.IsTrue(game.GetComponent<Game>().players[3].IsHuman);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator CreatePlayers_AtLeastTwoPlayersAreHuman()
+    [Test]
+    public void CreatePlayers_AtLeastTwoPlayersAreHuman()
     {
         // ensure that at least 2 players are created no matter what
         game.GetComponent<Game>().CreatePlayers(new List<int> { 0, 0, 1, 1 });
@@ -103,12 +97,10 @@ public class GameTest
         Assert.IsTrue(game.GetComponent<Game>().players[1].IsHuman);
         Assert.IsFalse(game.GetComponent<Game>().players[2].IsHuman);
         Assert.IsFalse(game.GetComponent<Game>().players[3].IsHuman);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator CreatePlayers_AtMostFourPlayersAreHuman()
+    [Test]
+    public void CreatePlayers_AtMostFourPlayersAreHuman()
     {
         // ensure that at most 4 players are created no matter what
         game.GetComponent<Game>().CreatePlayers(new List<int> { 0, 0, 0, 0 });
@@ -116,12 +108,10 @@ public class GameTest
         Assert.IsTrue(game.GetComponent<Game>().players[1].IsHuman);
         Assert.IsTrue(game.GetComponent<Game>().players[2].IsHuman);
         Assert.IsTrue(game.GetComponent<Game>().players[3].IsHuman);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator InitializeMap_OneLandmarkAllocatedWithUnitPerPlayer()
+    [Test]
+    public void InitializeMap_OneLandmarkAllocatedWithUnitPerPlayer()
     {
 
         // MAY BE MADE OBSELETE BY TESTS OF THE INDIVIDUAL METHODS
@@ -148,12 +138,10 @@ public class GameTest
                 Assert.Fail(); // must be an error as only sectors owned should be landmarks from above
             }
         }
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator NoUnitSelected_ReturnsFalseWhenUnitIsSelected()
+    [Test]
+    public void NoUnitSelected_ReturnsFalseWhenUnitIsSelected()
     {
         game.Initialize();
 
@@ -174,13 +162,11 @@ public class GameTest
 
         // assert that NoUnitSelected returns false
         Assert.IsFalse(game.NoUnitSelected());
-
-        yield return null;
     }
 
 
-    [UnityTest]
-    public IEnumerator NextPlayer_CurrentPlayerChangesToNextPlayerEachTime()
+    [Test]
+    public void NextPlayer_CurrentPlayerChangesToNextPlayerEachTime()
     {
         Player playerA = players[0];
         Player playerB = players[1];
@@ -218,12 +204,10 @@ public class GameTest
         Assert.IsTrue(game.currentPlayer == playerA);
         Assert.IsFalse(playerD.IsActive);
         Assert.IsTrue(playerA.IsActive);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator NextPlayer_EliminatedPlayersAreSkipped()
+    [Test]
+    public void NextPlayer_EliminatedPlayersAreSkipped()
     {
         Player playerA = players[0];
         playerA.IsHuman = true;
@@ -247,13 +231,11 @@ public class GameTest
         Assert.IsFalse(playerA.IsActive);
         Assert.IsFalse(playerB.IsActive);
         Assert.IsTrue(playerC.IsActive);
-
-        yield return null;
     }
 
 
-    [UnityTest]
-    public IEnumerator NextTurnState_TurnStateProgressesCorrectly()
+    [Test]
+    public void NextTurnState_TurnStateProgressesCorrectly()
     {
         // initialize turn state to Move1
         game.TurnState = TurnState.Move1;
@@ -278,12 +260,10 @@ public class GameTest
         game.TurnState = TurnState.NULL;
         game.NextTurnState();
         Assert.IsTrue(game.TurnState == TurnState.NULL);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator GetWinner_OnePlayerWithLandmarksAndUnitsWins()
+    [Test]
+    public void GetWinner_OnePlayerWithLandmarksAndUnitsWins()
     {
         Sector landmark1 = map.sectors[1];
         Player playerA = players[0];
@@ -297,12 +277,10 @@ public class GameTest
         playerA.ownedSectors.Add(landmark1);
         playerA.units.Add(InitUnit(0));
         Assert.IsNotNull(game.GetWinner());
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator GetWinner_NoWinnerWhenMultiplePlayersOwningLandmarks()
+    [Test]
+    public void GetWinner_NoWinnerWhenMultiplePlayersOwningLandmarks()
     {
         Sector landmark1 = map.sectors[1];
         Sector landmark2 = map.sectors[7];
@@ -320,12 +298,10 @@ public class GameTest
         playerA.ownedSectors.Add(landmark1);
         playerB.ownedSectors.Add(landmark2);
         Assert.IsNull(game.GetWinner());
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator GetWinner_NoWinnerWhenMultiplePlayersWithUnits()
+    [Test]
+    public void GetWinner_NoWinnerWhenMultiplePlayersWithUnits()
     {
         Player playerA = players[0];
         Player playerB = players[1];
@@ -335,12 +311,10 @@ public class GameTest
         playerA.units.Add(InitUnit(0));
         playerB.units.Add(InitUnit(1));
         Assert.IsNull(game.GetWinner());
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator GetWinner_NoWinnerWhenAPlayerHasLandmarkAndAnotherHasUnits()
+    [Test]
+    public void GetWinner_NoWinnerWhenAPlayerHasLandmarkAndAnotherHasUnits()
     {
         Sector landmark1 = map.sectors[1];
         Player playerA = players[0];
@@ -356,12 +330,10 @@ public class GameTest
         playerA.ownedSectors.Add(landmark1);
         playerB.units.Add(InitUnit(1));
         Assert.IsNull(game.GetWinner());
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator EndGame_GameEndsCorrectlyWithNoCurrentPlayerAndNoActivePlayersAndNoTurnState()
+    [Test]
+    public void EndGame_GameEndsCorrectlyWithNoCurrentPlayerAndNoActivePlayersAndNoTurnState()
     {
         GameObject resultPanel = gui[0].transform.parent.Find("GameResult").gameObject;
         game.endGamePopup = resultPanel;
@@ -384,12 +356,10 @@ public class GameTest
 
         // ensure turn state is NULL
         Assert.IsTrue(game.TurnState == TurnState.NULL);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator SaveLoadTest()
+    [Test]
+    public void SaveLoadTest()
     {
         // set up a game state
         Game.HumanPlayersCount = new List<int> { 0, 1, 0, 1 };
@@ -421,12 +391,10 @@ public class GameTest
         Assert.That(map.sectors[0].Unit.Owner, Is.EqualTo(players[2]));
         Assert.That(map.sectors[0].Unit.Level, Is.EqualTo(unitLevel));
         Assert.That(map.sectors[1].Owner, Is.EqualTo(players[1]));
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator SaveGameToFile_ClearSave()
+    [Test]
+    public void SaveGameToFile_ClearSave()
     {
         // init game
         Transform savedPopup = gui[0].transform.parent.Find("SavedPanel");
@@ -440,7 +408,5 @@ public class GameTest
         Assert.That(System.IO.File.Exists(MainMenu.SaveGameDataPath));
         MainMenu.ClearSave();
         Assert.That(System.IO.File.Exists(MainMenu.SaveGameDataPath), Is.False);
-
-        yield return null;
     }
 }

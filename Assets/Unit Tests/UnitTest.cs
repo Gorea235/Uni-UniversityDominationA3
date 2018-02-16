@@ -40,8 +40,8 @@ public class UnitTest
 
     #endregion
 
-    [UnityTest]
-    public IEnumerator MoveToFriendlyFromNull_UnitInCorrectSector()
+    [Test]
+    public void MoveToFriendlyFromNull_UnitInCorrectSector()
     {
         AddUnits(1);
         Sector sectorA = map.sectors[0];
@@ -56,12 +56,10 @@ public class UnitTest
         units[0].MoveTo(sectorA);
         Assert.IsTrue(units[0].Sector == sectorA);
         Assert.IsTrue(sectorA.Unit == units[0]);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator MoveToNeutral_UnitInCorrectSector()
+    [Test]
+    public void MoveToNeutral_UnitInCorrectSector()
     {
         AddUnits(1);
         Sector sectorA = map.sectors[0];
@@ -80,12 +78,10 @@ public class UnitTest
         Assert.IsTrue(units[0].Sector == sectorB);
         Assert.IsTrue(sectorB.Unit == units[0]);
         Assert.IsNull(sectorA.Unit);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator MoveToFriendly_UnitInCorrectSector()
+    [Test]
+    public void MoveToFriendly_UnitInCorrectSector()
     {
         AddUnits(1);
         Sector sectorA = map.sectors[0];
@@ -100,11 +96,9 @@ public class UnitTest
 
         units[0].MoveTo(sectorA);
         Assert.IsTrue(units[0].Level == 1);
-
-        yield return null;
     }
 
-    public IEnumerator MoveToHostile_UnitInCorrectSectorAndLevelUp()
+    public void MoveToHostile_UnitInCorrectSectorAndLevelUp()
     {
         AddUnits(1);
         Sector sectorA = map.sectors[0];
@@ -121,12 +115,10 @@ public class UnitTest
         units[0].MoveTo(sectorA);
         Assert.IsTrue(units[0].Level == 2);
         Assert.IsTrue(sectorA.Owner == units[0].Owner);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator SwapPlaces_UnitsInCorrectNewSectors()
+    [Test]
+    public void SwapPlaces_UnitsInCorrectNewSectors()
     {
         AddUnits(2);
         Sector sectorA = map.sectors[0];
@@ -148,12 +140,10 @@ public class UnitTest
         Assert.IsTrue(sectorB.Unit == units[0]); // sectorB has unitA
         Assert.IsTrue(units[1].Sector == sectorA); // unitB in sectorA
         Assert.IsTrue(sectorA.Unit == units[1]); // sectorA has unitB
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator LevelUp_UnitLevelIncreasesByOne()
+    [Test]
+    public void LevelUp_UnitLevelIncreasesByOne()
     {
         AddUnits(1);
 
@@ -161,12 +151,10 @@ public class UnitTest
         units[0].Level = 1;
         units[0].LevelUp();
         Assert.IsTrue(units[0].Level == 2);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator LevelUp_UnitLevelDoesNotPastFive()
+    [Test]
+    public void LevelUp_UnitLevelDoesNotPastFive()
     {
         AddUnits(1);
 
@@ -174,12 +162,10 @@ public class UnitTest
         units[0].Level = 5;
         units[0].LevelUp();
         Assert.IsTrue(units[0].Level == 5);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator SelectAndDeselect_SelectedTrueWhenSelectedFalseWhenDeselected()
+    [Test]
+    public void SelectAndDeselect_SelectedTrueWhenSelectedFalseWhenDeselected()
     {
         AddUnits(1);
         Sector sector = map.sectors[0];
@@ -192,13 +178,11 @@ public class UnitTest
 
         units[0].Deselect();
         Assert.IsFalse(units[0].IsSelected);
-
-        yield return null;
     }
 
 
-    [UnityTest]
-    public IEnumerator DestroySelf_UnitNotInSectorAndNotInPlayersUnitsList()
+    [Test]
+    public void DestroySelf_UnitNotInSectorAndNotInPlayersUnitsList()
     {
         AddUnits(1);
         Sector sector = map.sectors[0];
@@ -214,7 +198,5 @@ public class UnitTest
 
         Assert.IsNull(sector.Unit); // unit not on sector 
         Assert.IsFalse(player.units.Contains(units[0])); // unit not in list of players units
-
-        yield return null;
     }
 }

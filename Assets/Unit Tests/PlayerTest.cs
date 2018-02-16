@@ -26,8 +26,8 @@ public class PlayerTest
 
     #endregion
 
-    [UnityTest]
-    public IEnumerator CaptureSector_ChangesOwner()
+    [Test]
+    public void CaptureSector_ChangesOwner()
     {
         game.InitializeMap();
 
@@ -47,12 +47,10 @@ public class PlayerTest
         {
             Assert.IsFalse(previousOwner.ownedSectors.Contains(map.sectors[0])); // sector has been removed from previous owner list
         }
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator CaptureLandmark_BothPlayersBeerAmountCorrect()
+    [Test]
+    public void CaptureLandmark_BothPlayersBeerAmountCorrect()
     {
         // capturing landmark
         Sector landmarkedSector = map.sectors[1];
@@ -80,12 +78,10 @@ public class PlayerTest
         // ensure resources are transferred correctly
         Assert.IsTrue(attackerBeerBeforeCapture + landmark.Amount == playerA.Beer);
         Assert.IsTrue(defenderBeerBeforeCapture - landmark.Amount == previousOwner.Beer);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator CaptureLandmark_BothPlayersKnowledgeAmountCorrect()
+    [Test]
+    public void CaptureLandmark_BothPlayersKnowledgeAmountCorrect()
     {
         // capturing landmark
         Sector landmarkedSector = map.sectors[1];
@@ -113,12 +109,10 @@ public class PlayerTest
         // ensure resources are transferred correctly
         Assert.IsTrue(attackerKnowledgeBeforeCapture + landmark.Amount == playerA.Knowledge);
         Assert.IsTrue(defenderKnowledgeBeforeCapture - landmark.Amount == previousOwner.Knowledge);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator CaptureLandmark_NeutralLandmarkPlayerBeerAmountCorrect()
+    [Test]
+    public void CaptureLandmark_NeutralLandmarkPlayerBeerAmountCorrect()
     {
         // capturing landmark
         Sector landmarkedSector = map.sectors[1];
@@ -141,12 +135,10 @@ public class PlayerTest
 
         // ensure resources are gained correctly
         Assert.IsTrue(playerA.Beer - oldBeer == landmark.Amount);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator CaptureLandmark_NeutralLandmarkPlayerKnowledgeAmountCorrect()
+    [Test]
+    public void CaptureLandmark_NeutralLandmarkPlayerKnowledgeAmountCorrect()
     {
         // capturing landmark
         Sector landmarkedSector = map.sectors[1];
@@ -169,12 +161,10 @@ public class PlayerTest
 
         // ensure resources are gained correctly
         Assert.IsTrue(playerA.Knowledge - oldKnowledge == landmark.Amount);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator SpawnUnits_SpawnedWhenLandmarkOwnedAndUnoccupied()
+    [Test]
+    public void SpawnUnits_SpawnedWhenLandmarkOwnedAndUnoccupied()
     {
         Sector landmarkedSector = map.sectors[1];
         Player playerA = game.players[0];
@@ -189,12 +179,10 @@ public class PlayerTest
 
         // ensure a unit has been spawned for playerA in landmarkedSector
         Assert.IsTrue(playerA.units.Contains(landmarkedSector.Unit));
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator SpawnUnits_NotSpawnedWhenLandmarkOwnedAndOccupied()
+    [Test]
+    public void SpawnUnits_NotSpawnedWhenLandmarkOwnedAndOccupied()
     {
         Sector landmarkedSector = map.sectors[1];
         Player playerA = game.players[0];
@@ -214,11 +202,10 @@ public class PlayerTest
         Assert.IsTrue(landmarkedSector.Unit.Level == 5);
 
         Object.Destroy(unit);
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator SpawnUnits_NotSpawnedWhenLandmarkNotOwned()
+    [Test]
+    public void SpawnUnits_NotSpawnedWhenLandmarkNotOwned()
     {
         Sector landmarkedSector = map.sectors[1];
         Player playerA = game.players[0];
@@ -235,12 +222,10 @@ public class PlayerTest
 
         // ensure no unit is spawned at landmarkedSector
         Assert.IsNull(landmarkedSector.Unit);
-
-        yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator IsEliminated_PlayerWithNoUnitsAndNoLandmarksEliminated()
+    [Test]
+    public void IsEliminated_PlayerWithNoUnitsAndNoLandmarksEliminated()
     {
         game.InitializeMap();
 
@@ -263,7 +248,5 @@ public class PlayerTest
             }
         }
         Assert.IsTrue(playerA.IsEliminated);
-
-        yield return null;
     }
 }
