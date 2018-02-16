@@ -34,7 +34,7 @@ public class MainMenu : MonoBehaviour
 
     void Awake()
     {
-        saveGameDataPath = Path.Combine(Application.persistentDataPath + SaveGameFileName);
+        saveGameDataPath = Application.persistentDataPath + "/" + SaveGameFileName;
         Debug.Log("Save game path set to " + SaveGameDataPath);
         if (!File.Exists(SaveGameDataPath))
             loadGameButton.interactable = false;
