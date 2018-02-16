@@ -2,20 +2,64 @@
 using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SectorTest
 {
-    private Game game;
-    private Map map;
-    private Player[] players;
-    private PlayerUI[] gui;
+    Game game;
+    Map map;
+    Player[] players;
+    PlayerUI[] gui;
+    List<GameObject> units;
+
+    #region Test Management
+
+    [SetUp]
+    public void SetUp()
+    {
+        UnitTestsUtil.SetupTest(ref game, ref map, ref players, ref gui);
+        units = new List<GameObject>();
+    }
+
+    Unit InitUnit()
+    {
+        GameObject go = Object.Instantiate(players[0].UnitPrefab);
+        units.Add(go);
+        return go.GetComponent<Unit>();
+    }
+
+    void ResetSectors(Sector sectorA, Sector sectorB)
+    {
+
+        // re-initialize sectors for in between test cases in MoveIntoHostileUnitTest
+
+        sectorA.Unit = InitUnit();
+        sectorA.Unit.Sector = sectorA;
+        sectorA.Unit.Owner = players[0];
+        sectorA.Owner = players[0];
+        sectorA.Unit.Level = 1;
+
+        sectorB.Unit = InitUnit();
+        sectorB.Unit.Sector = sectorB;
+        sectorB.Unit.Owner = players[1];
+        sectorB.Owner = players[1];
+        sectorB.Unit.Level = 1;
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        UnitTestsUtil.TearDownTest(ref game, ref map, ref players, ref gui);
+        foreach (var unit in units)
+            if (unit != null)
+                Object.Destroy(unit);
+    }
+
+    #endregion
 
     [UnityTest]
     public IEnumerator SetOwner_SectorOwnerAndColorCorrect()
     {
-
-        Setup();
-
         Sector sector = map.sectors[0];
         sector.Owner = null;
         Player player = players[0];
@@ -34,9 +78,6 @@ public class SectorTest
     [UnityTest]
     public IEnumerator Initialize_OwnedAndNotOwnedSectorsOwnerAndColor()
     {
-
-        Setup();
-
         Sector sectorWithoutLandmark = map.sectors[0];
         Sector sectorWithLandmark = map.sectors[1];
 
@@ -58,9 +99,6 @@ public class SectorTest
     [UnityTest]
     public IEnumerator Highlight_SectorColourCorrect()
     {
-
-        Setup();
-
         Sector sector = map.sectors[0];
         sector.gameObject.GetComponent<Renderer>().material.color = Color.gray;
         float amount = 0.2f;
@@ -79,16 +117,13 @@ public class SectorTest
     [UnityTest]
     public IEnumerator ClearUnit_UnitRemovedFromSector()
     {
-
-        Setup();
-
         Sector sector = map.sectors[0];
         sector.Unit = null;
 
         sector.ClearUnit();
         Assert.IsNull(sector.Unit);
 
-        sector.Unit = Object.Instantiate(players[0].UnitPrefab).GetComponent<Unit>();
+        sector.Unit = InitUnit();
         Assert.IsNotNull(sector.Unit);
 
         sector.ClearUnit();
@@ -100,16 +135,13 @@ public class SectorTest
     [UnityTest]
     public IEnumerator OnMouseAsButton_CorrectUnitIsSelected()
     {
-
-        Setup();
-
         Sector sectorA = map.sectors[0];
         Sector sectorB = map.sectors[1];
         Sector sectorC = map.sectors[2];
         Player playerA = players[0];
         Player playerB = players[1];
-        Unit unitA = Object.Instantiate(players[0].UnitPrefab).GetComponent<Unit>();
-        Unit unitB = Object.Instantiate(players[0].UnitPrefab).GetComponent<Unit>(); // *should this be players[1]?* ###########################################################################################
+        Unit unitA = InitUnit();
+        Unit unitB = InitUnit();
 
         // ensure sectors A & B are adjacent to each other
         Assert.Contains(sectorA, sectorB.AdjacentSectors);
@@ -186,14 +218,11 @@ public class SectorTest
     [UnityTest]
     public IEnumerator MoveIntoUnoccupiedSector_NewSectorHasUnitAndOldDoesNotAndTurnStateProgressed()
     {
-
-        Setup();
-
         game.TurnState = TurnState.Move1;
         Sector sectorA = map.sectors[0];
         Sector sectorB = map.sectors[1];
 
-        sectorA.Unit = Object.Instantiate(players[0].UnitPrefab).GetComponent<Unit>();
+        sectorA.Unit = InitUnit();
         sectorA.Unit.Sector = sectorA;
         sectorB.Unit = null;
 
@@ -208,20 +237,17 @@ public class SectorTest
     [UnityTest]
     public IEnumerator MoveIntoFriendlyUnit_UnitsSwapSectorsAndTurnStateProgressed()
     {
-
-        Setup();
-
         game.TurnState = TurnState.Move1;
         Sector sectorA = map.sectors[0];
         Sector sectorB = map.sectors[1];
 
-        sectorA.Unit = Object.Instantiate(players[0].UnitPrefab).GetComponent<Unit>();
+        sectorA.Unit = InitUnit();
         sectorA.Unit.Sector = sectorA;
         sectorA.Unit.Level = 5;
         sectorA.Unit.Owner = players[0];
         sectorA.Owner = players[0];
 
-        sectorB.Unit = Object.Instantiate(players[0].UnitPrefab).GetComponent<Unit>();
+        sectorB.Unit = InitUnit();
         sectorB.Unit.Sector = sectorB;
         sectorB.Unit.Level = 1;
         sectorB.Unit.Owner = players[0];
@@ -238,9 +264,6 @@ public class SectorTest
     [UnityTest]
     public IEnumerator MoveIntoHostileUnit_AttackingUnitTakesSectorAndLevelUpAndTurnEnd()
     {
-
-        Setup();
-
         game.TurnState = TurnState.Move1;
         Sector sectorA = map.sectors[0];
         Sector sectorB = map.sectors[1];
@@ -264,9 +287,6 @@ public class SectorTest
     [UnityTest]
     public IEnumerator MoveIntoHostileUnit_DefendingUnitDefendsSectorAndTurnEnd()
     {
-
-        Setup();
-
         game.TurnState = TurnState.Move1;
         Sector sectorA = map.sectors[0];
         Sector sectorB = map.sectors[1];
@@ -291,9 +311,6 @@ public class SectorTest
     [UnityTest]
     public IEnumerator MoveIntoHostileUnit_TieConflict_DefendingUnitDefendsSectorAndTurnEnd()
     {
-
-        Setup();
-
         game.TurnState = TurnState.Move1;
         Sector sectorA = map.sectors[0];
         Sector sectorB = map.sectors[1];
@@ -323,9 +340,6 @@ public class SectorTest
     [UnityTest]
     public IEnumerator AdjacentSelectedUnit_SectorsAreAdjacent()
     {
-
-        Setup();
-
         Sector sectorA = map.sectors[0];
         Sector sectorB = map.sectors[1];
 
@@ -337,7 +351,7 @@ public class SectorTest
         Assert.IsNull(sectorB.AdjacentSelectedUnit());
 
         // test with unselected unit in adjacent sector
-        sectorA.Unit = Object.Instantiate(players[0].UnitPrefab).GetComponent<Unit>();
+        sectorA.Unit = InitUnit();
         sectorA.Unit.IsSelected = false;
         Assert.IsNull(sectorB.AdjacentSelectedUnit());
 
@@ -346,78 +360,5 @@ public class SectorTest
         Assert.IsNotNull(sectorB.AdjacentSelectedUnit());
 
         yield return null;
-    }
-
-
-    private void Setup()
-    {
-
-        // initialize the game, map, and players with any references needed
-        // the "GameManager" asset contains a copy of the GameManager object
-        // in the 4x4 Test, but its script lacks references to players & the map
-        game = Object.Instantiate(Resources.Load<GameObject>("GameManager")).GetComponent<Game>();
-
-        // the "Map" asset is a copy of the 4x4 Test map, complete with
-        // adjacent sectors and landmarks at (0,1), (1,3), (2,0), and (3,2),
-        // but its script lacks references to the game & sectors
-        map = Object.Instantiate(Resources.Load<GameObject>("Map")).GetComponent<Map>();
-
-        // the "Players" asset contains 4 prefab Player game objects; only
-        // references not in its script is each player's color
-        players = Object.Instantiate(Resources.Load<GameObject>("Players")).GetComponentsInChildren<Player>();
-
-        // the "GUI" asset contains the PlayerUI object for each Player
-        gui = Object.Instantiate(Resources.Load<GameObject>("GUI")).GetComponentsInChildren<PlayerUI>();
-
-        // the "Scenery" asset contains the camera and light source of the 4x4 Test
-        // can uncomment to view scene as tests run, but significantly reduces speed
-        //MonoBehaviour.Instantiate(Resources.Load<GameObject>("Scenery"));
-
-        // establish references from game to players & map
-        game.players = players;
-        game.gameMap = map.gameObject;
-        game.TestModeEnabled = true;
-
-        // establish references from map to game & sectors (from children)
-        map.game = game;
-        map.sectors = map.gameObject.GetComponentsInChildren<Sector>();
-
-        // establish references from each player to the game
-        foreach (Player player in players)
-        {
-            player.Game = game;
-        }
-
-        // establish references to SSB 64 colors for each player
-        players[0].Color = Color.red;
-        players[1].Color = Color.blue;
-        players[2].Color = Color.yellow;
-        players[3].Color = Color.green;
-
-        // establish references to a PlayerUI and Game for each player & initialize GUI
-        for (int i = 0; i < players.Length; i++)
-        {
-            players[i].Gui = gui[i];
-            players[i].Game = game;
-            players[i].Gui.Initialize(players[i], i + 1);
-        }
-    }
-
-    private void ResetSectors(Sector sectorA, Sector sectorB)
-    {
-
-        // re-initialize sectors for in between test cases in MoveIntoHostileUnitTest
-
-        sectorA.Unit = Object.Instantiate(players[0].UnitPrefab).GetComponent<Unit>();
-        sectorA.Unit.Sector = sectorA;
-        sectorA.Unit.Owner = players[0];
-        sectorA.Owner = players[0];
-        sectorA.Unit.Level = 1;
-
-        sectorB.Unit = Object.Instantiate(players[0].UnitPrefab).GetComponent<Unit>();
-        sectorB.Unit.Sector = sectorB;
-        sectorB.Unit.Owner = players[1];
-        sectorB.Owner = players[1];
-        sectorB.Unit.Level = 1;
     }
 }

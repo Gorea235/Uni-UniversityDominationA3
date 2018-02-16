@@ -243,31 +243,9 @@ public class Game : MonoBehaviour
 
     void Update()
     {
-        // at the end of each turn, check for a winner and end the game if
-        // necessary; otherwise, start the next player's turn
-
-        // if the current turn has ended and test mode is not enabled
-        if (turnState == TurnState.EndOfTurn && !testMode)
-        {
-
-            // if there is no winner yet
-            if (GetWinner() == null)
-            {
-
-                // start the next player's turn
-                NextPlayer();
-                NextTurnState();
-
-                // skip eliminated players and non-human players
-                while (currentPlayer.IsEliminated || !currentPlayer.IsHuman)
-                    NextPlayer();
-
-                // spawn units for the next player
-                currentPlayer.SpawnUnits();
-            }
-            else if (!gameFinished)
-                EndGame();
-        }
+        if (testMode)
+            return;
+        UpdateMain();
     }
 
     #endregion
@@ -480,20 +458,26 @@ public class Game : MonoBehaviour
     }
 
     /// <summary>
-    /// Copy of Update that can be called by other objects (for testing).
+    /// The main body of each frame update.
     /// </summary>
-    public void UpdateAccessible()
+    public void UpdateMain()
     {
+        // at the end of each turn, check for a winner and end the game if
+        // necessary; otherwise, start the next player's turn
+
+        // if the current turn has ended and test mode is not enabled
         if (turnState == TurnState.EndOfTurn)
         {
+
             // if there is no winner yet
             if (GetWinner() == null)
             {
+
                 // start the next player's turn
                 NextPlayer();
                 NextTurnState();
 
-                // skip eliminated players
+                // skip eliminated players and non-human players
                 while (currentPlayer.IsEliminated || !currentPlayer.IsHuman)
                     NextPlayer();
 

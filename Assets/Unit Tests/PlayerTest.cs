@@ -10,11 +10,25 @@ public class PlayerTest
     Player[] players;
     PlayerUI[] gui;
 
+    #region Test Management
+
+    [SetUp]
+    public void SetUp()
+    {
+        UnitTestsUtil.SetupTest(ref game, ref map, ref players, ref gui);
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        UnitTestsUtil.TearDownTest(ref game, ref map, ref players, ref gui);
+    }
+
+    #endregion
+
     [UnityTest]
     public IEnumerator CaptureSector_ChangesOwner()
     {
-
-        Setup();
         game.InitializeMap();
 
         Player previousOwner = map.sectors[0].Owner;
@@ -40,9 +54,6 @@ public class PlayerTest
     [UnityTest]
     public IEnumerator CaptureLandmark_BothPlayersBeerAmountCorrect()
     {
-
-        Setup();
-
         // capturing landmark
         Sector landmarkedSector = map.sectors[1];
         landmarkedSector.Initialize();
@@ -76,9 +87,6 @@ public class PlayerTest
     [UnityTest]
     public IEnumerator CaptureLandmark_BothPlayersKnowledgeAmountCorrect()
     {
-
-        Setup();
-
         // capturing landmark
         Sector landmarkedSector = map.sectors[1];
         landmarkedSector.Initialize();
@@ -112,9 +120,6 @@ public class PlayerTest
     [UnityTest]
     public IEnumerator CaptureLandmark_NeutralLandmarkPlayerBeerAmountCorrect()
     {
-
-        Setup();
-
         // capturing landmark
         Sector landmarkedSector = map.sectors[1];
         landmarkedSector.Initialize();
@@ -143,9 +148,6 @@ public class PlayerTest
     [UnityTest]
     public IEnumerator CaptureLandmark_NeutralLandmarkPlayerKnowledgeAmountCorrect()
     {
-
-        Setup();
-
         // capturing landmark
         Sector landmarkedSector = map.sectors[1];
         landmarkedSector.Initialize();
@@ -174,9 +176,6 @@ public class PlayerTest
     [UnityTest]
     public IEnumerator SpawnUnits_SpawnedWhenLandmarkOwnedAndUnoccupied()
     {
-
-        Setup();
-
         Sector landmarkedSector = map.sectors[1];
         Player playerA = game.players[0];
 
@@ -197,15 +196,13 @@ public class PlayerTest
     [UnityTest]
     public IEnumerator SpawnUnits_NotSpawnedWhenLandmarkOwnedAndOccupied()
     {
-
-        Setup();
-
         Sector landmarkedSector = map.sectors[1];
         Player playerA = game.players[0];
 
         // ensure that 'landmarkedSector' is a landmark and contains a Level 5 unit
         landmarkedSector.Initialize();
-        landmarkedSector.Unit = Object.Instantiate(playerA.UnitPrefab).GetComponent<Unit>();
+        GameObject unit = Object.Instantiate(playerA.UnitPrefab);
+        landmarkedSector.Unit = unit.GetComponent<Unit>();
         landmarkedSector.Unit.Level = 5;
         landmarkedSector.Unit.Owner = playerA;
         Assert.IsNotNull(landmarkedSector.Landmark);
@@ -216,15 +213,13 @@ public class PlayerTest
         // ensure a Level 1 unit has not spawned over the Level 5 unit already in landmarkedSector
         Assert.IsTrue(landmarkedSector.Unit.Level == 5);
 
+        Object.Destroy(unit);
         yield return null;
     }
 
     [UnityTest]
     public IEnumerator SpawnUnits_NotSpawnedWhenLandmarkNotOwned()
     {
-
-        Setup();
-
         Sector landmarkedSector = map.sectors[1];
         Player playerA = game.players[0];
         Player playerB = game.players[1];
@@ -247,8 +242,6 @@ public class PlayerTest
     [UnityTest]
     public IEnumerator IsEliminated_PlayerWithNoUnitsAndNoLandmarksEliminated()
     {
-
-        Setup();
         game.InitializeMap();
 
         Player playerA = game.players[0];
@@ -272,54 +265,5 @@ public class PlayerTest
         Assert.IsTrue(playerA.IsEliminated);
 
         yield return null;
-    }
-
-
-    void Setup()
-    {
-
-        // initialize the game, map, and players with any references needed
-        // the "GameManager" asset contains a copy of the GameManager object
-        // in the 4x4 Test, but its script lacks references to players & the map
-        game = Object.Instantiate(Resources.Load<GameObject>("GameManager")).GetComponent<Game>();
-
-        // the "Map" asset is a copy of the 4x4 Test map, complete with
-        // adjacent sectors and landmarks at (0,1), (1,3), (2,0), and (3,2),
-        // but its script lacks references to the game & sectors
-        map = Object.Instantiate(Resources.Load<GameObject>("Map")).GetComponent<Map>();
-
-        // the "Players" asset contains 4 prefab Player game objects; only
-        // references not in its script is each player's color
-        players = Object.Instantiate(Resources.Load<GameObject>("Players")).GetComponentsInChildren<Player>();
-
-        // the "GUI" asset contains the PlayerUI object for each Player
-        gui = Object.Instantiate(Resources.Load<GameObject>("GUI")).GetComponentsInChildren<PlayerUI>();
-
-        // the "Scenery" asset contains the camera and light source of the 4x4 Test
-        // can uncomment to view scene as tests run, but significantly reduces speed
-        //MonoBehaviour.Instantiate(Resources.Load<GameObject>("Scenery"));
-
-        // establish references from game to players & map
-        game.players = players;
-        game.gameMap = map.gameObject;
-        game.TestModeEnabled = true;
-
-        // establish references from map to game & sectors (from children)
-        map.game = game;
-        map.sectors = map.gameObject.GetComponentsInChildren<Sector>();
-
-        // establish references to SSB 64 colors for each player
-        players[0].Color = Color.red;
-        players[1].Color = Color.blue;
-        players[2].Color = Color.yellow;
-        players[3].Color = Color.green;
-
-        // establish references to a PlayerUI and Game for each player & initialize GUI
-        for (int i = 0; i < players.Length; i++)
-        {
-            players[i].Gui = gui[i];
-            players[i].Game = game;
-            players[i].Gui.Initialize(players[i], i + 1);
-        }
     }
 }

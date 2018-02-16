@@ -10,21 +10,56 @@ public class GameTest
     Map map;
     Player[] players;
     PlayerUI[] gui;
+    List<GameObject> units;
+
+    #region Test Management
 
     [SetUp]
-    public void Setup_test()
+    public void SetUp()
     {
-        Debug.Log("setup");
+        UnitTestsUtil.SetupTest(ref game, ref map, ref players, ref gui);
+        units = new List<GameObject>();
     }
+
+    Unit InitUnit(int player)
+    {
+        GameObject go = Object.Instantiate(players[player].UnitPrefab);
+        units.Add(go);
+        return go.GetComponent<Unit>();
+    }
+
+    void ClearSectorsAndUnitsOfAllPlayers()
+    {
+
+        foreach (Player player in game.players)
+        {
+            ClearSectorsAndUnits(player);
+        }
+    }
+
+    void ClearSectorsAndUnits(Player player)
+    {
+
+        player.units = new List<Unit>();
+        player.ownedSectors = new List<Sector>();
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        UnitTestsUtil.TearDownTest(ref game, ref map, ref players, ref gui);
+        foreach (var unit in units)
+            if (unit != null)
+                Object.Destroy(unit);
+    }
+
+    #endregion
 
     [UnityTest]
     public IEnumerator CreatePlayers_TwoPlayersAreHumanAndTwoNot()
     {
-
-        Setup();
-
         // ensure creation of 2 players is accurate
-        game.GetComponent<Game>().CreatePlayers(new List<int> { 0, 0 , 1, 1});
+        game.GetComponent<Game>().CreatePlayers(new List<int> { 0, 0, 1, 1 });
         Assert.IsTrue(game.GetComponent<Game>().players[0].IsHuman);
         Assert.IsTrue(game.GetComponent<Game>().players[1].IsHuman);
         Assert.IsFalse(game.GetComponent<Game>().players[2].IsHuman);
@@ -36,9 +71,6 @@ public class GameTest
     [UnityTest]
     public IEnumerator CreatePlayers_ThreePlayersAreHumanAndOneNot()
     {
-
-        Setup();
-
         // ensure creation of 3 players is accurate
         game.GetComponent<Game>().CreatePlayers(new List<int> { 0, 0, 0, 1 });
         Assert.IsTrue(game.GetComponent<Game>().players[0].IsHuman);
@@ -52,9 +84,6 @@ public class GameTest
     [UnityTest]
     public IEnumerator CreatePlayers_FourPlayersAreHuman()
     {
-
-        Setup();
-
         // ensure creation of 4 players is accurate
         game.GetComponent<Game>().CreatePlayers(new List<int> { 0, 0, 0, 0 });
         Assert.IsTrue(game.GetComponent<Game>().players[0].IsHuman);
@@ -68,9 +97,6 @@ public class GameTest
     [UnityTest]
     public IEnumerator CreatePlayers_AtLeastTwoPlayersAreHuman()
     {
-
-        Setup();
-
         // ensure that at least 2 players are created no matter what
         game.GetComponent<Game>().CreatePlayers(new List<int> { 0, 0, 1, 1 });
         Assert.IsTrue(game.GetComponent<Game>().players[0].IsHuman);
@@ -84,11 +110,8 @@ public class GameTest
     [UnityTest]
     public IEnumerator CreatePlayers_AtMostFourPlayersAreHuman()
     {
-
-        Setup();
-
         // ensure that at most 4 players are created no matter what
-        game.GetComponent<Game>().CreatePlayers(new List<int> { 0, 0, 0, 0 ,0});
+        game.GetComponent<Game>().CreatePlayers(new List<int> { 0, 0, 0, 0 });
         Assert.IsTrue(game.GetComponent<Game>().players[0].IsHuman);
         Assert.IsTrue(game.GetComponent<Game>().players[1].IsHuman);
         Assert.IsTrue(game.GetComponent<Game>().players[2].IsHuman);
@@ -102,7 +125,6 @@ public class GameTest
     {
 
         // MAY BE MADE OBSELETE BY TESTS OF THE INDIVIDUAL METHODS
-        Setup();
         game.InitializeMap();
 
         // ensure that each player owns 1 sector and has 1 unit at that sector
@@ -133,8 +155,6 @@ public class GameTest
     [UnityTest]
     public IEnumerator NoUnitSelected_ReturnsFalseWhenUnitIsSelected()
     {
-
-        Setup();
         game.Initialize();
 
         // clear any selected units
@@ -162,9 +182,6 @@ public class GameTest
     [UnityTest]
     public IEnumerator NextPlayer_CurrentPlayerChangesToNextPlayerEachTime()
     {
-
-        Setup();
-
         Player playerA = players[0];
         Player playerB = players[1];
         Player playerC = players[2];
@@ -208,21 +225,22 @@ public class GameTest
     [UnityTest]
     public IEnumerator NextPlayer_EliminatedPlayersAreSkipped()
     {
-
-        Setup();
-
         Player playerA = players[0];
+        playerA.IsHuman = true;
         Player playerB = players[1];
+        playerB.IsHuman = true;
         Player playerC = players[2];
+        playerC.IsHuman = true;
         Player playerD = players[3];
+        playerD.IsHuman = true;
 
         game.currentPlayer = playerA;
 
-        playerC.units.Add(Object.Instantiate(playerC.UnitPrefab).GetComponent<Unit>()); // make player C not eliminated
-        playerD.units.Add(Object.Instantiate(playerD.UnitPrefab).GetComponent<Unit>()); // make player D not eliminated
+        playerC.units.Add(InitUnit(2)); // make player C not eliminated
+        playerD.units.Add(InitUnit(3)); // make player D not eliminated
 
         game.TurnState = TurnState.EndOfTurn;
-        game.UpdateAccessible(); // removes players that should be eliminated (A and B)
+        game.UpdateMain(); // removes players that should be eliminated (A and B)
 
         // ensure eliminated players are skipped
         Assert.IsTrue(game.currentPlayer == playerC);
@@ -237,9 +255,6 @@ public class GameTest
     [UnityTest]
     public IEnumerator NextTurnState_TurnStateProgressesCorrectly()
     {
-
-        Setup();
-
         // initialize turn state to Move1
         game.TurnState = TurnState.Move1;
 
@@ -270,9 +285,6 @@ public class GameTest
     [UnityTest]
     public IEnumerator GetWinner_OnePlayerWithLandmarksAndUnitsWins()
     {
-
-        Setup();
-
         Sector landmark1 = map.sectors[1];
         Player playerA = players[0];
 
@@ -283,7 +295,7 @@ public class GameTest
         // ensure winner is found if only 1 player owns a landmark
         ClearSectorsAndUnitsOfAllPlayers();
         playerA.ownedSectors.Add(landmark1);
-        playerA.units.Add(Object.Instantiate(playerA.UnitPrefab).GetComponent<Unit>());
+        playerA.units.Add(InitUnit(0));
         Assert.IsNotNull(game.GetWinner());
 
         yield return null;
@@ -292,9 +304,6 @@ public class GameTest
     [UnityTest]
     public IEnumerator GetWinner_NoWinnerWhenMultiplePlayersOwningLandmarks()
     {
-
-        Setup();
-
         Sector landmark1 = map.sectors[1];
         Sector landmark2 = map.sectors[7];
         Player playerA = players[0];
@@ -318,16 +327,13 @@ public class GameTest
     [UnityTest]
     public IEnumerator GetWinner_NoWinnerWhenMultiplePlayersWithUnits()
     {
-
-        Setup();
-
         Player playerA = players[0];
         Player playerB = players[1];
 
         // ensure no winner is found if >1 players have a unit
         ClearSectorsAndUnitsOfAllPlayers();
-        playerA.units.Add(Object.Instantiate(playerA.UnitPrefab).GetComponent<Unit>());
-        playerB.units.Add(Object.Instantiate(playerB.UnitPrefab).GetComponent<Unit>());
+        playerA.units.Add(InitUnit(0));
+        playerB.units.Add(InitUnit(1));
         Assert.IsNull(game.GetWinner());
 
         yield return null;
@@ -336,9 +342,6 @@ public class GameTest
     [UnityTest]
     public IEnumerator GetWinner_NoWinnerWhenAPlayerHasLandmarkAndAnotherHasUnits()
     {
-
-        Setup();
-
         Sector landmark1 = map.sectors[1];
         Player playerA = players[0];
         Player playerB = players[1];
@@ -351,7 +354,7 @@ public class GameTest
         // and another player has a unit
         ClearSectorsAndUnitsOfAllPlayers();
         playerA.ownedSectors.Add(landmark1);
-        playerB.units.Add(Object.Instantiate(playerB.UnitPrefab).GetComponent<Unit>());
+        playerB.units.Add(InitUnit(1));
         Assert.IsNull(game.GetWinner());
 
         yield return null;
@@ -360,8 +363,6 @@ public class GameTest
     [UnityTest]
     public IEnumerator EndGame_GameEndsCorrectlyWithNoCurrentPlayerAndNoActivePlayersAndNoTurnState()
     {
-
-        Setup();
         game.currentPlayer = game.players[0];
         game.EndGame();
 
@@ -379,72 +380,5 @@ public class GameTest
         Assert.IsTrue(game.TurnState == TurnState.NULL);
 
         yield return null;
-    }
-
-
-    void Setup()
-    {
-
-        // initialize the game, map, and players with any references needed
-        // the "GameManager" asset contains a copy of the GameManager object
-        // in the 4x4 Test, but its script lacks references to players & the map
-        game = Object.Instantiate(Resources.Load<GameObject>("GameManager")).GetComponent<Game>();
-
-        // the "Map" asset is a copy of the 4x4 Test map, complete with
-        // adjacent sectors and landmarks at (0,1), (1,3), (2,0), and (3,2),
-        // but its script lacks references to the game & sectors
-        map = Object.Instantiate(Resources.Load<GameObject>("Map")).GetComponent<Map>();
-
-        // the "Players" asset contains 4 prefab Player game objects; only
-        // references not in its script is each player's color
-        players = Object.Instantiate(Resources.Load<GameObject>("Players")).GetComponentsInChildren<Player>();
-
-        // the "GUI" asset contains the PlayerUI object for each Player
-        gui = Object.Instantiate(Resources.Load<GameObject>("GUI")).GetComponentsInChildren<PlayerUI>();
-
-        // the "Scenery" asset contains the camera and light source of the 4x4 Test
-        // can uncomment to view scene as tests run, but significantly reduces speed
-        //MonoBehaviour.Instantiate(Resources.Load<GameObject>("Scenery"));
-
-        // establish references from game to players & map
-        game.players = players;
-        game.gameMap = map.gameObject;
-
-        // establish references from map to game & sectors (from children)
-        map.game = game;
-        map.sectors = map.gameObject.GetComponentsInChildren<Sector>();
-
-        // establish references to SSB 64 colors for each player
-        players[0].Color = Color.red;
-        players[1].Color = Color.blue;
-        players[2].Color = Color.yellow;
-        players[3].Color = Color.green;
-
-        // establish references to a PlayerUI and Game for each player & initialize GUI
-        for (int i = 0; i < players.Length; i++)
-        {
-            players[i].Gui = gui[i];
-            players[i].Game = game;
-            players[i].Gui.Initialize(players[i], i + 1);
-        }
-
-        // enable game's test mode
-        game.TestModeEnabled = true;
-    }
-
-    void ClearSectorsAndUnitsOfAllPlayers()
-    {
-
-        foreach (Player player in game.players)
-        {
-            ClearSectorsAndUnits(player);
-        }
-    }
-
-    void ClearSectorsAndUnits(Player player)
-    {
-
-        player.units = new List<Unit>();
-        player.ownedSectors = new List<Sector>();
     }
 }
