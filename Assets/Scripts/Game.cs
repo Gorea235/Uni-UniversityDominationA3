@@ -23,6 +23,8 @@ public class Game : MonoBehaviour
     public Text minigameScoreText;
     public Text minigameRewardText;
     public GameObject minigameLoading;
+    public GameObject endGamePopup;
+    public Text endGameWinnerText;
 
     #endregion
 
@@ -429,10 +431,14 @@ public class Game : MonoBehaviour
     /// </summary>
     public void EndGame()
     {
+        endGameWinnerText.text = "Player "+(GetWinner().Id + 1).ToString() + " is the winner!"; 
+        endGamePopup.SetActive(true);
+
         gameFinished = true;
         currentPlayer.IsActive = false;
         currentPlayer = null;
         turnState = TurnState.NULL;
+        MainMenu.ClearSave();
         Debug.Log("GAME FINISHED");
     }
 

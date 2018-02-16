@@ -56,8 +56,7 @@ public class MainMenu : MonoBehaviour
         {
             Game.GameToRestore = null;
             Game.HumanPlayersCount = types;
-            if (File.Exists(SaveGameDataPath))
-                File.Delete(SaveGameDataPath);
+            ClearSave();
             SceneManager.LoadScene("MainGame");
         }
         else
@@ -65,6 +64,12 @@ public class MainMenu : MonoBehaviour
             StartCoroutine(ShowPopUpMessage(2));
         }
 
+    }
+
+    public static void ClearSave()
+    {
+        if (File.Exists(SaveGameDataPath))
+            File.Delete(SaveGameDataPath);
     }
 
     /// <summary>
