@@ -381,4 +381,41 @@ public class GameTest
 
         yield return null;
     }
+
+    [UnityTest]
+    public IEnumerator SaveLoadTest()
+    {
+        // set up a game state
+        Game.HumanPlayersCount = new List<int> { 0, 1, 0, 1 };
+        game.Initialize();
+        Game.HumanPlayersCount = null;
+        map.sectors[0].Unit = InitUnit(2);
+        map.sectors[0].Unit.Owner = players[2];
+        map.sectors[0].Unit.LevelUp();
+        map.sectors[0].Unit.LevelUp();
+        int unitLevel = map.sectors[0].Unit.Level;
+        map.sectors[0].Owner = players[2];
+        map.sectors[1].Owner = players[1];
+
+        // test saving
+        SerializableGame memento = game.SaveToMemento();
+        // clear game
+        UnitTestsUtil.TearDownGameTest(ref game, ref map, ref players, ref gui);
+        // re-init game to make it *fresh*
+        UnitTestsUtil.SetupGameTest(out game, out map, out players, out gui);
+        // test loading
+        game.RestoreFromMemento(memento);
+
+        // test if game restored properly
+        Assert.That(players[0].IsHuman);
+        Assert.That(players[1].IsHuman, Is.False);
+        Assert.That(players[2].IsHuman);
+        Assert.That(players[3].IsHuman, Is.False);
+        Assert.That(map.sectors[0].Unit, Is.Not.Null);
+        Assert.That(map.sectors[0].Unit.Owner, Is.EqualTo(players[2]));
+        Assert.That(map.sectors[0].Unit.Level, Is.EqualTo(unitLevel));
+        Assert.That(map.sectors[1].Owner, Is.EqualTo(players[1]));
+
+        yield return null;
+    }
 }
