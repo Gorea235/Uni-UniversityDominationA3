@@ -53,7 +53,6 @@ public class Game : MonoBehaviour
     /// Used to set up the player configuration from the main menu.
     /// </summary>
     public static List<int> HumanPlayersCount { get; set; }
-
     /// <summary>
     /// The current turn state.
     /// </summary>
@@ -62,23 +61,15 @@ public class Game : MonoBehaviour
         get { return turnState; }
         set { turnState = value; }
     }
-
-    /// <summary>
-    /// Whether the PVC was encountered.
-    /// Isn't actually used anywhere lol
-    /// </summary>
-    public static bool PVCEncountered { get; set; }
     /// <summary>
     /// The last player to discover the PVC.
     /// </summary>
     public static Player LastDiscovererOfPVC { get; set; }
-
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
     public bool IsFinished { get { return gameFinished; } }
-
     /// <summary>
     /// Whether test mode is enabled.
     /// If so, then Update() stop processing.
@@ -88,7 +79,6 @@ public class Game : MonoBehaviour
         get { return testMode; }
         set { testMode = value; }
     }
-
     /// <summary>
     /// Stores the memento of the game to restore.
     /// If this is not null when Initializer.Awake fires, then the stored memento is
@@ -181,7 +171,6 @@ public class Game : MonoBehaviour
         if (LastDiscovererOfPVC == null)
         {
             SpawnPVC();
-            PVCEncountered = false;
             LastDiscovererOfPVC = null;
         }
     }
@@ -236,8 +225,7 @@ public class Game : MonoBehaviour
             players = sPlayers,
             sectors = sSectors,
             currentPlayerId = currentPlayer.Id,
-            lastDiscovererOfPvcId = LastDiscovererOfPVC?.Id,
-            pvcEncountered = PVCEncountered
+            lastDiscovererOfPvcId = LastDiscovererOfPVC?.Id
 
         };
     }
@@ -263,7 +251,6 @@ public class Game : MonoBehaviour
         currentPlayer.Gui.Activate();
         if (memento.lastDiscovererOfPvcId.HasValue)
             LastDiscovererOfPVC = players[memento.lastDiscovererOfPvcId.Value];
-        PVCEncountered = memento.pvcEncountered;
         MinigameFinishedProcess();
         UpdateGUI();
     }
@@ -297,7 +284,6 @@ public class Game : MonoBehaviour
         if (lastPVCLocation == -1)
         {
             randomSector.HasPVC = true;
-            PVCEncountered = false;
             Debug.Log("Allocated PVC initially at " + randomSector);
         }
         else
@@ -306,7 +292,6 @@ public class Game : MonoBehaviour
             sectors[lastPVCLocation].HasPVC = false;
             if (LastDiscovererOfPVC != null)
                 Debug.Log("Previous Player that found it is " + LastDiscovererOfPVC);
-            PVCEncountered = false;
             Debug.Log("Allocated PVC to a new location, which is at " + randomSector);
             Debug.Log("Player that found it is " + currentPlayer);
             Debug.Log("Last Player that found it is " + LastDiscovererOfPVC);
