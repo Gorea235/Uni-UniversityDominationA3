@@ -256,7 +256,7 @@ public class Game : MonoBehaviour
     /// <summary>
     /// Randomly spawn the PVC
     /// </summary>
-    public void SpawnPVC()
+    void SpawnPVC()
     {
         Sector[] sectors = gameMap.GetComponentsInChildren<Sector>();
 
@@ -276,7 +276,7 @@ public class Game : MonoBehaviour
             sectors[lastPVCLocation].HasPVC = false;
             if (LastDiscovererOfPVC != null)
                 Debug.Log("Previous Player that found it is " + LastDiscovererOfPVC);
-         //   LastDiscovererOfPVC = currentPlayer;
+            //   LastDiscovererOfPVC = currentPlayer;
             PVCEncountered = false;
             Debug.Log("Allocated PVC to a new location, which is at " + randomSector);
             Debug.Log("Player that found it is " + currentPlayer);
@@ -563,6 +563,7 @@ public class Game : MonoBehaviour
 
     public void PrepareForMinigame()
     {
+        SpawnPVC();
         GameToRestore = SaveToMemento();
         minigameLoading.SetActive(true);
     }
