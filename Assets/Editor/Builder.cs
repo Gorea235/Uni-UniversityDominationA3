@@ -18,7 +18,9 @@ public class ProjectBuilder
         Directory.CreateDirectory(buildPath);
 
         // do builds
+#if UNITY_2017_3_OR_NEWER
         PerformBuild("macOS", BuildTarget.StandaloneOSX, "UniversityDomination.app");
+#endif
         PerformBuild("win32", BuildTarget.StandaloneWindows, "win32/UniversityDomination32.exe");
         PerformBuild("win64", BuildTarget.StandaloneWindows64, "win64/UniversityDomination64.exe");
         PerformBuild("android", BuildTarget.Android, "UniversityDomination.apk");
