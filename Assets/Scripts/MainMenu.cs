@@ -25,7 +25,8 @@ public class MainMenu : MonoBehaviour
     #region Public Fields
 
     public const string SaveGameFileName = "SaveGame.bin";
-    public static readonly string SaveGameDataPath = Application.persistentDataPath + SaveGameFileName;
+    static string saveGameDataPath;
+    public static string SaveGameDataPath { get { return saveGameDataPath; } }
 
     #endregion
 
@@ -33,6 +34,7 @@ public class MainMenu : MonoBehaviour
 
     void Awake()
     {
+        saveGameDataPath = Application.persistentDataPath + SaveGameFileName;
         if (!File.Exists(SaveGameDataPath))
             loadGameButton.interactable = false;
         else
@@ -61,7 +63,7 @@ public class MainMenu : MonoBehaviour
         {
             StartCoroutine(ShowPopUpMessage(2));
         }
-        
+
     }
 
     /// <summary>
