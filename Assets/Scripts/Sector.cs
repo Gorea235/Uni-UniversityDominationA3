@@ -140,6 +140,8 @@ public class Sector : MonoBehaviour
         Debug.Log("Oof! You've just stepped on the PVC! GET READY FOR SOME *industrial* ACTION");
         //Set the flag so Game would know to reallocate the PVC at the end of this player's turn
         Game.PVCEncountered = true;
+        GameObject.Find("GameManager").GetComponent<Game>().SpawnPVC();
+        Game.LastDiscovererOfPVC = unit.Owner;
         GameObject.Find("GameManager").GetComponent<Game>().PrepareForMinigame();
         SceneManager.LoadScene("DoomMinigame");
         
@@ -274,6 +276,8 @@ public class Sector : MonoBehaviour
 
         // advance turn state
         map.game.NextTurnState();
+
+      
     }
 
     public void MoveIntoFriendlyUnit(Unit otherUnit)
