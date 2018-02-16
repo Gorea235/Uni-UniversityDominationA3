@@ -34,7 +34,7 @@ public class MainMenu : MonoBehaviour
 
     void Awake()
     {
-        saveGameDataPath = Application.persistentDataPath + "/" + SaveGameFileName;
+        InitSavePath();
         Debug.Log("Save game path set to " + SaveGameDataPath);
         if (!File.Exists(SaveGameDataPath))
             loadGameButton.interactable = false;
@@ -45,6 +45,11 @@ public class MainMenu : MonoBehaviour
     #endregion
 
     #region Helper Methods
+
+    public static void InitSavePath()
+    {
+        saveGameDataPath = Application.persistentDataPath + "/" + SaveGameFileName;
+    }
 
     public void StartNewGame()
     {

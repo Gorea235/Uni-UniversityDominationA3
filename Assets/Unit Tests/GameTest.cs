@@ -429,7 +429,11 @@ public class GameTest
     public IEnumerator SaveGameToFile_ClearSave()
     {
         // init game
+        Transform savedPopup = gui[0].transform.parent.Find("SavedPanel");
+        game.gameSavedPopup = savedPopup.GetComponent<UnityEngine.UI.Image>();
+        game.gameSavedPopupText = savedPopup.GetComponentInChildren<UnityEngine.UI.Text>();
         game.Initialize();
+        MainMenu.InitSavePath();
 
         // run file tests
         game.SaveGame();
