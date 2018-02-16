@@ -44,6 +44,7 @@ public class Game : MonoBehaviour
     TurnState turnState;
     bool gameFinished = false;
     bool testMode = false;
+    Player pvcDiscoveredByLast;
 
     #endregion
 
@@ -64,7 +65,11 @@ public class Game : MonoBehaviour
     /// <summary>
     /// The last player to discover the PVC.
     /// </summary>
-    public static Player LastDiscovererOfPVC { get; set; }
+    public Player PvcDiscoveredByLast
+    {
+        get { return pvcDiscoveredByLast; }
+        set { pvcDiscoveredByLast = value; }
+    }
     /// <summary>
     /// 
     /// </summary>
@@ -168,10 +173,10 @@ public class Game : MonoBehaviour
         }
 
         //sawn the PVC
-        if (LastDiscovererOfPVC == null)
+        if (PvcDiscoveredByLast == null)
         {
             SpawnPVC();
-            LastDiscovererOfPVC = null;
+            PvcDiscoveredByLast = null;
         }
     }
 
@@ -225,7 +230,7 @@ public class Game : MonoBehaviour
             players = sPlayers,
             sectors = sSectors,
             currentPlayerId = currentPlayer.Id,
-            lastDiscovererOfPvcId = LastDiscovererOfPVC?.Id
+            lastDiscovererOfPvcId = PvcDiscoveredByLast?.Id
 
         };
     }
@@ -250,7 +255,7 @@ public class Game : MonoBehaviour
         currentPlayer = players[memento.currentPlayerId];
         currentPlayer.Gui.Activate();
         if (memento.lastDiscovererOfPvcId.HasValue)
-            LastDiscovererOfPVC = players[memento.lastDiscovererOfPvcId.Value];
+            PvcDiscoveredByLast = players[memento.lastDiscovererOfPvcId.Value];
         MinigameFinishedProcess();
         UpdateGUI();
     }
@@ -290,11 +295,11 @@ public class Game : MonoBehaviour
         {
             randomSector.HasPVC = true;
             sectors[lastPVCLocation].HasPVC = false;
-            if (LastDiscovererOfPVC != null)
-                Debug.Log("Previous Player that found it is " + LastDiscovererOfPVC);
+            if (PvcDiscoveredByLast != null)
+                Debug.Log("Previous Player that found it is " + PvcDiscoveredByLast);
             Debug.Log("Allocated PVC to a new location, which is at " + randomSector);
             Debug.Log("Player that found it is " + currentPlayer);
-            Debug.Log("Last Player that found it is " + LastDiscovererOfPVC);
+            Debug.Log("Last Player that found it is " + PvcDiscoveredByLast);
         }
     }
 
@@ -579,6 +584,7 @@ public class Game : MonoBehaviour
     /// </summary>
     public void PrepareForMinigame()
     {
+        PvcDiscoveredByLast = currentPlayer;
         SpawnPVC();
         GameToRestore = SaveToMemento();
         minigameLoading.SetActive(true);

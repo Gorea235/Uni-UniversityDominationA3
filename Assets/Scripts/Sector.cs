@@ -173,8 +173,7 @@ public class Sector : MonoBehaviour
     {
         Debug.Log("Oof! You've just stepped on the PVC! GET READY FOR SOME *industrial* ACTION");
         //Set the flag so Game would know to reallocate the PVC at the end of this player's turn
-        Game.LastDiscovererOfPVC = unit.Owner;
-        GameObject.Find("GameManager").GetComponent<Game>().PrepareForMinigame();
+        map.game.PrepareForMinigame();
         SceneManager.LoadScene("DoomMinigame");
     }
 
@@ -297,7 +296,7 @@ public class Sector : MonoBehaviour
         //flag monitoring if the sector has a PVC spawned and the player moving in is neither
         //owning the sector, nor is he the last person to discover the PVC
         //Note: this is separated in a flag so that we can trigger the minigame after the MoveTo to avoid scene change problems
-        bool foundPVC = HasPVC && unit.Owner != owner && Game.LastDiscovererOfPVC != unit.Owner;
+        bool foundPVC = HasPVC && unit.Owner != owner && map.game.PvcDiscoveredByLast != unit.Owner;
 
         // move the selected unit into this sector
         unit.MoveTo(this);
