@@ -363,7 +363,13 @@ public class GameTest
     [UnityTest]
     public IEnumerator EndGame_GameEndsCorrectlyWithNoCurrentPlayerAndNoActivePlayersAndNoTurnState()
     {
+        GameObject resultPanel = gui[0].transform.parent.Find("GameResult").gameObject;
+        game.endGamePopup = resultPanel;
+        game.endGameWinnerText = resultPanel.transform.Find("GameWinnerText").GetComponent<UnityEngine.UI.Text>();
         game.currentPlayer = game.players[0];
+        foreach (Player player in game.players)
+            player.units.Clear();
+        game.currentPlayer.units.Add(null);
         game.EndGame();
 
         // ensure the game is marked as finished

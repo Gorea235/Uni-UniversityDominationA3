@@ -35,6 +35,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4963082512188670}
+  - component: {fileID: 114482731116029046}
   m_Layer: 0
   m_Name: Players
   m_TagString: Untagged
@@ -227,3 +228,15 @@ MonoBehaviour:
   color: {r: 0.8039216, g: 0.8039216, b: 0, a: 1}
   ownedSectors: []
   units: []
+--- !u!114 &114482731116029046
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1106155017409896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d59e4b1ed8841f4bac549c4d59b9cbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 0}
