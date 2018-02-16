@@ -253,8 +253,8 @@ public class Game : MonoBehaviour
 
     #region Helper Methods
 
-    ///<summary>
-    ///Randomly spawn the PVC
+    /// <summary>
+    /// Randomly spawn the PVC
     /// </summary>
     public void SpawnPVC()
     {
@@ -270,7 +270,7 @@ public class Game : MonoBehaviour
             PVCEncountered = false;
             Debug.Log("Allocated PVC initially at " + randomSector);
         }
-        else if (LastDiscovererOfPVC != currentPlayer)
+        else
         {
             randomSector.HasPVC = true;
             sectors[lastPVCLocation].HasPVC = false;
@@ -283,7 +283,6 @@ public class Game : MonoBehaviour
             Debug.Log("Last Player that found it is " + LastDiscovererOfPVC);
         }
     }
-
 
     /// <summary>
     /// Return a list of all sectors that contain landmarks from the given array.
