@@ -3,7 +3,7 @@ using System.Collections;
 
 public static class UnitTestsUtil
 {
-	public static void SetupTest(ref Game game, ref Map map, ref Player[] players, ref PlayerUI[] gui)
+    public static void SetupGameTest(out Game game, out Map map, out Player[] players, out PlayerUI[] gui)
     {
         // initialize the game, map, and players with any references needed
         // the "GameManager" asset contains a copy of the GameManager object
@@ -52,7 +52,7 @@ public static class UnitTestsUtil
         }
     }
 
-    public static void TearDownTest(ref Game game, ref Map map, ref Player[] players, ref PlayerUI[] gui)
+    public static void TearDownGameTest(ref Game game, ref Map map, ref Player[] players, ref PlayerUI[] gui)
     {
         Object.Destroy(game.gameObject);
         Object.Destroy(map.gameObject);
@@ -61,6 +61,6 @@ public static class UnitTestsUtil
         //foreach (var player in players)
         //    Object.Destroy(player.gameObject);
         //foreach (var ui in gui)
-            //Object.Destroy(ui.gameObject);
+        //Object.Destroy(ui.gameObject);
     }
 }

@@ -17,7 +17,7 @@ public class GameTest
     [SetUp]
     public void SetUp()
     {
-        UnitTestsUtil.SetupTest(ref game, ref map, ref players, ref gui);
+        UnitTestsUtil.SetupGameTest(out game, out map, out players, out gui);
         units = new List<GameObject>();
     }
 
@@ -47,7 +47,7 @@ public class GameTest
     [TearDown]
     public void TearDown()
     {
-        UnitTestsUtil.TearDownTest(ref game, ref map, ref players, ref gui);
+        UnitTestsUtil.TearDownGameTest(ref game, ref map, ref players, ref gui);
         foreach (var unit in units)
             if (unit != null)
                 Object.Destroy(unit);

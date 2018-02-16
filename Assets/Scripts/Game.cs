@@ -49,26 +49,51 @@ public class Game : MonoBehaviour
 
     #region Public Properties
 
+    /// <summary>
+    /// Used to set up the player configuration from the main menu.
+    /// </summary>
     public static List<int> HumanPlayersCount { get; set; }
 
+    /// <summary>
+    /// The current turn state.
+    /// </summary>
     public TurnState TurnState
     {
         get { return turnState; }
         set { turnState = value; }
     }
 
+    /// <summary>
+    /// Whether the PVC was encountered.
+    /// Isn't actually used anywhere lol
+    /// </summary>
     public static bool PVCEncountered { get; set; }
+    /// <summary>
+    /// The last player to discover the PVC.
+    /// </summary>
     public static Player LastDiscovererOfPVC { get; set; }
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     public bool IsFinished { get { return gameFinished; } }
 
+    /// <summary>
+    /// Whether test mode is enabled.
+    /// If so, then Update() stop processing.
+    /// </summary>
     public bool TestModeEnabled
     {
         get { return testMode; }
         set { testMode = value; }
     }
 
+    /// <summary>
+    /// Stores the memento of the game to restore.
+    /// If this is not null when Initializer.Awake fires, then the stored memento is
+    /// restored.
+    /// </summary>
     public static SerializableGame GameToRestore { get; set; }
 
     #endregion
@@ -116,7 +141,6 @@ public class Game : MonoBehaviour
             sector.Initialize();
         }
 
-
         // get an array of all sectors containing landmarks
         Sector[] landmarkedSectors = GetLandmarkedSectors(sectors);
 
@@ -160,9 +184,6 @@ public class Game : MonoBehaviour
             PVCEncountered = false;
             LastDiscovererOfPVC = null;
         }
-
-
-
     }
 
     /// <summary>
@@ -171,11 +192,7 @@ public class Game : MonoBehaviour
     /// <param name="listOfPlayers">List of all players assigned at MainMenu.</param>
     public void CreatePlayers(List<int> listOfPlayers)
     {
-        //// ensure that the specified number of players
-        //// is at least 2 and does not exceed 4
-        //numberOfPlayers = Mathf.Clamp(numberOfPlayers, 2, 4);
-
-        // mark the specified number of players as human
+        // mark specified players as human
         for (int i = 0; i < listOfPlayers.Count; i++)
         {
             if (listOfPlayers[i] == 0)
@@ -198,6 +215,12 @@ public class Game : MonoBehaviour
 
     #region Serialization
 
+    /// <summary>
+    /// Saves the game state to a memento (stored as <see cref="SerializableGame"/>).
+    /// This is the top level memento handler, meaning that the entire game state is
+    /// stored in the result, and can be completely restored by the result.
+    /// </summary>
+    /// <returns>The memento of the current game state.</returns>
     public SerializableGame SaveToMemento()
     {
         SerializablePlayer[] sPlayers = new SerializablePlayer[players.Length];
@@ -219,6 +242,11 @@ public class Game : MonoBehaviour
         };
     }
 
+    /// <summary>
+    /// Restores the game state from a memento. This is the top level memento handler,
+    /// meaning that the entire game state can be restored from the given memento.
+    /// </summary>
+    /// <param name="memento">The memento to restore.</param>
     public void RestoreFromMemento(SerializableGame memento)
     {
         turnState = memento.turnState;
@@ -278,7 +306,6 @@ public class Game : MonoBehaviour
             sectors[lastPVCLocation].HasPVC = false;
             if (LastDiscovererOfPVC != null)
                 Debug.Log("Previous Player that found it is " + LastDiscovererOfPVC);
-            //   LastDiscovererOfPVC = currentPlayer;
             PVCEncountered = false;
             Debug.Log("Allocated PVC to a new location, which is at " + randomSector);
             Debug.Log("Player that found it is " + currentPlayer);
@@ -295,12 +322,8 @@ public class Game : MonoBehaviour
     {
         List<Sector> landmarkedSectors = new List<Sector>();
         foreach (Sector sector in sectors)
-        {
             if (sector.Landmark != null)
-            {
                 landmarkedSectors.Add(sector);
-            }
-        }
 
         return landmarkedSectors.ToArray();
     }
@@ -311,17 +334,10 @@ public class Game : MonoBehaviour
     /// <returns>Return true if no unit is selected, false otherwise.</returns>
     public bool NoUnitSelected()
     {
-        // scan through each player
-        foreach (Player player in players)
-        {
-            // scan through each unit of each player
-            foreach (Unit unit in player.units)
-            {
-                // if a selected unit is found, return false
-                if (unit.IsSelected == true)
+        foreach (Player player in players) // scan through each player
+            foreach (Unit unit in player.units) // scan through each unit of each player
+                if (unit.IsSelected == true) // if a selected unit is found, return false
                     return false;
-            }
-        }
 
         // otherwise, return true
         return true;
@@ -448,9 +464,7 @@ public class Game : MonoBehaviour
     public void UpdateGUI()
     {
         for (int i = 0; i < 4; i++)
-        {
             players[i].Gui.UpdateDisplay();
-        }
     }
 
     /// <summary>
@@ -461,7 +475,7 @@ public class Game : MonoBehaviour
         // at the end of each turn, check for a winner and end the game if
         // necessary; otherwise, start the next player's turn
 
-        // if the current turn has ended and test mode is not enabled
+        // if the current turn has ended
         if (turnState == TurnState.EndOfTurn)
         {
 
@@ -522,6 +536,12 @@ public class Game : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Shows the game save info panel with the given text applied.
+    /// Configuration variables are hard-coded at the beginning of the function.
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
     IEnumerator ShowSavedGameInfoPanel(string text)
     {
         // this entire function is based off the functions that i've used for
@@ -531,12 +551,12 @@ public class Game : MonoBehaviour
         // properties and some other things)
 
         // init vars
-        const float entryTime = 0.3f;
-        const float delayTime = 1f;
-        const float exitTime = 0.3f;
-        float percentShown = 0;
-        float minY = 0;
-        float maxY = -gameSavedPopup.rectTransform.sizeDelta.y;
+        const float entryTime = 0.3f; // the time it will take to show the panel
+        const float delayTime = 1f; // the time the panel will stay shown
+        const float exitTime = 0.3f; // the time it will take to hide the panel
+        float percentShown = 0; // stores the current percentage of the panel that is shown
+        float minY = 0; // the minimum Y value
+        float maxY = -gameSavedPopup.rectTransform.sizeDelta.y; // the maximum Y value
 
         // init text
         gameSavedPopupText.text = text;
@@ -567,6 +587,11 @@ public class Game : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Prepares the game for entering the minigame. This means respawning the PVC and saving the
+    /// game state to allow restoring later. This function will also show a loading panel so
+    /// the player knows what is going on.
+    /// </summary>
     public void PrepareForMinigame()
     {
         SpawnPVC();
