@@ -17,7 +17,7 @@ public class Sector : MonoBehaviour
 
     Unit unit;
     Player owner;
-    bool PVC;
+    bool pvc;
 
     #endregion
 
@@ -80,8 +80,8 @@ public class Sector : MonoBehaviour
     /// <returns></returns>
     public bool HasPVC
     {
-        get { return PVC; }
-        set { PVC = value; }
+        get { return pvc; }
+        set { pvc = value; }
     }
     /// <summary>
     /// Whether the sector allows the PVC to be hidden on it.
@@ -135,7 +135,7 @@ public class Sector : MonoBehaviour
             unit = unit?.SaveToMemento(),
             landmark = landmark?.SaveToMemento(),
             ownerId = owner?.Id ?? -1,
-            PVC = PVC
+            PVC = pvc
         };
     }
 
@@ -158,7 +158,7 @@ public class Sector : MonoBehaviour
             landmark.RestoreFromMemento(memento.landmark);
         if (memento.ownerId >= 0)
             players[memento.ownerId].Capture(this);
-        PVC = memento.PVC;
+        pvc = memento.PVC;
     }
 
     #endregion
