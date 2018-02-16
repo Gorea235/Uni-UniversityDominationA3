@@ -23,18 +23,27 @@ public class Sector : MonoBehaviour
 
     #region Public Properties
 
+    /// <summary>
+    /// The reference to the current <see cref="Map"/> object.
+    /// </summary>
+    /// <returns></returns>
     public Map Map
     {
         get { return map; }
         set { map = value; }
     }
-
+    /// <summary>
+    /// The unit current occupying this sector.
+    /// </summary>
     public Unit Unit
     {
         get { return unit; }
         set { unit = value; }
     }
-
+    /// <summary>
+    /// The player that currently owns the sector.
+    /// </summary>
+    /// <returns></returns>
     public Player Owner
     {
         get { return owner; }
@@ -50,34 +59,53 @@ public class Sector : MonoBehaviour
                 gameObject.GetComponent<Renderer>().material.color = owner.Color;
         }
     }
-
+    /// <summary>
+    /// The list of adjacent sectors.
+    /// </summary>
     public Sector[] AdjacentSectors
     {
         get { return adjacentSectors; }
     }
-
+    /// <summary>
+    /// The landmark accociated with this sector.
+    /// </summary>
     public Landmark Landmark
     {
         get { return landmark; }
         set { landmark = value; }
     }
-
+    /// <summary>
+    /// Whether this sector has the PVC hidden on it.
+    /// </summary>
+    /// <returns></returns>
     public bool HasPVC
     {
         get { return PVC; }
         set { PVC = value; }
+    }
+    /// <summary>
+    /// Whether the sector allows the PVC to be hidden on it.
+    /// </summary>
+    public bool AllowPVC
+    {
+        get
+        {
+            //instantiate the pvc only if the sector has nothing in it
+            return landmark == null && unit == null;
+        }
     }
 
     #endregion
 
     #region Initialization
 
+    /// <summary>
+    /// Initializes the sector object.
+    /// </summary>
     public void Initialize()
     {
-
         // initialize the sector by setting its owner and unit to null
         // and determining if it contains a landmark or not
-
 
         // reset owner
         Owner = null;
@@ -90,13 +118,16 @@ public class Sector : MonoBehaviour
 
         //initialize the PVC spawn to none
         HasPVC = false;
-
     }
 
     #endregion
 
     #region Serialization
 
+    /// <summary>
+    /// Saves the sector state to a memento.
+    /// </summary>
+    /// <returns>The memento of the current sector state.</returns>
     public SerializableSector SaveToMemento()
     {
         return new SerializableSector
@@ -108,8 +139,15 @@ public class Sector : MonoBehaviour
         };
     }
 
+    /// <summary>
+    /// Restores the sector state from a memento. This also needs the list of
+    /// available players in order to set up the Owner reference.
+    /// </summary>
+    /// <param name="memento">The memento to restore from.</param>
+    /// <param name="players">The list of current players.</param>
     public void RestoreFromMemento(SerializableSector memento, Player[] players)
     {
+        // restore the occupying unit
         if (memento.unit != null)
         {
             unit = Instantiate(players[memento.ownerId].unitPrefab).GetComponent<Unit>();
@@ -126,15 +164,11 @@ public class Sector : MonoBehaviour
     #endregion
 
     #region Helper Methods
-    public bool AllowPVC()
-    {
-        //instantiate the pvc only if the sector has nothing in it
-        if (landmark == null && unit == null)
-            return true;
-        else
-            return false;
-    }
 
+    /// <summary>
+    /// Triggers the minigame. This function will prepare the game for
+    /// the switch to the other scene, and then will conmmence it.
+    /// </summary>
     public void TriggerMinigame()
     {
         Debug.Log("Oof! You've just stepped on the PVC! GET READY FOR SOME *industrial* ACTION");
@@ -145,11 +179,12 @@ public class Sector : MonoBehaviour
         SceneManager.LoadScene("DoomMinigame");
     }
 
+    /// <summary>
+    /// Highlights the sector by increasing its RGB values by a specified amount.
+    /// </summary>
+    /// <param name="amount">The amount to increase the RGB values by.</param>
     public void ApplyHighlight(float amount)
     {
-
-        // highlight a sector by increasing its RGB values by a specified amount
-
         Renderer currentRenderer = GetComponent<Renderer>();
         Color currentColor = currentRenderer.material.color;
         Color offset = new Vector4(amount, amount, amount, 1);
@@ -158,11 +193,12 @@ public class Sector : MonoBehaviour
         currentRenderer.material.color = newColor;
     }
 
+    /// <summary>
+    /// Unhighlights the sector by decreasing its RGB values by a specified amount.
+    /// </summary>
+    /// <param name="amount">The amount to decrease the RGB values by.</param>
     public void RevertHighlight(float amount)
     {
-
-        // unhighlight a sector by decreasing its RGB values by a specified amount
-
         Renderer currentRenderer = GetComponent<Renderer>();
         Color currentColor = currentRenderer.material.color;
         Color offset = new Vector4(amount, amount, amount, 1);
@@ -171,53 +207,49 @@ public class Sector : MonoBehaviour
         currentRenderer.material.color = newColor;
     }
 
+    /// <summary>
+    /// Highlights each sector adjacent to this one.
+    /// </summary>
     public void ApplyHighlightAdjacent()
     {
-
-        // highlight each sector adjacent to this one
-
         foreach (Sector adjacentSector in adjacentSectors)
         {
             adjacentSector.ApplyHighlight(0.2f);
         }
     }
 
+    /// <summary>
+    /// Unhighlight each sector adjacent to this one.
+    /// </summary>
     public void RevertHighlightAdjacent()
     {
-
-        // unhighlight each sector adjacent to this one
-
         foreach (Sector adjacentSector in adjacentSectors)
         {
             adjacentSector.RevertHighlight(0.2f);
         }
     }
 
+    /// <summary>
+    /// Clear this sector of any unit.
+    /// </summary>
     public void ClearUnit()
     {
-
-        // clear this sector of any unit
-
         unit = null;
     }
 
+    /// <summary>
+    /// When this sector is clicked, determine the context and act accordingly.
+    /// </summary>
     void OnMouseUpAsButton()
     {
-
-        // when this sector is clicked, determine the context
-        // and act accordingly
-
         OnMouseUpAsButtonAccessible();
-
     }
 
+    /// <summary>
+    /// A method of OnMouseUpAsButton that is accessible to other objects for testing.
+    /// </summary>
     public void OnMouseUpAsButtonAccessible()
     {
-
-        // a method of OnMouseUpAsButton that is 
-        // accessible to other objects for testing
-
-
         // if this sector contains a unit and belongs to the
         // current active player, and if no unit is selected
         if (unit != null && owner.IsActive && map.game.NoUnitSelected())
@@ -257,12 +289,16 @@ public class Sector : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Moves the given unit into the current, unoccupied, sector.
+    /// </summary>
+    /// <param name="unit">The unit to move.</param>
     public void MoveIntoUnoccupiedSector(Unit unit)
     {
         //flag monitoring if the sector has a PVC spawned and the player moving in is neither
         //owning the sector, nor is he the last person to discover the PVC
         //Note: this is separated in a flag so that we can trigger the minigame after the MoveTo to avoid scene change problems
-        bool foundPVC = (HasPVC && unit.Owner != owner && Game.LastDiscovererOfPVC != unit.Owner) ? true : false;
+        bool foundPVC = HasPVC && unit.Owner != owner && Game.LastDiscovererOfPVC != unit.Owner;
 
         // move the selected unit into this sector
         unit.MoveTo(this);
@@ -273,10 +309,12 @@ public class Sector : MonoBehaviour
 
         // advance turn state
         map.game.NextTurnState();
-
-
     }
 
+    /// <summary>
+    /// Swaps 2 friendly units between their sectors.
+    /// </summary>
+    /// <param name="otherUnit">The other unit to swap with.</param>
     public void MoveIntoFriendlyUnit(Unit otherUnit)
     {
         // swap the two units
@@ -296,7 +334,6 @@ public class Sector : MonoBehaviour
         // if the attacking unit wins
         if (Conflict(attackingUnit, defendingUnit))
         {
-
             // destroy defending unit
             defendingUnit.DestroySelf();
 
@@ -329,12 +366,10 @@ public class Sector : MonoBehaviour
     {
         // scan through each adjacent sector
         foreach (Sector adjacentSector in adjacentSectors)
-        {
             // if the adjacent sector contains the selected unit,
             // return the selected unit
             if (adjacentSector.unit != null && adjacentSector.unit.IsSelected)
                 return adjacentSector.unit;
-        }
 
         // otherwise, return null
         return null;

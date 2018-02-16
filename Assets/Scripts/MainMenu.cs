@@ -24,8 +24,14 @@ public class MainMenu : MonoBehaviour
 
     #region Public Fields
 
+    /// <summary>
+    /// The file name of the save game file.
+    /// </summary>
     public const string SaveGameFileName = "SaveGame.bin";
     static string saveGameDataPath;
+    /// <summary>
+    /// The full path to the save game file.
+    /// </summary>
     public static string SaveGameDataPath { get { return saveGameDataPath; } }
 
     #endregion
@@ -34,8 +40,10 @@ public class MainMenu : MonoBehaviour
 
     void Awake()
     {
-        InitSavePath();
+        InitSavePath(); // init save game path
         Debug.Log("Save game path set to " + SaveGameDataPath);
+        // if there is an available save game, then let the user load it,
+        // otherwise don't let them try
         if (!File.Exists(SaveGameDataPath))
             loadGameButton.interactable = false;
         else
@@ -46,17 +54,25 @@ public class MainMenu : MonoBehaviour
 
     #region Helper Methods
 
+    /// <summary>
+    /// Initializes the full save game path.
+    /// </summary>
     public static void InitSavePath()
     {
         saveGameDataPath = Application.persistentDataPath + "/" + SaveGameFileName;
     }
 
+    /// <summary>
+    /// Attempts to start up a new game with the given settings.
+    /// If there are not enough human players in the game, will instead
+    /// show the error dialog.
+    /// </summary>
     public void StartNewGame()
     {
-        List<int> types = GetPlayerTypes(); ;
+        List<int> types = GetPlayerTypes();
         Debug.Log("Type values: " + types[0].ToString() + "," + types[1].ToString() + ","
             + types[2].ToString() + "," + types[3].ToString());
-        //if the player has selected less than two human players, display an error
+        // if the player has selected less than two human players, display an error
         if (types.FindAll(players => players == 0).Count >= 2)
         {
             Game.GameToRestore = null;
@@ -71,6 +87,12 @@ public class MainMenu : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Removes the current save file.
+    /// Since saving is currently managed like a state-preservation system,
+    /// we are treating it like such by clearing the state on a new game and
+    /// when the game finishes.
+    /// </summary>
     public static void ClearSave()
     {
         if (File.Exists(SaveGameDataPath))
@@ -113,6 +135,10 @@ public class MainMenu : MonoBehaviour
         Application.Quit();
     }
 
+    /// <summary>
+    /// Shows the error dialog for the given amount of time.
+    /// </summary>
+    /// <param name="delay">The length of time to show the dialog for.</param>
     IEnumerator ShowPopUpMessage(float delay)
     {
         errorPanel.SetActive(true);
@@ -120,8 +146,11 @@ public class MainMenu : MonoBehaviour
         errorPanel.SetActive(false);
     }
 
-    //  Returns a list of ints representing the types chosen from each dropdown
-    //  currently - 0 = Human, 1 = AI
+    /// <summary>
+    /// Returns a list of ints representing the types chosen from each dropdown.
+    /// Currently: 0 = Human, 1 = AI.
+    /// </summary>
+    /// <returns>The list of player types.</returns>
     public List<int> GetPlayerTypes()
     {
         List<int> types;
@@ -134,9 +163,14 @@ public class MainMenu : MonoBehaviour
         return types;
     }
 
-    //  Returns a list of colours for the players
+    /// <summary>
+    /// Returns a list of colours for the players.
+    /// </summary>
+    /// <returns>The list of player colours.</returns>
     public List<Color> GetPlayerColours()
     {
+        // currently, the colours are hard-coding
+        // but this could be expanded in the future
         Color One = new Color(205, 0, 0);
         Color Two = new Color(177, 0, 240);
         Color Three = new Color(205, 205, 0);

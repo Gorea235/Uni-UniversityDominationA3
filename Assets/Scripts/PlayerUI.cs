@@ -26,10 +26,16 @@ public class PlayerUI : MonoBehaviour
 
     #region Initialization
 
-    public void Initialize(Player player, int player_id)
+    /// <summary>
+    /// Initializes the player UI.
+    /// </summary>
+    /// <param name="player">The player that this UI refers to.</param>
+    /// <param name="playerId">The id of the given player.</param>
+    public void Initialize(Player player, int playerId)
     {
         this.player = player;
 
+        // fetch in all the UI elements
         header = transform.Find("Header").GetComponent<Text>();
         headerHighlight = transform.Find("HeaderHighlight").GetComponent<Text>();
         percentOwned = transform.Find("PercentOwned_Value").GetComponent<Text>();
@@ -38,7 +44,7 @@ public class PlayerUI : MonoBehaviour
         numberOfSectors = player.Game.gameMap.GetComponent<Map>().sectors.Length;
         arrowOfCurrentPlayer = transform.Find("Arrow").GetComponent<Image>();
 
-        header.text = (player.IsHuman) ? "Player " + player_id.ToString() : "AI";
+        header.text = (player.IsHuman) ? "Player " + playerId.ToString() : "AI";
         headerHighlight.text = header.text;
         headerHighlight.color = player.Color;
         arrowOfCurrentPlayer.CrossFadeAlpha(0f, 0f, true);
@@ -49,6 +55,9 @@ public class PlayerUI : MonoBehaviour
 
     #region Helper Methods
 
+    /// <summary>
+    /// Updates the UI with the current values.
+    /// </summary>
     public void UpdateDisplay()
     {
         percentOwned.text = Mathf.Round(100 * player.ownedSectors.Count / numberOfSectors).ToString() + "%";
@@ -56,12 +65,18 @@ public class PlayerUI : MonoBehaviour
         knowledge.text = player.Knowledge.ToString();
     }
 
+    /// <summary>
+    /// Sets the UI to active and shows the necessary UI elements.
+    /// </summary>
     public void Activate()
     {
         arrowOfCurrentPlayer.CrossFadeAlpha(1f, 0.5f, true);
         header.color = player.Color;
     }
 
+    /// <summary>
+    /// Sets the UI to deactive and hides the necessary UI elements.
+    /// </summary>
     public void Deactivate()
     {
         arrowOfCurrentPlayer.CrossFadeAlpha(0f, 0f, true);

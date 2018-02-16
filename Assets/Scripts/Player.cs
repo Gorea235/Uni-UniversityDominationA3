@@ -28,64 +28,78 @@ public class Player : MonoBehaviour
 
     #region Public Properties
 
+    /// <summary>
+    /// The ID of the current player.
+    /// IDs are used for references when serializing and deserializing.
+    /// </summary>
     public int Id
     {
         get { return id; }
         set { id = value; }
     }
-
+    /// <summary>
+    /// The reference to the current <see cref="Game"/> object.
+    /// </summary>
     public Game Game
     {
         get { return game; }
         set { game = value; }
     }
-
+    /// <summary>
+    /// The <see cref="Unit"/> prefab object attached to this player.
+    /// </summary>
     public GameObject UnitPrefab
     {
         get { return unitPrefab; }
     }
-
+    /// <summary>
+    /// The <see cref="PlayerUI"/> object attached to this player.
+    /// </summary>
     public PlayerUI Gui
     {
         get { return gui; }
         set { gui = value; }
     }
-
+    /// <summary>
+    /// The amount of Beer the player currently has.
+    /// </summary>
     public int Beer
     {
         get { return beer; }
         set { beer = value; }
     }
-
     /// <summary>
-    /// In here with my Lamborghini.
+    /// The amount of Knowledge the player currently has.
     /// </summary>
-    /// <value>Up here in the hollywood hills.</value>
-    /// <remarks>Just installed these 7 new bookshelves.</remarks>
     public int Knowledge
     {
         get { return knowledge; }
         set { knowledge = value; }
     }
-
+    /// <summary>
+    /// The player's color.
+    /// </summary>
     public Color Color
     {
         get { return color; }
         set { color = value; }
     }
-
+    /// <summary>
+    /// Whether this player is human or AI.
+    /// </summary>
     public bool IsHuman
     {
         get { return human; }
         set { human = value; }
     }
-
+    /// <summary>
+    /// Whether the player is currently active.
+    /// </summary>
     public bool IsActive
     {
         get { return active; }
         set { active = value; }
     }
-
     /// <summary>
     /// Returns true if the player is eliminated, false otherwise.
     /// A player is considered eliminated if it has no units left
@@ -101,24 +115,19 @@ public class Player : MonoBehaviour
             return false;
         }
     }
-
     /// <summary>
     /// Returns true if the player owns at least one landmark,
     /// false otherwise.
     /// </summary>
-    /// <returns><c>true</c>, if landmark was ownsed, <c>false</c> otherwise.</returns>
+    /// <returns><c>true</c>, if landmark was owned, <c>false</c> otherwise.</returns>
     bool OwnsLandmark
     {
         get
         {
             // scan through each owned sector
             foreach (Sector sector in ownedSectors)
-            {
-                // if a landmarked sector is found, return true
-                if (sector.Landmark != null)
+                if (sector.Landmark != null) // if a landmarked sector is found, return true
                     return true;
-            }
-
             // otherwise, return false
             return false;
         }
@@ -128,6 +137,10 @@ public class Player : MonoBehaviour
 
     #region Serialization
 
+    /// <summary>
+    /// Saves the player state to a memento.
+    /// </summary>
+    /// <returns>The memento of the current player state.</returns>
     public SerializablePlayer SaveToMemento()
     {
         return new SerializablePlayer
@@ -140,6 +153,10 @@ public class Player : MonoBehaviour
         };
     }
 
+    /// <summary>
+    /// Restores the player state from a memento.
+    /// </summary>
+    /// <param name="memento">The memento to restore from.</param>
     public void RestoreFromMemento(SerializablePlayer memento)
     {
         id = memento.id;
@@ -156,8 +173,7 @@ public class Player : MonoBehaviour
     /// <summary>
     /// Capture the given sector.
     /// </summary>
-    /// <returns>The capture.</returns>
-    /// <param name="sector">Sector.</param>
+    /// <param name="sector">The sector to capture.</param>
     public void Capture(Sector sector)
     {
         // store a copy of the sector's previous owner

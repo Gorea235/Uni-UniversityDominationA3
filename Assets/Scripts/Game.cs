@@ -291,7 +291,7 @@ public class Game : MonoBehaviour
         Sector[] sectors = gameMap.GetComponentsInChildren<Sector>();
 
         int lastPVCLocation = Array.FindIndex(sectors, sector => sector.HasPVC == true);
-        Sector[] availableSectors = sectors.Where(s => s.AllowPVC()).ToArray();
+        Sector[] availableSectors = sectors.Where(s => s.AllowPVC).ToArray();
         Sector randomSector = availableSectors[UnityEngine.Random.Range(0, availableSectors.Length)];
 
         if (lastPVCLocation == -1)
@@ -447,7 +447,7 @@ public class Game : MonoBehaviour
     /// </summary>
     public void EndGame()
     {
-        endGameWinnerText.text = "Player "+(GetWinner().Id + 1).ToString() + " is the winner!"; 
+        endGameWinnerText.text = "Player " + (GetWinner().Id + 1).ToString() + " is the winner!";
         endGamePopup.SetActive(true);
 
         gameFinished = true;

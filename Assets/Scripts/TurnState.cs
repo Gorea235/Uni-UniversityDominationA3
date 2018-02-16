@@ -1,4 +1,7 @@
-﻿public enum TurnState
+﻿/// <summary>
+/// The current turn state.
+/// </summary>
+public enum TurnState
 {
     Move1,
     Move2,

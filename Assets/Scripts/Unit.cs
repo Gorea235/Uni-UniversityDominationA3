@@ -26,30 +26,41 @@ public class Unit : MonoBehaviour
 
     #region Public Properties
 
+    /// <summary>
+    /// The player which owns the current unit.
+    /// </summary>
     public Player Owner
     {
         get { return owner; }
         set { owner = value; }
     }
-
+    /// <summary>
+    /// The sector that this unit is currently occupying.
+    /// </summary>
     public Sector Sector
     {
         get { return sector; }
         set { sector = value; }
     }
-
+    /// <summary>
+    /// The level of the unit.
+    /// </summary>
     public int Level
     {
         get { return level; }
         set { level = value; }
     }
-
+    /// <summary>
+    /// The colour of the unit.
+    /// </summary>
     public Color Color
     {
         get { return color; }
         set { color = value; }
     }
-
+    /// <summary>
+    /// Whether the unit is currently selected.
+    /// </summary>
     public bool IsSelected
     {
         get { return selected; }
@@ -85,6 +96,10 @@ public class Unit : MonoBehaviour
 
     #region Serialization
 
+    /// <summary>
+    /// Saves the unit state to a memento.
+    /// </summary>
+    /// <returns>The memento of the current unit state.</returns>
     public SerializableUnit SaveToMemento()
     {
         return new SerializableUnit()
@@ -95,6 +110,14 @@ public class Unit : MonoBehaviour
         };
     }
 
+    /// <summary>
+    /// Restores the unit state from the given memento. This will also need the list of
+    /// available players and the sector it is contained in, in order to set up
+    /// the references.
+    /// </summary>
+    /// <param name="memento"></param>
+    /// <param name="players"></param>
+    /// <param name="containingSector"></param>
     public void RestoreFromMemento(SerializableUnit memento, Player[] players, Sector containingSector)
     {
         Initialize(players[memento.ownerId], containingSector, (Color)memento.color);
@@ -209,7 +232,6 @@ public class Unit : MonoBehaviour
             // set material color to match owner color
             GetComponent<Renderer>().material.color = color;
         }
-
     }
 
     /// <summary>
