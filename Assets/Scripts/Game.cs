@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
@@ -259,31 +260,27 @@ public class Game : MonoBehaviour
     {
         Sector[] sectors = gameMap.GetComponentsInChildren<Sector>();
 
-        while (true)
-        {
-            int lastPVCLocation = Array.FindIndex(sectors, sector => sector.HasPVC == true);
-            Sector randomSector = sectors[UnityEngine.Random.Range(0, sectors.Length)];
+        int lastPVCLocation = Array.FindIndex(sectors, sector => sector.HasPVC == true);
+        Sector[] availableSectors = sectors.Where(s => s.AllowPVC()).ToArray();
+        Sector randomSector = availableSectors[UnityEngine.Random.Range(0, availableSectors.Length)];
 
-            if (lastPVCLocation == -1 && randomSector.AllowPVC())
-            {
-                randomSector.HasPVC = true;
-                PVCEncountered = false;
-                Debug.Log("Allocated PVC initially at " + randomSector.ToString());
-                break;
-            }
-            else if (LastDiscovererOfPVC != currentPlayer && randomSector.AllowPVC())
-            {
-                randomSector.HasPVC = true;
-                sectors[lastPVCLocation].HasPVC = false;
-                if (LastDiscovererOfPVC != null)
-                    Debug.Log("Previous Player that found it is" + LastDiscovererOfPVC.ToString());
-                LastDiscovererOfPVC = currentPlayer;
-                PVCEncountered = false;
-                Debug.Log("Allocated PVC to a new location, which is at " + randomSector.ToString());
-                Debug.Log("Player that found it is" + currentPlayer.ToString());
-                Debug.Log("Last Player that found it is" + LastDiscovererOfPVC.ToString());
-                break;
-            }
+        if (lastPVCLocation == -1)
+        {
+            randomSector.HasPVC = true;
+            PVCEncountered = false;
+            Debug.Log("Allocated PVC initially at " + randomSector);
+        }
+        else if (LastDiscovererOfPVC != currentPlayer)
+        {
+            randomSector.HasPVC = true;
+            sectors[lastPVCLocation].HasPVC = false;
+            if (LastDiscovererOfPVC != null)
+                Debug.Log("Previous Player that found it is " + LastDiscovererOfPVC);
+            LastDiscovererOfPVC = currentPlayer;
+            PVCEncountered = false;
+            Debug.Log("Allocated PVC to a new location, which is at " + randomSector);
+            Debug.Log("Player that found it is " + currentPlayer);
+            Debug.Log("Last Player that found it is " + LastDiscovererOfPVC);
         }
     }
 
