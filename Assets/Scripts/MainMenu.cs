@@ -24,7 +24,8 @@ public class MainMenu : MonoBehaviour
 
     #region Public Fields
 
-    public const string SaveGameDataPath = "SaveGame.bin";
+    public const string SaveGameFileName = "SaveGame.bin";
+    public static readonly string SaveGameDataPath = Application.persistentDataPath + SaveGameFileName;
 
     #endregion
 
