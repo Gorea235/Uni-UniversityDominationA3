@@ -94,6 +94,15 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Quits the application.
+    /// </summary>
+    public void QuitGame()
+    {
+        Debug.Log("quitting");
+        Application.Quit();
+    }
+
     IEnumerator ShowPopUpMessage(float delay)
     {
         errorPanel.SetActive(true);
