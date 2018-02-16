@@ -20,6 +20,8 @@ public class ProjectBuilder
         // do builds
 #if UNITY_2017_3_OR_NEWER
         PerformBuild("macOS", BuildTarget.StandaloneOSX, "UniversityDomination.app");
+#else
+        PerformBuild("macOS", BuildTarget.StandaloneOSXIntel64, "UniversityDomination.app");
 #endif
         PerformBuild("win32", BuildTarget.StandaloneWindows, "win32/UniversityDomination32.exe");
         PerformBuild("win64", BuildTarget.StandaloneWindows64, "win64/UniversityDomination64.exe");
