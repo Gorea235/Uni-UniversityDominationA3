@@ -96,9 +96,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1264567322563992}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 40.324936, y: 3.390625, z: -23.21875}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1.0000001, z: 0.99999994}
   m_Children: []
   m_Father: {fileID: 4963082512188670}
   m_RootOrder: 1
@@ -109,8 +109,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1089859626674796}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 40.324936, y: 3.390625, z: -23.21875}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4963082512188670}
@@ -122,9 +122,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1742423337152186}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 40.324936, y: 3.390625, z: -23.21875}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1.0000001, z: 0.99999994}
   m_Children: []
   m_Father: {fileID: 4963082512188670}
   m_RootOrder: 3
@@ -135,9 +135,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1238953766720672}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 40.324936, y: 3.390625, z: -23.21875}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1.0000001, z: 0.99999994}
   m_Children: []
   m_Father: {fileID: 4963082512188670}
   m_RootOrder: 2
@@ -148,8 +148,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1106155017409896}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -40.324936, y: -0.390625, z: 23.21875}
+  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4202604939447364}
@@ -170,16 +170,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6fe4d8b41ec0b9418be61d4379ca3ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  game: {fileID: 0}
+  unitPrefab: {fileID: 1005237642776706, guid: 1486e80e1d1c1034790e21d826787651, type: 2}
+  gui: {fileID: 0}
+  color: {r: 0, g: 0.8039216, b: 0, a: 1}
   ownedSectors: []
   units: []
-  game: {fileID: 0}
-  unitPrefab: {fileID: 1005237642776706, guid: 773e4d707cb8962478065cd369102b78, type: 2}
-  gui: {fileID: 0}
-  beer: 0
-  knowledge: 0
-  color: {r: 0, g: 0.8039216, b: 0, a: 1}
-  human: 0
-  active: 0
 --- !u!114 &114320798990011542
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -191,16 +187,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6fe4d8b41ec0b9418be61d4379ca3ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  game: {fileID: 0}
+  unitPrefab: {fileID: 1005237642776706, guid: e44a5fa07bc4cf145a4771f52385f525, type: 2}
+  gui: {fileID: 0}
+  color: {r: 0.8039216, g: 0, b: 0, a: 1}
   ownedSectors: []
   units: []
-  game: {fileID: 0}
-  unitPrefab: {fileID: 1005237642776706, guid: 773e4d707cb8962478065cd369102b78, type: 2}
-  gui: {fileID: 0}
-  beer: 0
-  knowledge: 0
-  color: {r: 0.8039216, g: 0, b: 0, a: 1}
-  human: 0
-  active: 0
 --- !u!114 &114384537634592538
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -212,16 +204,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6fe4d8b41ec0b9418be61d4379ca3ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  game: {fileID: 0}
+  unitPrefab: {fileID: 1005237642776706, guid: 26a26f6c35e02e741b6011ca4d58b14b, type: 2}
+  gui: {fileID: 0}
+  color: {r: 0.6945231, g: 0, b: 0.9411765, a: 1}
   ownedSectors: []
   units: []
-  game: {fileID: 0}
-  unitPrefab: {fileID: 1005237642776706, guid: 773e4d707cb8962478065cd369102b78, type: 2}
-  gui: {fileID: 0}
-  beer: 0
-  knowledge: 0
-  color: {r: 0, g: 0, b: 0.8039216, a: 1}
-  human: 0
-  active: 0
 --- !u!114 &114444080772725496
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -233,13 +221,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6fe4d8b41ec0b9418be61d4379ca3ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  game: {fileID: 0}
+  unitPrefab: {fileID: 1005237642776706, guid: 6d8addf51e1b32f4ea5444b9e4052acc, type: 2}
+  gui: {fileID: 0}
+  color: {r: 0.8039216, g: 0.8039216, b: 0, a: 1}
   ownedSectors: []
   units: []
-  game: {fileID: 0}
-  unitPrefab: {fileID: 1005237642776706, guid: 773e4d707cb8962478065cd369102b78, type: 2}
-  gui: {fileID: 0}
-  beer: 0
-  knowledge: 0
-  color: {r: 0.8039216, g: 0.8039216, b: 0, a: 1}
-  human: 0
-  active: 0
