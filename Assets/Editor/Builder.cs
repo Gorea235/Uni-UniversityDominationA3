@@ -34,7 +34,13 @@ public class ProjectBuilder
     static void PerformBuild(string kind, BuildTarget target, string name)
     {
         Debug.Log(string.Format("=@= Building {0} =@=", kind));
-        BuildPipeline.BuildPlayer(scenes, buildPath + name, target, BuildOptions.None);
+        BuildPipeline.BuildPlayer(new BuildPlayerOptions()
+        {
+            scenes = scenes,
+            locationPathName = buildPath + name,
+            target = target,
+            options = BuildOptions.None
+        });
         Debug.Log("=@= Build complete! =@=");
     }
 }
