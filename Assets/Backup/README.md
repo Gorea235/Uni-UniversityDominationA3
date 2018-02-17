@@ -9,7 +9,7 @@ This is a backup minigame that we wrote relatively quickly, since we were not su
 
 To make this minigame the one that is loaded, you would have to do the following:
 
-- Edit the build settings to include the SimpleMinigame.unity scene
+- Edit the build settings to include the `SimpleMinigame.unity` scene
 - Edit [Sector.TriggerMinigame](/Assets/Scripts/Sector.cs#L172-L178) to load the scene `"SimpleMinigame"` rather than `"DoomMinigame"`
 
 That's it! We've designed the minigame handling to be completely agnostic of the actual minigame, so the only other thing you might want to do is adjust the rewards or scores so that the result is more fair overall (but this is entirely optional).
