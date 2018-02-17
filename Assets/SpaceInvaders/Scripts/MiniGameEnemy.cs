@@ -29,7 +29,7 @@ public class MiniGameEnemy : MonoBehaviour
     float minFireRate = 10f;
     float maxFireRate = 60f;
     float baseFireWait = 2f;
-    MiniGameManager gameManager;
+    SpaceInvadersMinigameManager gameManager;
 
     #endregion
 
@@ -44,7 +44,7 @@ public class MiniGameEnemy : MonoBehaviour
         }
 
         rigidBody = GetComponent<Rigidbody2D>();
-        gameManager = GameObject.Find("MiniGameManager").GetComponent<MiniGameManager>();
+        gameManager = GameObject.Find("MiniGameManager").GetComponent<SpaceInvadersMinigameManager>();
     }
 
     void Start()

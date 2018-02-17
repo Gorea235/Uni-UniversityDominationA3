@@ -10,7 +10,7 @@ public class PlayerBullet : MonoBehaviour
 
     #region Private Fields
 
-    MiniGameManager gameManager;
+    SpaceInvadersMinigameManager gameManager;
     float speed = 8;
     Rigidbody2D bulletBody;
 
@@ -20,7 +20,7 @@ public class PlayerBullet : MonoBehaviour
 
     void Awake()
     {
-        gameManager = GameObject.Find("MiniGameManager").GetComponent<MiniGameManager>();
+        gameManager = GameObject.Find("MiniGameManager").GetComponent<SpaceInvadersMinigameManager>();
         bulletBody = GetComponent<Rigidbody2D>();
         bulletBody.velocity = Vector2.up * speed;
     }

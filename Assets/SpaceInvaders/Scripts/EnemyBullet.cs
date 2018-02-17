@@ -35,7 +35,7 @@ public class EnemyBullet : MonoBehaviour
             case "Player":
                 Destroy(gameObject);
                 Destroy(collision.gameObject);
-                GameObject.Find("MiniGameManager").GetComponent<MiniGameManager>().EndMiniGame(false);
+                GameObject.Find("MiniGameManager").GetComponent<SpaceInvadersMinigameManager>().EndMiniGame(false);
                 break;
 
         }

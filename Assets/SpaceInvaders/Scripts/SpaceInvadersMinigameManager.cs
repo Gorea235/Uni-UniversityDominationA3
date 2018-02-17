@@ -2,7 +2,7 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MiniGameManager : MonoBehaviour
+public class SpaceInvadersMinigameManager : MonoBehaviour
 {
     #region Unity bindings
 
