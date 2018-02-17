@@ -171,7 +171,7 @@ public class WeaponController : MonoBehaviour
         int remaining = m_numberBulletsPerShot % m_sectorSplit;
         float remainingSectorSize = 360f / remaining;
         for (int r = 0; r < remaining; r++)
-            InsertSpreadPoint(remainingSectorSize, remaining, ref nextIndex, ref points);
+            InsertSpreadPoint(remainingSectorSize, r, ref nextIndex, ref points);
 
         // calculate final shot vectors on screen
         Vector3[] spreadPoints = new Vector3[m_numberBulletsPerShot];
