@@ -3,6 +3,7 @@ using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class GameTest
 {
@@ -408,5 +409,124 @@ public class GameTest
         Assert.That(System.IO.File.Exists(MainMenu.SaveGameDataPath));
         MainMenu.ClearSave();
         Assert.That(System.IO.File.Exists(MainMenu.SaveGameDataPath), Is.False);
+    }
+
+    [Test]
+    public void SpawnPVC_Initial()
+    {
+        game.Initialize();
+
+        var search =
+            from s in map.sectors
+            where s.HasPVC
+            select s;
+
+        Assert.That(search.Count(), Is.EqualTo(1));
+        Assert.That(search.First().AllowPVC);
+    }
+
+    [Test]
+    public void SpawnPVC_Respawn()
+    {
+        game.Initialize();
+
+        // grab initial PVC spawn sector
+        var search =
+            from s in map.sectors
+            where s.HasPVC
+            select s;
+        Sector initialSector = search.First();
+
+        // run the respawn 20 times
+        for (int i = 0; i < 20; i++)
+        {
+            game.PvcDiscoveredByLast = players[i % players.Length];
+            game.SpawnPVC(); // do a respawn
+
+            // search for the new spawn sector
+            search =
+                from s in map.sectors
+                where s.HasPVC
+                select s;
+
+            Assert.That(search.Count(), Is.EqualTo(1));
+            Sector newSpawn = search.First();
+            Assert.That(newSpawn.AllowPVC);
+            Assert.That(newSpawn, Is.Not.EqualTo(initialSector));
+
+            initialSector = newSpawn;
+        }
+    }
+
+    [Test]
+    public void PrepareForMinigame_Test()
+    {
+        // init test state
+        game.minigameLoading = gui[0].transform.parent.Find("MinigameLoading").gameObject;
+        game.Initialize();
+        var search =
+            from s in map.sectors
+            where s.HasPVC
+            select s;
+        Sector initialSector = search.First();
+        game.PvcDiscoveredByLast = players[0];
+        game.currentPlayer = players[1];
+        Game.GameToRestore = null;
+
+        game.PrepareForMinigame();
+
+        Assert.That(game.PvcDiscoveredByLast, Is.EqualTo(players[1]));
+        search =
+            from s in map.sectors
+            where s.HasPVC
+            select s;
+        Assert.That(search.Count(), Is.EqualTo(1));
+        Assert.That(search.First(), Is.Not.EqualTo(initialSector));
+        Assert.That(Game.GameToRestore, Is.Not.Null);
+    }
+
+    [Test]
+    public void MinigameFinishedProcess_Score070()
+    {
+        MinigameFinishedProcess_TestScore(70);
+    }
+
+    [Test]
+    public void MinigameFinishedProcess_Score100()
+    {
+        MinigameFinishedProcess_TestScore(100);
+    }
+
+    [Test]
+    public void MinigameFinishedProcess_Score170()
+    {
+        MinigameFinishedProcess_TestScore(170);
+    }
+
+    void MinigameFinishedProcess_TestScore(float score)
+    {
+        // set up unity bindings to stop null reference errors
+        Transform minigameResult = gui[0].transform.parent.Find("MinigameResult");
+        game.minigameStatusText = minigameResult.Find("MinigameStatusText").GetComponent<UnityEngine.UI.Text>();
+        game.minigameScoreText = minigameResult.Find("MinigameScoreText").GetComponent<UnityEngine.UI.Text>();
+        game.minigameRewardText = minigameResult.Find("MinigameRewardText").GetComponent<UnityEngine.UI.Text>();
+        game.minigameResultPopup = minigameResult.gameObject;
+
+        // init current player
+        players[0].Beer = 0;
+        players[0].Knowledge = 0;
+        game.currentPlayer = players[0];
+
+        // init data store
+        DataStore storage = new GameObject("DataStore").AddComponent<DataStore>();
+        storage.AddScore(score);
+        storage.ScoreModifier = 1;
+        storage.SetSucceeded(true);
+
+        // test process finish
+        game.MinigameFinishedProcess();
+        float result = Mathf.Floor(score / Game.minigameScoreScaleDownModifier);
+        Assert.That(players[0].Beer, Is.EqualTo(result).Within(float.Epsilon));
+        Assert.That(players[0].Knowledge, Is.EqualTo(result).Within(float.Epsilon));
     }
 }

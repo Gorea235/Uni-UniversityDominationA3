@@ -36,7 +36,7 @@ public class Game : MonoBehaviour
     /// with 100% health left), and the modifier is set so that only if you get
     /// this maximum score, will you be given 6 points.
     /// </summary>
-    const float minigameScoreScaleDownModifier = 28f + (1f / 3f);
+    public const float minigameScoreScaleDownModifier = 28f + (1f / 3f);
     const string minigameStatusTextFormat = "You {0} the minigame!";
     const string minigameScoreTextFormat = "You scored {0} points, which gives you";
     const string minigameRewardTextFormat = "{0} beer and {1} knowledge";
@@ -278,15 +278,15 @@ public class Game : MonoBehaviour
     /// <summary>
     /// Randomly spawn the PVC
     /// </summary>
-    void SpawnPVC()
+    public void SpawnPVC()
     {
         Sector[] sectors = gameMap.GetComponentsInChildren<Sector>();
 
-        int lastPVCLocation = Array.FindIndex(sectors, sector => sector.HasPVC == true);
-        Sector[] availableSectors = sectors.Where(s => s.AllowPVC).ToArray();
+        Sector lastPvcSector = sectors.Where(s => s.HasPVC).FirstOrDefault();
+        Sector[] availableSectors = sectors.Where(s => s.AllowPVC && s != lastPvcSector).ToArray();
         Sector randomSector = availableSectors[UnityEngine.Random.Range(0, availableSectors.Length)];
 
-        if (lastPVCLocation == -1)
+        if (lastPvcSector == null)
         {
             randomSector.HasPVC = true;
             Debug.Log("Allocated PVC initially at " + randomSector);
@@ -294,7 +294,7 @@ public class Game : MonoBehaviour
         else
         {
             randomSector.HasPVC = true;
-            sectors[lastPVCLocation].HasPVC = false;
+            lastPvcSector.HasPVC = false;
             if (PvcDiscoveredByLast != null)
                 Debug.Log("Previous Player that found it is " + PvcDiscoveredByLast);
             Debug.Log("Allocated PVC to a new location, which is at " + randomSector);
@@ -593,7 +593,7 @@ public class Game : MonoBehaviour
     /// <summary>
     /// Checks if a minigame has just finished, and if so, processes the result.
     /// </summary>
-    void MinigameFinishedProcess()
+    public void MinigameFinishedProcess()
     {
         GameObject dataStore = GameObject.Find("DataStore");
         if (dataStore != null)
