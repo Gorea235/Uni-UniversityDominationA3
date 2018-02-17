@@ -398,9 +398,7 @@ public class GameTest
     public void SaveGameToFile_ClearSave()
     {
         // init game
-        Transform savedPopup = gui[0].transform.parent.Find("SavedPanel");
-        game.gameSavedPopup = savedPopup.GetComponent<UnityEngine.UI.Image>();
-        game.gameSavedPopupText = savedPopup.GetComponentInChildren<UnityEngine.UI.Text>();
+        game.gameSavedPopup = gui[0].transform.parent.Find("SavedPanel").gameObject;
         game.Initialize();
         MainMenu.InitSavePath();
 

@@ -1970,8 +1970,7 @@ MonoBehaviour:
   - {fileID: 1369005491}
   gameMap: {fileID: 1549731849}
   currentPlayer: {fileID: 78266717}
-  gameSavedPopup: {fileID: 1416006024}
-  gameSavedPopupText: {fileID: 1842343629}
+  gameSavedPopup: {fileID: 464232846}
   minigameResultPopup: {fileID: 573903743}
   minigameStatusText: {fileID: 769907450}
   minigameScoreText: {fileID: 93759626}
@@ -2592,6 +2591,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2234cd75cdbdb5c4b89f1d9defba62d8, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &464232846 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1130485866259496, guid: 2234cd75cdbdb5c4b89f1d9defba62d8,
+    type: 2}
+  m_PrefabInternal: {fileID: 464232845}
 --- !u!1001 &481771056
 Prefab:
   m_ObjectHideFlags: 0
@@ -6621,12 +6625,6 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 0461d598fb89c0d41bf51ca21bf20d3f, type: 3}
   m_PrefabInternal: {fileID: 1407830983}
---- !u!114 &1416006024 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114122489326858720, guid: 2234cd75cdbdb5c4b89f1d9defba62d8,
-    type: 2}
-  m_PrefabInternal: {fileID: 464232845}
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1 &1421098231
 GameObject:
   m_ObjectHideFlags: 0
@@ -8536,12 +8534,6 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 400004, guid: ad66984938a6e2c40928c722ac6b686a, type: 3}
   m_PrefabInternal: {fileID: 1818111885}
---- !u!114 &1842343629 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114593072697723016, guid: 2234cd75cdbdb5c4b89f1d9defba62d8,
-    type: 2}
-  m_PrefabInternal: {fileID: 464232845}
-  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1 &1842545543
 GameObject:
   m_ObjectHideFlags: 0

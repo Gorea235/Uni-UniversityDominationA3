@@ -82,7 +82,7 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
-            StartCoroutine(ShowPopUpMessage(2));
+            StartCoroutine(Helpers.ShowPopUpMessage(errorPanel, 0.3f, 1.4f, 0.3f));
         }
 
     }
@@ -133,17 +133,6 @@ public class MainMenu : MonoBehaviour
     {
         Debug.Log("quitting");
         Application.Quit();
-    }
-
-    /// <summary>
-    /// Shows the error dialog for the given amount of time.
-    /// </summary>
-    /// <param name="delay">The length of time to show the dialog for.</param>
-    IEnumerator ShowPopUpMessage(float delay)
-    {
-        errorPanel.SetActive(true);
-        yield return new WaitForSeconds(delay);
-        errorPanel.SetActive(false);
     }
 
     /// <summary>

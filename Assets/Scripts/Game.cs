@@ -16,8 +16,7 @@ public class Game : MonoBehaviour
     public Player[] players;
     public GameObject gameMap;
     public Player currentPlayer;
-    public Image gameSavedPopup;
-    public Text gameSavedPopupText;
+    public GameObject gameSavedPopup;
     public GameObject minigameResultPopup;
     public Text minigameStatusText;
     public Text minigameScoreText;
@@ -512,68 +511,18 @@ public class Game : MonoBehaviour
         try
         {
             formatter.Serialize(fs, memento);
-            StartCoroutine(ShowSavedGameInfoPanel("Game saved"));
+            StartCoroutine(Helpers.ShowPopUpMessage(gameSavedPopup, 0.3f, 1, 0.3f, "Game saved"));
         }
         catch (SerializationException ex)
         {
             //Debug.Log("Failed to serialize. Reason: " + ex.Message);
             //throw ex;
-            StartCoroutine(ShowSavedGameInfoPanel(string.Format("Unable to save game ({0})", ex.Message)));
+            StartCoroutine(Helpers.ShowPopUpMessage(gameSavedPopup, 0.3f, 1, 0.3f,
+                                                    (string.Format("Unable to save game ({0})", ex.Message))));
         }
         finally
         {
             fs.Close();
-        }
-    }
-
-    /// <summary>
-    /// Shows the game save info panel with the given text applied.
-    /// Configuration variables are hard-coded at the beginning of the function.
-    /// </summary>
-    /// <param name="text"></param>
-    /// <returns></returns>
-    IEnumerator ShowSavedGameInfoPanel(string text)
-    {
-        // this entire function is based off the functions that i've used for
-        // the Doom clone, but since this class is already full and we're only
-        // using this kind of thing for this 1 panel, I don't want to do the
-        // simplifications I did for that (since it requires 2 extra private
-        // properties and some other things)
-
-        // init vars
-        const float entryTime = 0.3f; // the time it will take to show the panel
-        const float delayTime = 1f; // the time the panel will stay shown
-        const float exitTime = 0.3f; // the time it will take to hide the panel
-        float percentShown = 0; // stores the current percentage of the panel that is shown
-        float minY = 0; // the minimum Y value
-        float maxY = -gameSavedPopup.rectTransform.sizeDelta.y; // the maximum Y value
-
-        // init text
-        gameSavedPopupText.text = text;
-
-        // do show animation
-        while (percentShown < 1)
-        {
-            yield return new WaitForEndOfFrame();
-            percentShown += Time.deltaTime / entryTime; // percent of the animation time we're thru
-            percentShown = Mathf.Clamp01(percentShown);
-            Vector2 pos = gameSavedPopup.rectTransform.anchoredPosition;
-            pos.y = Mathf.SmoothStep(minY, maxY, percentShown);
-            gameSavedPopup.rectTransform.anchoredPosition = pos;
-        }
-
-        // stay up for a given time
-        yield return new WaitForSeconds(delayTime);
-
-        // do hide animation
-        while (percentShown > 0)
-        {
-            yield return new WaitForEndOfFrame();
-            percentShown -= Time.deltaTime / exitTime; // percent of the animation time we're thru
-            percentShown = Mathf.Clamp01(percentShown);
-            Vector2 pos = gameSavedPopup.rectTransform.anchoredPosition;
-            pos.y = Mathf.SmoothStep(minY, maxY, percentShown);
-            gameSavedPopup.rectTransform.anchoredPosition = pos;
         }
     }
 
