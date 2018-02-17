@@ -17,12 +17,14 @@ public class BonusEnemySpawner : MonoBehaviour
     float minSpawnRate = 10f;
     float maxSpawnRate = 20f;
     float baseSpawnWait = 4f;
+    float startTime;
 
     #endregion
 
     #region MonoBehaviour
     void Start()
     {
+        startTime = Time.time;
         randomiseSpawnRate();
     }
 
@@ -37,7 +39,7 @@ public class BonusEnemySpawner : MonoBehaviour
 
     void Spawn()
     {
-        if (Time.time > baseSpawnWait)
+        if ((Time.time - startTime) > baseSpawnWait)
         {
             randomiseSpawnRate();
             Instantiate(bonusEnemy.transform, transform.position, Quaternion.identity);

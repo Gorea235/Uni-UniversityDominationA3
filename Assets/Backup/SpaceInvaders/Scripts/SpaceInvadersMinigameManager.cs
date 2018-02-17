@@ -14,7 +14,7 @@ public class SpaceInvadersMinigameManager : MonoBehaviour
 
     #region Private fields
 
-    const float maxGameLength = 70f;
+    const float maxGameLength = 60f;
     const float killScore = 1f;
     const float bonusKillScore = 10f;
     const float winBonusScore = 50f;
@@ -36,17 +36,14 @@ public class SpaceInvadersMinigameManager : MonoBehaviour
 
     void Update()
     {
-        if (SceneManager.GetActiveScene().name == "SimpleMinigame")
-        {
-            scoreText.text = dataStorage.CurrentScore.ToString("N0");
-            //decrement timer;
-            timeLeftText.text = timer.ToString("##");
-            timer = 60f - Time.time;
+        scoreText.text = dataStorage.CurrentScore.ToString("N0");
+        //decrement timer;
+        timeLeftText.text = timer.ToString("##");
+        timer -= Time.deltaTime;
 
-            if (Time.time >= 60f || player == null)
-            {
-                EndMiniGame(false);
-            }
+        if (timer <= 0 || player == null)
+        {
+            EndMiniGame(false);
         }
     }
 

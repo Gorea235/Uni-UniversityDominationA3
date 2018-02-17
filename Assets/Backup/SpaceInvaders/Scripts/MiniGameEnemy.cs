@@ -30,6 +30,7 @@ public class MiniGameEnemy : MonoBehaviour
     float maxFireRate = 60f;
     float baseFireWait = 2f;
     SpaceInvadersMinigameManager gameManager;
+    float startTime;
 
     #endregion
 
@@ -49,6 +50,7 @@ public class MiniGameEnemy : MonoBehaviour
 
     void Start()
     {
+        startTime = Time.time;
         RandomiseFireRate();
         DoDirectionSwitch(EnemyDirection.Right);
     }
@@ -105,7 +107,7 @@ public class MiniGameEnemy : MonoBehaviour
 
     void Shoot()
     {
-        if (Time.time > baseFireWait)
+        if ((Time.time - startTime) > baseFireWait)
         {
             RandomiseFireRate();
             Instantiate(enemyBullet.transform, transform.position, Quaternion.identity);
