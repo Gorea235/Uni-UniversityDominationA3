@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class MinigameManager : MonoBehaviour
+public class DoomMinigameManager : MonoBehaviour
 {
     #region Unity Bindings
 
