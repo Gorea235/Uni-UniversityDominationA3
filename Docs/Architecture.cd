@@ -50,7 +50,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="PlayerUI">
-    <Position X="12" Y="8.5" Width="1.5" />
+    <Position X="12" Y="8.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AACAAAQEAABIAQBAABgAAAAAAAAAAEABAAABAAAAAAA=</HashCode>
       <FileName>Assets\Scripts\PlayerUI.cs</FileName>
