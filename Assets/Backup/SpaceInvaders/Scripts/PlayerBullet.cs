@@ -22,7 +22,7 @@ public class PlayerBullet : MonoBehaviour
     {
         gameManager = GameObject.Find("MiniGameManager").GetComponent<SpaceInvadersMinigameManager>();
         bulletBody = GetComponent<Rigidbody2D>();
-        bulletBody.velocity = Vector2.up * speed;
+        bulletBody.velocity = Vector2.up * speed; // set bullet speed
     }
 
     #endregion
@@ -33,15 +33,15 @@ public class PlayerBullet : MonoBehaviour
     {
         switch (collision.tag)
         {
-            case "Boundary":
+            case "Boundary": // if we hit the top, remove the bullet
                 Destroy(gameObject);
                 break;
-            case "Enemy":
+            case "Enemy": // if we hit an enemy remove it and add a kill to the score
                 Destroy(gameObject);
                 Destroy(collision.gameObject);
                 gameManager.AddKill();
                 break;
-            case "BonusEnemy":
+            case "BonusEnemy": // if we hit a bonus enemy, remove it and add a bonus kill to the score
                 Destroy(gameObject);
                 Destroy(collision.gameObject);
                 gameManager.AddBonusKill();

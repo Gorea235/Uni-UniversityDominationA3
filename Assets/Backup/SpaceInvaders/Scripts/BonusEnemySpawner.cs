@@ -22,10 +22,11 @@ public class BonusEnemySpawner : MonoBehaviour
     #endregion
 
     #region MonoBehaviour
+
     void Start()
     {
-        startTime = Time.time;
-        randomiseSpawnRate();
+        startTime = Time.time; // grab the time at which the minigame started
+        randomiseSpawnRate(); // init first spawn time
     }
 
     private void Update()
@@ -37,8 +38,12 @@ public class BonusEnemySpawner : MonoBehaviour
 
     #region Helper Methods
 
+    /// <summary>
+    /// Will spawn a bonus enemy after the set amount of time.
+    /// </summary>
     void Spawn()
     {
+        // if it's been long enough, spawn a bonus enemy
         if ((Time.time - startTime) > baseSpawnWait)
         {
             randomiseSpawnRate();
@@ -47,6 +52,9 @@ public class BonusEnemySpawner : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets the next point in time the spawner should create the bonus enemy.
+    /// </summary>
     void randomiseSpawnRate()
     {
         baseSpawnWait = baseSpawnWait + Random.Range(minSpawnRate, maxSpawnRate);

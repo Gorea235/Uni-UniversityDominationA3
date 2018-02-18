@@ -38,10 +38,11 @@ public class MiniGameEnemy : MonoBehaviour
 
     void Awake()
     {
+        // if we haven't initialised the reference for the enemies, do so
         if (enemies == null)
         {
             enemies = transform.root.GetComponentsInChildren<Renderer>();
-            totalEnemiesLeft = enemies.Length;
+            totalEnemiesLeft = enemies.Length; // keep track of the number of enemies left
         }
 
         rigidBody = GetComponent<Rigidbody2D>();
@@ -50,9 +51,9 @@ public class MiniGameEnemy : MonoBehaviour
 
     void Start()
     {
-        startTime = Time.time;
-        RandomiseFireRate();
-        DoDirectionSwitch(EnemyDirection.Right);
+        startTime = Time.time; // grab the time the game started at
+        RandomiseFireRate(); // set next shoot time
+        DoDirectionSwitch(EnemyDirection.Right); // start moving
     }
 
     void FixedUpdate()
@@ -80,7 +81,7 @@ public class MiniGameEnemy : MonoBehaviour
     void OnDestroy()
     {
         totalEnemiesLeft--;
-        if (totalEnemiesLeft <= 0)
+        if (totalEnemiesLeft <= 0) // if there are no enemies left, the player won
             gameManager.EndMiniGame(true);
     }
 
@@ -88,16 +89,24 @@ public class MiniGameEnemy : MonoBehaviour
 
     #region Helper Methods
 
+    /// <summary>
+    /// Switches the directions of all the enemies.
+    /// </summary>
+    /// <param name="direction">The direction to switch to.</param>
     void SwitchAllDirections(EnemyDirection direction)
     {
-        if (direction != currentDirection)
+        if (direction != currentDirection) // only switch if it's changed
             foreach (var en in enemies.Where(e => e != null))
                 en.gameObject.GetComponent<MiniGameEnemy>().DoDirectionSwitch(direction);
     }
 
+    /// <summary>
+    /// Switches the direction of the current enemy.
+    /// </summary>
+    /// <param name="direction">The direction to switch to.</param>
     void DoDirectionSwitch(EnemyDirection direction)
     {
-        rigidBody.velocity = constantVelocity * (int)direction;
+        rigidBody.velocity = constantVelocity * (int)direction; // set direction
         Vector2 pos = transform.position;
         pos.y -= moveDownAmount;
         transform.position = pos;
@@ -105,15 +114,22 @@ public class MiniGameEnemy : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Will shoot a bullet after a given amount of time.
+    /// </summary>
     void Shoot()
     {
+        // if it's been long enough, shoot a bullet
         if ((Time.time - startTime) > baseFireWait)
         {
-            RandomiseFireRate();
+            RandomiseFireRate(); // set next shot time
             Instantiate(enemyBullet.transform, transform.position, Quaternion.identity);
         }
     }
 
+    /// <summary>
+    /// Sets the next point in time the enemy should shoot.
+    /// </summary>
     void RandomiseFireRate()
     {
         baseFireWait = baseFireWait + Random.Range(minFireRate, maxFireRate);

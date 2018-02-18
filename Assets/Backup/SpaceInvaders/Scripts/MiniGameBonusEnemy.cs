@@ -23,7 +23,7 @@ public class MiniGameBonusEnemy : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.tag == "RightBoundary")
+        if (collision.tag == "RightBoundary") // if the bonus enemy hits the wall, remove it
             Destroy(gameObject);
     }
 

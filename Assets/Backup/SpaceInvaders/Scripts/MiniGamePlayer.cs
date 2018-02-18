@@ -21,8 +21,8 @@ public class MiniGamePlayer : MonoBehaviour
 
     void FixedUpdate()
     {
-        //use GetAxis instead if you prefer smooth movement opposed to classic arcade feel
-        float moveInX = Input.GetAxisRaw("Horizontal"); //Axis set in Edit > Project settings > Input
+        // use GetAxis instead if you prefer smooth movement opposed to classic arcade feel
+        float moveInX = Input.GetAxisRaw("Horizontal"); // Axis set in Edit > Project settings > Input
         GetComponent<Rigidbody2D>().velocity = new Vector2(moveInX, 0) * speed;
     }
 
@@ -35,10 +35,14 @@ public class MiniGamePlayer : MonoBehaviour
 
     #region Helper Methods
 
+    /// <summary>
+    /// If the user clicked the fire button (space), fire a bullet.
+    /// </summary>
     void FireBullet()
     {
         if (Input.GetButtonDown("Jump") && shotDisplayed == null) // "Jump" button corresponds to "space" by default
         {
+            // keep track of the current shot to only allow 1
             shotDisplayed = Instantiate(bullet.transform, transform.position, Quaternion.identity);
             Debug.Log("Bullet fired");
         }
