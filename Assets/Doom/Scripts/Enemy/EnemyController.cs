@@ -35,6 +35,7 @@ public class EnemyController : MonoBehaviour
     bool _dead;
     float _currentMoveSpeed;
     float _lastHit;
+    bool _touchingPlayer;
 
     #endregion
 
@@ -84,6 +85,18 @@ public class EnemyController : MonoBehaviour
         _animator = gameObject.GetComponent<Animator>();
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.tag == "Player")
+            _touchingPlayer = true;
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.tag == "Player")
+            _touchingPlayer = false;
+    }
+
     void Update()
     {
         if (_dead) // if dead stop updates
@@ -92,7 +105,8 @@ public class EnemyController : MonoBehaviour
         if (IsActive) // only process if currently active
         {
             // check if in attacking range
-            if (Vector3.Distance(gameObject.transform.position, _player.transform.position) <= m_range)
+            if (Vector3.Distance(gameObject.transform.position, _player.transform.position) <= m_range ||
+                _touchingPlayer)
             {
                 SetAttacking(); // set attacking animation
                 // only attack if it's been long enough since the last attack
