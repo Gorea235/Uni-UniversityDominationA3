@@ -28,24 +28,6 @@ public class SectorTest
         return go.GetComponent<Unit>();
     }
 
-    void ResetSectors(Sector sectorA, Sector sectorB)
-    {
-
-        // re-initialize sectors for in between test cases in MoveIntoHostileUnitTest
-
-        sectorA.Unit = InitUnit();
-        sectorA.Unit.Sector = sectorA;
-        sectorA.Unit.Owner = players[0];
-        sectorA.Owner = players[0];
-        sectorA.Unit.Level = 1;
-
-        sectorB.Unit = InitUnit();
-        sectorB.Unit.Sector = sectorB;
-        sectorB.Unit.Owner = players[1];
-        sectorB.Owner = players[1];
-        sectorB.Unit.Level = 1;
-    }
-
     [TearDown]
     public void TearDown()
     {
@@ -315,6 +297,24 @@ public class SectorTest
         Assert.IsNull(sectorA.Unit); // attacking unit destroyed
         Assert.IsTrue(sectorB.Unit.Level == -4); // defending unit did not gain a level following defence
         Assert.IsTrue(game.TurnState == TurnState.EndOfTurn);
+    }
+
+    void ResetSectors(Sector sectorA, Sector sectorB)
+    {
+
+        // re-initialize sectors for in between test cases in MoveIntoHostileUnitTest
+
+        sectorA.Unit = InitUnit();
+        sectorA.Unit.Sector = sectorA;
+        sectorA.Unit.Owner = players[0];
+        sectorA.Owner = players[0];
+        sectorA.Unit.Level = 1;
+
+        sectorB.Unit = InitUnit();
+        sectorB.Unit.Sector = sectorB;
+        sectorB.Unit.Owner = players[1];
+        sectorB.Owner = players[1];
+        sectorB.Unit.Level = 1;
     }
 
     [Test]

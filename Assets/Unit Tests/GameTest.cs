@@ -29,22 +29,6 @@ public class GameTest
         return go.GetComponent<Unit>();
     }
 
-    void ClearSectorsAndUnitsOfAllPlayers()
-    {
-
-        foreach (Player player in game.players)
-        {
-            ClearSectorsAndUnits(player);
-        }
-    }
-
-    void ClearSectorsAndUnits(Player player)
-    {
-
-        player.units = new List<Unit>();
-        player.ownedSectors = new List<Sector>();
-    }
-
     [TearDown]
     public void TearDown()
     {
@@ -331,6 +315,22 @@ public class GameTest
         playerA.ownedSectors.Add(landmark1);
         playerB.units.Add(InitUnit(1));
         Assert.IsNull(game.GetWinner());
+    }
+
+    void ClearSectorsAndUnitsOfAllPlayers()
+    {
+
+        foreach (Player player in game.players)
+        {
+            ClearSectorsAndUnits(player);
+        }
+    }
+
+    void ClearSectorsAndUnits(Player player)
+    {
+
+        player.units = new List<Unit>();
+        player.ownedSectors = new List<Sector>();
     }
 
     [Test]
