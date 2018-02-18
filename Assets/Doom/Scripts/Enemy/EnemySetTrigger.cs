@@ -1,6 +1,10 @@
 ﻿using System;
 using UnityEngine;
 
+/// <summary>
+/// Allows enemies to be grouped together and have states applied and fetched all at once, and
+/// have events trigger on states of the entire set.
+/// </summary>
 public class EnemySetTrigger : MonoBehaviour
 {
     #region Unity Bindings
@@ -15,6 +19,9 @@ public class EnemySetTrigger : MonoBehaviour
 
     #region Data Structures
 
+    /// <summary>
+    /// The action that should be applied to the next set upon an trigger.
+    /// </summary>
     public enum TriggerAction
     {
         Activate,
@@ -23,6 +30,9 @@ public class EnemySetTrigger : MonoBehaviour
         DisableChasing
     }
 
+    /// <summary>
+    /// The requirement for the trigger action to be fired.
+    /// </summary>
     public enum TiggerRequirement
     {
         None,
@@ -30,6 +40,9 @@ public class EnemySetTrigger : MonoBehaviour
         AllDead
     }
 
+    /// <summary>
+    /// A set of enemies.
+    /// </summary>
     [Serializable]
     public class EnemySet
     {
@@ -45,12 +58,31 @@ public class EnemySetTrigger : MonoBehaviour
 
         #region Data Structures
 
+        /// <summary>
+        /// The action to apply to <see cref="m_triggerOnAllDead"/> once all the enemies in the set
+        /// have died.
+        /// </summary>
         public enum Action
         {
+            /// <summary>
+            /// Fire the DoActivateTrigger function of the <see cref="UnityEngine.Object"/>.
+            /// </summary>
             Trigger,
+            /// <summary>
+            /// Active the <see cref="UnityEngine.Object"/>.
+            /// </summary>
             Activate,
+            /// <summary>
+            /// Deactivate the <see cref="UnityEngine.Object"/>.
+            /// </summary>
             Deactivate,
+            /// <summary>
+            /// Enable the <see cref="Behaviour"/>.
+            /// </summary>
             Enable,
+            /// <summary>
+            /// Disable the <see cref="Behaviour"/>.
+            /// </summary>
             Disable
         }
 
@@ -65,9 +97,13 @@ public class EnemySetTrigger : MonoBehaviour
 
         #region Handlers
 
+        /// <summary>
+        /// Handles the event on enemy death.
+        /// </summary>
         void Enemy_OnDeath(object sender, EventArgs e)
         {
             _amountAlive--;
+            // if no more of the enemies are alive, then trigger the action
             if (_amountAlive == 0 && m_triggerOnAllDead != null)
             {
                 Behaviour objBehaviour = m_triggerOnAllDead as Behaviour;
@@ -99,10 +135,10 @@ public class EnemySetTrigger : MonoBehaviour
         #endregion
 
         #region Helpers
-
         internal void Awake()
         {
             _amountAlive = m_enemies.Length;
+            // apply default states to set
             foreach (EnemyController enemy in m_enemies)
             {
                 enemy.IsActive = m_defaultActive;
@@ -110,7 +146,6 @@ public class EnemySetTrigger : MonoBehaviour
                 Debug.Log(string.Format("Set {0}", enemy.name));
             }
         }
-
         internal void OnEnable()
         {
             foreach (EnemyController enemy in m_enemies)
@@ -123,6 +158,9 @@ public class EnemySetTrigger : MonoBehaviour
                 enemy.OnDeath -= Enemy_OnDeath;
         }
 
+        /// <summary>
+        /// Get or set the active state of all the enemies in the set.
+        /// </summary>
         public bool Active
         {
             get
@@ -138,6 +176,10 @@ public class EnemySetTrigger : MonoBehaviour
             }
         }
 
+        /// <summary>
+        /// Get or set the chasing state of all the enemies in the set.
+        /// </summary>
+        /// <returns></returns>
         public bool Chasing
         {
             get
@@ -153,6 +195,9 @@ public class EnemySetTrigger : MonoBehaviour
             }
         }
 
+        /// <summary>
+        /// Checks whether all of the enemies in the set are alive.
+        /// </summary>
         public bool AllAlive
         {
             get
@@ -164,6 +209,9 @@ public class EnemySetTrigger : MonoBehaviour
             }
         }
 
+        /// <summary>
+        /// Checks whether all of the enemies in the set are dead.
+        /// </summary>
         public bool AllDead
         {
             get

@@ -29,6 +29,7 @@ public class DoorController : MonoBehaviour
 
     void Start()
     {
+        // set door to open if it was specified
         if (m_startOpen)
         {
             _animator.Play("Open");
@@ -38,6 +39,7 @@ public class DoorController : MonoBehaviour
 
     void DoActivateTrigger()
     {
+        // toggle the open state of the door
         _animator.SetBool("IsOpen", !_animator.GetBool("IsOpen"));
     }
 
@@ -45,12 +47,18 @@ public class DoorController : MonoBehaviour
 
     #region Helper Methods
 
+    /// <summary>
+    /// Plays the opening sound of the door.
+    /// </summary>
     internal void PlayOpenSound()
     {
         _audioSource.clip = m_openSound;
         _audioSource.Play();
     }
 
+    /// <summary>
+    /// Plays the closing sound of the door.
+    /// </summary>
     internal void PlayCloseSound()
     {
         _audioSource.clip = m_closeSound;

@@ -28,6 +28,9 @@ public class PlayerController : MonoBehaviour
 
     #region Private Properties
 
+    /// <summary>
+    /// The percentage of the players health that is currently remaining.
+    /// </summary>
     float PercentHealth { get { return _health / m_maxHealth; } }
 
     #endregion
@@ -51,6 +54,9 @@ public class PlayerController : MonoBehaviour
 
     #region Helper Methods
 
+    /// <summary>
+    /// Updates the mask and text of the health bar displayed on screen.
+    /// </summary>
     void UpdateHealthBar()
     {
         m_healthBarMask.rectTransform.sizeDelta = new Vector2(_defaultHealthBarMaskSize.x * PercentHealth,
@@ -58,11 +64,16 @@ public class PlayerController : MonoBehaviour
         m_HealthPercentText.text = string.Format(healthTextFormat, PercentHealth);
     }
 
+    /// <summary>
+    /// Applies damage to the player.
+    /// </summary>
+    /// <param name="amount">The amount of damage to apply.</param>
     public void Damage(float amount)
     {
         // update items
         _health -= amount;
         UpdateHealthBar();
+        // update the modifier. will scale from m_minHealthScoreModifier to 1 depending on the percent health left
         _dataStorage.ScoreModifier = Mathf.Lerp(m_minHealthScoreModifier, 1, PercentHealth);
         // check if failed, otherwise play hurt sound
         if (_health <= 0)

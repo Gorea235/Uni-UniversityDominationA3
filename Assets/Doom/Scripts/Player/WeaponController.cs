@@ -32,11 +32,25 @@ public class WeaponController : MonoBehaviour
 
     #region Private Classes
 
+    /// <summary>
+    /// Stores the hits and total damage that will be applied to the hit <see cref="GameObject"/>.
+    /// </summary>
     class ObjDamageStore
     {
+        /// <summary>
+        /// The amount of damage that should be applied.
+        /// </summary>
         public float Damage { get; set; }
+        /// <summary>
+        /// The list of points that the bullet hit so we can draw the bullet trails.
+        /// </summary>
         public List<Vector3> BulletHits { get; }
 
+        /// <summary>
+        /// Constructs a new <see cref="T:ObjDamageStore"/> with the base damager and hit point.
+        /// </summary>
+        /// <param name="damage">The intial damage to apply.</param>
+        /// <param name="hit">The initial hit on the object.</param>
         public ObjDamageStore(float damage, Vector3 hit)
         {
             Damage = 0;
@@ -44,6 +58,11 @@ public class WeaponController : MonoBehaviour
             AddHit(damage, hit);
         }
 
+        /// <summary>
+        /// Adds a new hit to the storage.
+        /// </summary>
+        /// <param name="damage">The damage of the hit.</param>
+        /// <param name="hit">The point of the hit.</param>
         public void AddHit(float damage, Vector3 hit)
         {
             Damage += damage;
@@ -56,19 +75,10 @@ public class WeaponController : MonoBehaviour
     #region Private Fields
 
     Vector2 _centerScreen = new Vector2(Screen.width / 2, Screen.height / 2);
-    readonly float _sectorSize;
+    float _sectorSize;
     GameObject _player;
     AudioSource _audioSource;
     float _lastShootTime;
-
-    #endregion
-
-    #region Constructor
-
-    public WeaponController()
-    {
-        _sectorSize = 360f / m_sectorSplit;
-    }
 
     #endregion
 
@@ -76,6 +86,7 @@ public class WeaponController : MonoBehaviour
 
     void Awake()
     {
+        _sectorSize = 360f / m_sectorSplit; // init the size of the sector
         _player = GameObject.Find("FPSController");
         _audioSource = gameObject.GetComponent<AudioSource>();
         float d = m_spreadRadius * 2;
@@ -84,6 +95,7 @@ public class WeaponController : MonoBehaviour
 
     void Update()
     {
+        // only allow shooting if it's been long enough since the last shot
         if ((Time.realtimeSinceStartup - _lastShootTime >= m_recoilTime) && CrossPlatformInputManager.GetButtonDown("Fire1"))
         {
             Vector3[] points = GetSpreadPoints(_centerScreen); // grab aim points
@@ -126,6 +138,11 @@ public class WeaponController : MonoBehaviour
 
     #region Helper Methods
 
+    /// <summary>
+    /// Gets all the raycast hits from the given points on the screen.
+    /// </summary>
+    /// <param name="screenPoints">The screen points to start from.</param>
+    /// <returns>The list of hits that were found.</returns>
     RaycastHit[] GetHitsFromScreenPoints(Vector3[] screenPoints)
     {
         RaycastHit hit;
@@ -136,6 +153,12 @@ public class WeaponController : MonoBehaviour
         return hits.ToArray();
     }
 
+    /// <summary>
+    /// Performs a raycast from the given screen point.
+    /// </summary>
+    /// <param name="screenPoint">The screen point to start at.</param>
+    /// <param name="hit">The hit that was found.</param>
+    /// <returns>Whether the raycast hit something.</returns>
     bool GetHitFromScreenPoint(Vector3 screenPoint, out RaycastHit hit)
     {
         Ray hitScanRay = Camera.main.ScreenPointToRay(screenPoint);
@@ -150,6 +173,11 @@ public class WeaponController : MonoBehaviour
     /// If the bullet count isn't a multiple of <see cref="m_sectorSplit"/> exactly,
     /// then the remainder is split evenly over the area (i.e. split into 3rds
     /// for a remainder of 3, or over the whole area for a remainder of 1).
+    /// 
+    /// The positions are chosen by randomly generating the rotation around the sector,
+    /// and then randomly generating the distance from the centre. By doing this, we avoid
+    /// the issue of having to contrain the X and Y values according to each other, since
+    /// rotation and distance are not reliant on each other.
     /// </summary>
     /// <returns>The spread points.</returns>
     internal Vector3[] GetSpreadPoints(Vector3? offset = null, float z = 0)
@@ -157,6 +185,7 @@ public class WeaponController : MonoBehaviour
         Vector3 offsetVector = offset ?? new Vector3();
 
         // the rotation and distance from centre for each shot
+        // Item1 - rotaion, Item2 - distance
         Tuple<float, float>[] points = new Tuple<float, float>[m_numberBulletsPerShot];
         int nextIndex = 0;
 
@@ -187,6 +216,18 @@ public class WeaponController : MonoBehaviour
         return spreadPoints;
     }
 
+    /// <summary>
+    /// Inserts a spread point into the given list.
+    /// The rotation and distance are randonly generated in the specified ranges.
+    /// </summary>
+    /// <param name="sectorSize">The size in degrees of the current sector.</param>
+    /// <param name="rotation">
+    /// The rotation around the spread circle to start at. A rotation of 0 would be the first sector,
+    /// a rotation of 2 would be the sector starting at 180° (if sector split is at 4, making each
+    /// sector 90°).
+    /// </param>
+    /// <param name="nextIndex">The next insertion index (as the list size is pre-calculated.</param>
+    /// <param name="points">The current list of points to add to.</param>
     void InsertSpreadPoint(float sectorSize, int rotation, ref int nextIndex, ref Tuple<float, float>[] points)
     {
         points[nextIndex] = Tuple.Create(
@@ -195,6 +236,11 @@ public class WeaponController : MonoBehaviour
         nextIndex++;
     }
 
+    /// <summary>
+    /// Instantiates a new bullet trail going to each specified point.
+    /// Start point is given by <see cref="m_bulletTrailOriginObj"/>
+    /// </summary>
+    /// <param name="endPoints">The list of end points to make the tails go to.</param>
     void CreateBulletTrails(params Vector3[] endPoints)
     {
         foreach (Vector3 point in endPoints)

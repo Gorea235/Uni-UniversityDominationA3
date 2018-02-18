@@ -18,12 +18,18 @@ public class ObjectiveUiController : MonoBehaviour
 
     #region Data Structures
 
+    /// <summary>
+    /// The inital state of the objective UI.
+    /// </summary>
     public enum ShowState
     {
         Show,
         Hide
     }
 
+    /// <summary>
+    /// The current state of the objective UI.
+    /// </summary>
     enum InternalShowState
     {
         Shown,
@@ -48,9 +54,15 @@ public class ObjectiveUiController : MonoBehaviour
 
     #region Private Properties
 
-    // full objective display
+    // ========== full objective display ==========
 
+    /// <summary>
+    /// The current objective UI <see cref="Image"/> width.
+    /// </summary>
     float ObjectiveImageWidth { get { return _objectiveImage.rectTransform.sizeDelta.x; } }
+    /// <summary>
+    /// Get or set the current X position of the objective UI.
+    /// </summary>
     float ObjectiveImageX
     {
         get { return _objectiveImage.rectTransform.localPosition.x; }
@@ -61,11 +73,18 @@ public class ObjectiveUiController : MonoBehaviour
             _objectiveImage.rectTransform.anchoredPosition = pos;
         }
     }
+    /// <summary>
+    /// Get or set the amount of the objective UI image that is shown.
+    /// </summary>
     float ObjectiveImageShowPercent
     {
         get { return ObjectiveImageX / ObjectiveImageWidth; }
         set { ObjectiveImageX = ObjectiveImageWidth * (1 - value); }
     }
+    /// <summary>
+    /// Get or set the amount of the objective UI that is shown.
+    /// Will also apply a smooth step to <see cref="ObjectiveImageShowPercent"/>
+    /// </summary>
     float PercentShown
     {
         get { return _percentShown; }
@@ -76,12 +95,18 @@ public class ObjectiveUiController : MonoBehaviour
         }
     }
 
-    // objective text & flash
+    // ========== objective text & flash ==========
+    /// <summary>
+    /// The text currently displayed by the objective UI.
+    /// </summary>
     public string ObjectiveText
     {
         get { return m_objectiveText.text; }
         set { m_objectiveText.text = value; }
     }
+    /// <summary>
+    /// The current alpha value of the flash image that sits over the objective UI.
+    /// </summary>
     float ObjectiveFlashAlpha
     {
         get { return m_objectiveFlash.color.a; }
@@ -92,6 +117,10 @@ public class ObjectiveUiController : MonoBehaviour
             m_objectiveFlash.color = col;
         }
     }
+    /// <summary>
+    /// The percentage through the flash we are currently at. Uses a sin function to
+    /// set the alpha value of the flash.
+    /// </summary>
     float PercentFlashed
     {
         get { return _percentFlashed; }
@@ -113,6 +142,7 @@ public class ObjectiveUiController : MonoBehaviour
     {
         _objectiveImage = gameObject.GetComponent<Image>();
         _objectiveImage.material.SetFloat("_FlashAmount", 0.5f);
+        // init default state
         switch (m_defaultState)
         {
             case ShowState.Show:
@@ -126,36 +156,33 @@ public class ObjectiveUiController : MonoBehaviour
         }
     }
 
-    void DoActivateTrigger() => Toggle();
-
-    int test = 0;
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.RightBracket))
-            Toggle();
-        if (Input.GetKeyDown(KeyCode.LeftBracket))
-        {
-            ObjectiveText = "";
-            UpdateObjective(test.ToString(), test == 0 ? 0.2f : 0);
-            test++;
-        }
-    }
+    void DoActivateTrigger() => Toggle(); // allows toggling of the UI via activate triggers
 
     #endregion
 
     #region Helper Methods
 
+    /// <summary>
+    /// Calculates the percentage of time that passed during the last frame according to the
+    /// given animation time. Used since animations are processed every frame while occurring,
+    /// meaning that the time the last frame took is how much of the animation should have passed.
+    /// </summary>
+    /// <param name="animTime">The animation time to get the percent of.</param>
     float PercentDelta(float animTime) => Time.deltaTime / animTime;
 
     #region Show/Hide
 
     // internal coroutines
 
+    /// <summary>
+    /// Controls the show animation of the objective UI.
+    /// </summary>
     IEnumerator InternalShow()
     {
         while (PercentShown < 1)
         {
             yield return new WaitForEndOfFrame();
+            // if Hide was called during the show animation, cancel this animation
             if (_currentState != InternalShowState.Showing)
                 yield break;
             PercentShown += PercentDelta(m_showTime);
@@ -163,11 +190,15 @@ public class ObjectiveUiController : MonoBehaviour
         _currentState = InternalShowState.Shown;
     }
 
+    /// <summary>
+    /// Controls the hide animation of the objective UI.
+    /// </summary>
     IEnumerator InternalHide()
     {
         while (PercentShown > 0)
         {
             yield return new WaitForEndOfFrame();
+            // if Show was called during the show animation, cancel this animation
             if (_currentState != InternalShowState.Hiding)
                 yield break;
             PercentShown -= PercentDelta(m_hideTime);
@@ -177,8 +208,12 @@ public class ObjectiveUiController : MonoBehaviour
 
     // public methods
 
+    /// <summary>
+    /// Shows the objective UI. Will handle re-firings without issue.
+    /// </summary>
     public void Show()
     {
+        // prevent re-firings
         if (_currentState == InternalShowState.Shown ||
             _currentState == InternalShowState.Showing)
             return;
@@ -186,6 +221,9 @@ public class ObjectiveUiController : MonoBehaviour
         StartCoroutine("InternalShow");
     }
 
+    /// <summary>
+    /// Hides the objective UI. Will handle re-firings without issue.
+    /// </summary>
     public void Hide()
     {
         if (_currentState == InternalShowState.Hidden ||
@@ -195,6 +233,9 @@ public class ObjectiveUiController : MonoBehaviour
         StartCoroutine("InternalHide");
     }
 
+    /// <summary>
+    /// Toggles the show state of the objective UI.
+    /// </summary>
     public void Toggle()
     {
         switch (_currentState)
@@ -216,8 +257,19 @@ public class ObjectiveUiController : MonoBehaviour
 
     // internal coroutine
 
+    /// <summary>
+    /// Controls the flash animation text update of the objective UI. The text is only
+    /// updated when the animation is at its peak so the user cannot see the text change,
+    /// making the animation cleaner.
+    /// </summary>
+    /// <param name="text">The text to update to.</param>
+    /// <param name="delay">
+    /// How long to wait before starting the animation. Allows for it to be started immediately
+    /// but have the animation actually occur later on.
+    /// </param>
     IEnumerator InternalUpdateObjective(string text, float delay)
     {
+        // if we want to delay, do so
         if (delay > 0)
             yield return new WaitForSeconds(delay);
         PercentFlashed = 0;
@@ -226,7 +278,7 @@ public class ObjectiveUiController : MonoBehaviour
             yield return new WaitForEndOfFrame();
             PercentFlashed += PercentDelta(m_objectiveUpdateFlashTime);
             if (PercentFlashed >= _objectiveTextApplyPoint &&
-                ObjectiveText != text)
+                ObjectiveText != text) // if >= 50% done and we haven't update the text, do so
                 ObjectiveText = text;
         }
         _flashing = false;
@@ -234,12 +286,18 @@ public class ObjectiveUiController : MonoBehaviour
 
     // public methods
 
+    /// <summary>
+    /// Updates the objective UI to the given text.
+    /// </summary>
+    /// <param name="text">The text to update to.</param>
+    /// <param name="delay">
+    /// How long to wait before starting the animation. Allows for it to be started immediately
+    /// but have the animation actually occur later on.
+    /// </param>
     public void UpdateObjective(string text, float delay = 0)
     {
-        if (_flashing)
-        {
+        if (_flashing) // if we are already updating the UI, stop it and restart
             StopCoroutine("InternalUpdateObjective");
-        }
         _flashing = true;
         StartCoroutine(InternalUpdateObjective(text, delay));
     }

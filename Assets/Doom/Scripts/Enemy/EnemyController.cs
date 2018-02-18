@@ -40,12 +40,22 @@ public class EnemyController : MonoBehaviour
 
     #region Public Properties
 
+    /// <summary>
+    /// Whether the enemy is dead.
+    /// </summary>
     public bool IsDead { get { return _dead; } }
+    /// <summary>
+    /// Whether the enemy is active currently.
+    /// </summary>
     public bool IsActive
     {
         get { return m_active; }
         set { m_active = value; }
     }
+    /// <summary>
+    /// Whether the enemy is chasing the player.
+    /// </summary>
+    /// <returns></returns>
     public bool IsChasing
     {
         get { return m_chase; }
@@ -56,6 +66,9 @@ public class EnemyController : MonoBehaviour
 
     #region Events
 
+    /// <summary>
+    /// Fires when the enemy dies.
+    /// </summary>
     public event System.EventHandler OnDeath;
 
     #endregion
@@ -69,20 +82,20 @@ public class EnemyController : MonoBehaviour
         _dataStorage = GameObject.Find("DataStore").GetComponent<DataStore>();
         _audioSource = gameObject.GetComponent<AudioSource>();
         _animator = gameObject.GetComponent<Animator>();
-        IsActive = m_active;
-        IsChasing = m_chase;
     }
 
     void Update()
     {
-        if (_dead)
+        if (_dead) // if dead stop updates
             return;
 
-        if (IsActive)
+        if (IsActive) // only process if currently active
         {
+            // check if in attacking range
             if (Vector3.Distance(gameObject.transform.position, _player.transform.position) <= m_range)
             {
-                SetAttacking();
+                SetAttacking(); // set attacking animation
+                // only attack if it's been long enough since the last attack
                 if (Time.realtimeSinceStartup - _lastHit >= m_damageRate)
                 {
                     _playerController.Damage(m_damage);
@@ -91,6 +104,7 @@ public class EnemyController : MonoBehaviour
             }
             else
             {
+                // if chasing the player, apply animation and move
                 if (IsChasing)
                 {
                     SetChasing();
@@ -108,16 +122,41 @@ public class EnemyController : MonoBehaviour
 
     #region Helper Methods
 
+    /// <summary>
+    /// Sets the current animation state. Animator set to change the animation state immediately.
+    /// 0 - Idling
+    /// 1 - Running
+    /// 2 - Attacking
+    /// </summary>
+    /// <param name="state">The animation state to move to.</param>
     void ApplyAnimationState(int state) => _animator.SetInteger("State", state);
 
+    /// <summary>
+    /// Set the enemy to the idling animation.
+    /// </summary>
     void SetIdling() => ApplyAnimationState(0);
 
+    /// <summary>
+    /// Set the enemy to the running animation.
+    /// </summary>
     void SetChasing() => ApplyAnimationState(1);
 
+    /// <summary>
+    /// Set the enemy to the attacking animation.
+    /// </summary>
     void SetAttacking() => ApplyAnimationState(2);
 
+    /// <summary>
+    /// Set the enemy to the dead animation.
+    /// Once this is set, the animator will not take into account the integer state
+    /// of if this is set back to false (it will simply stay in the dead state permanently).
+    /// </summary>
     void SetDead() => _animator.SetBool("IsDead", true);
 
+    /// <summary>
+    /// Looks at and moves towards the player. Allows for acceleration and deceleration.
+    /// </summary>
+    /// <param name="accelerate"></param>
     void DoChasePlayer(bool accelerate)
     {
         // rotate towards player
@@ -139,26 +178,34 @@ public class EnemyController : MonoBehaviour
         transform.localPosition = newPos;
     }
 
+    /// <summary>
+    /// Causes the enemy to die.
+    /// </summary>
+    /// <param name="applyScore">Whether to apply the score that this enemy is worth.</param>
     public void Die(bool applyScore = true)
     {
         _dead = true;
         SetDead();
-        gameObject.GetComponent<Rigidbody>().isKinematic = true;
-        gameObject.GetComponent<Collider>().enabled = false;
+        gameObject.GetComponent<Rigidbody>().isKinematic = true; // stop all future movement
+        gameObject.GetComponent<Collider>().enabled = false; // disable collisions
         _audioSource.clip = m_deathSound;
-        _audioSource.Play();
+        _audioSource.Play(); // play death sound
         if (applyScore)
             _dataStorage.AddScore(m_killScore);
-        OnDeath?.Invoke(this, new System.EventArgs());
+        OnDeath?.Invoke(this, new System.EventArgs()); // fire death event
     }
 
+    /// <summary>
+    /// Damages the enemy by the given amount.
+    /// </summary>
+    /// <param name="amount">The amount to damage the enemy by.</param>
     public void Damage(float amount)
     {
         m_health -= amount;
-        if (m_health <= 0)
+        if (m_health <= 0) // if health dropped below 0, enemy is dead
             Die();
         else
-        {
+        { // otherise just play a random hurt sound
             _audioSource.clip = m_hurtSounds[Random.Range(0, m_hurtSounds.Length)];
             _audioSource.Play();
         }
