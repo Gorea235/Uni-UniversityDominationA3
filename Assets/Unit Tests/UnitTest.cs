@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
@@ -200,3 +201,4 @@ public class UnitTest
         Assert.IsFalse(player.units.Contains(units[0])); // unit not in list of players units
     }
 }
+#endif

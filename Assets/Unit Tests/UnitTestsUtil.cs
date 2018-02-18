@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using System.Collections;
 
@@ -64,3 +65,4 @@ public static class UnitTestsUtil
         //Object.Destroy(ui.gameObject);
     }
 }
+#endif

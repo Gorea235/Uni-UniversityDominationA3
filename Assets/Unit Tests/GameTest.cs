@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
@@ -528,3 +529,4 @@ public class GameTest
         Assert.That(players[0].Knowledge, Is.EqualTo(result).Within(float.Epsilon));
     }
 }
+#endif

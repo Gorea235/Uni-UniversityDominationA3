@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
@@ -340,3 +341,4 @@ public class SectorTest
         Assert.IsNotNull(sectorB.AdjacentSelectedUnit());
     }
 }
+#endif
