@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Game">
+    <Position X="5" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>gAYgCACAABJSgcQACAJBAIAAEABiAgiIJIAAEAKQMKQ=</HashCode>
+      <FileName>Assets\Scripts\Game.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Helpers">
+    <Position X="2" Y="6.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Helpers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Initializer">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Initializer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Landmark">
+    <Position X="15.75" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAQACAAAAggAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Landmark.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MainMenu">
+    <Position X="0.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAgAAAA0AAABIAAAAIAIIAAACAQQIAAAEE=</HashCode>
+      <FileName>Assets\Scripts\MainMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Map">
+    <Position X="9.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Map.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Player">
+    <Position X="9.25" Y="3.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>BkACAAhAAAAIAAAAEBgAAAQYAAg0AAiJABQAoAAAAgA=</HashCode>
+      <FileName>Assets\Scripts\Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerUI">
+    <Position X="12" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAQEAABIAQBAABgAAAAAAAAAAEABAAABAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\PlayerUI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sector">
+    <Position X="12" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>CACgEAKAgBAggSAAICAACQAAACAgQAgAEAIAABASiwA=</HashCode>
+      <FileName>Assets\Scripts\Sector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SerializableColor">
+    <Position X="17.25" Y="13.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAgAIAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Serialization\SerializableColor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SerializableGame">
+    <Position X="4.5" Y="13.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAQAAAAAIAAAAAAAAAAMAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Serialization\SerializableGame.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SerializableLandmark">
+    <Position X="14.25" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Serialization\SerializableLandmark.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SerializablePlayer">
+    <Position X="9.5" Y="15.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAIAAAAAAgAAAAAAAAAAAAAAAAAIAAAAgA=</HashCode>
+      <FileName>Assets\Scripts\Serialization\SerializablePlayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SerializableSector">
+    <Position X="9.5" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAgAAgAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Serialization\SerializableSector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SerializableUnit">
+    <Position X="14.25" Y="15" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAAAAAAAAAEAAACAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Serialization\SerializableUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Unit">
+    <Position X="15.75" Y="3.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAIAACACIAAkQAAAAAAAAABADEoAAiBAAAAwgAAQAA=</HashCode>
+      <FileName>Assets\Scripts\Unit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="ResourceType">
+    <Position X="18.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\ResourceType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TurnState">
+    <Position X="2" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAgAKAAAAAQAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\TurnState.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
